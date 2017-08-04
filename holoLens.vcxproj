@@ -1,0 +1,212 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7FD42DF7-442E-479A-BA76-D0022F99702A}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>holoLens</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\libs\openFrameworksCompiled\project\vs\openFrameworksRelease.props" />
+    <Import Project="..\..\..\addons\ofxKinectForWindows2\ofxKinectForWindows2.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\libs\openFrameworksCompiled\project\vs\openFrameworksRelease.props" />
+    <Import Project="..\..\..\addons\ofxKinectForWindows2\ofxKinectForWindows2.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\libs\openFrameworksCompiled\project\vs\openFrameworksDebug.props" />
+    <Import Project="..\..\..\addons\ofxKinectForWindows2\ofxKinectForWindows2.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\libs\openFrameworksCompiled\project\vs\openFrameworksDebug.props" />
+    <Import Project="..\..\..\addons\ofxKinectForWindows2\ofxKinectForWindows2.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>bin\</OutDir>
+    <IntDir>obj\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)_debug</TargetName>
+    <LinkIncremental>true</LinkIncremental>
+    <GenerateManifest>true</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>bin\</OutDir>
+    <IntDir>obj\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)_debug</TargetName>
+    <LinkIncremental>true</LinkIncremental>
+    <GenerateManifest>true</GenerateManifest>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);c:\Program Files\PCL 1.8.0\include\pcl-1.8;c:\Program Files\PCL 1.8.0\3rdParty\Boost\include\boost-1_61;c:\Program Files\PCL 1.8.0\3rdParty\Eigen\eigen3;c:\Program Files\PCL 1.8.0\3rdParty\FLANN\include;c:\Program Files\PCL 1.8.0\3rdParty\Qhull\include;c:\Program Files\PCL 1.8.0\3rdParty\VTK\include\vtk-7.0</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;c:\Program Files\PCL 1.8.0\lib;c:\Program Files\PCL 1.8.0\3rdParty\Boost\lib;c:\Program Files\PCL 1.8.0\3rdParty\FLANN\lib;c:\Program Files\PCL 1.8.0\3rdParty\Qhull\lib;c:\Program Files\PCL 1.8.0\3rdParty\VTK\lib</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>bin\</OutDir>
+    <IntDir>obj\$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>bin\</OutDir>
+    <IntDir>obj\$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>C:\Program Files\PCL 1.8.0\3rdParty\Boost\lib\libboost_system-vc140-mt-gd-1_61.lib;C:\Program Files\PCL 1.8.0\3rdParty\Boost\lib\libboost_filesystem-vc140-mt-gd-1_61.lib;C:\Program Files\PCL 1.8.0\3rdParty\Boost\lib\libboost_thread-vc140-mt-gd-1_61.lib;C:\Program Files\PCL 1.8.0\3rdParty\Boost\lib\libboost_date_time-vc140-mt-gd-1_61.lib;C:\Program Files\PCL 1.8.0\3rdParty\Boost\lib\libboost_iostreams-vc140-mt-gd-1_61.lib;C:\Program Files\PCL 1.8.0\3rdParty\Boost\lib\libboost_serialization-vc140-mt-gd-1_61.lib;C:\Program Files\PCL 1.8.0\3rdParty\Boost\lib\libboost_chrono-vc140-mt-gd-1_61.lib;C:\Program Files\PCL 1.8.0\3rdParty\Boost\lib\libboost_atomic-vc140-mt-gd-1_61.lib;C:\Program Files\PCL 1.8.0\3rdParty\Boost\lib\libboost_regex-vc140-mt-gd-1_61.lib;C:\Program Files\PCL 1.8.0\lib\pcl_common_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_octree_debug.lib;C:\Program Files\OpenNI2\Lib\OpenNI2.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkalglib-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkChartsCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonColor-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonDataModel-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonMath-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtksys-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonMisc-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonSystem-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonTransforms-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkInfovisCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersExtraction-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonExecutionModel-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersGeneral-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonComputationalGeometry-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersStatistics-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingFourier-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingContext2D-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersGeometry-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersSources-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingFreeType-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkfreetype-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkzlib-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkDICOMParser-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkDomainsChemistry-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOXML-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOGeometry-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOXMLParser-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkexpat-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkexoIIc-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkNetCDF-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkNetCDF_cxx-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkhdf5_hl-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkhdf5-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersAMR-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkParallelCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOLegacy-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersFlowPaths-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersGeneric-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersHybrid-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingSources-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersHyperTree-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersImaging-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingGeneral-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersModeling-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersParallel-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersParallelImaging-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersProgrammable-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersSelection-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersSMP-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersTexture-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersVerdict-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkverdict-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkGeovisCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkInfovisLayout-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingHybrid-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOImage-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkmetaio-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkjpeg-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkpng-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtktiff-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkInteractionStyle-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkInteractionWidgets-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingAnnotation-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingColor-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingVolume-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkViewsCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkproj4-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkgl2ps-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingMath-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingMorphological-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingStatistics-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingStencil-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkInteractionImage-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOAMR-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOEnSight-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOExodus-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOExport-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingGL2PS-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingContextOpenGL-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingOpenGL-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingLabel-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOImport-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOInfovis-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtklibxml2-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOLSDyna-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOMINC-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOMovie-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkoggtheora-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIONetCDF-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOParallel-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkjsoncpp-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOParallelXML-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOPLY-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOSQL-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtksqlite-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOVideo-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingImage-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingLIC-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingLOD-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingVolumeOpenGL-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkViewsContext2D-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkViewsInfovis-7.0-gd.lib;C:\Program Files\PCL 1.8.0\lib\pcl_io_debug.lib;C:\Program Files\PCL 1.8.0\3rdParty\FLANN\lib\flann_cpp_s-gd.lib;C:\Program Files\PCL 1.8.0\lib\pcl_kdtree_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_search_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_sample_consensus_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_filters_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_features_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_ml_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_segmentation_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_visualization_debug.lib;C:\Program Files\PCL 1.8.0\3rdParty\Qhull\lib\qhullstatic_d.lib;C:\Program Files\PCL 1.8.0\lib\pcl_surface_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_registration_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_keypoints_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_tracking_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_recognition_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_stereo_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_outofcore_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_people_debug.lib;C:\Program Files\PCL 1.8.0\3rdParty\Boost\lib\libboost_system-vc140-mt-gd-1_61.lib;C:\Program Files\PCL 1.8.0\3rdParty\Boost\lib\libboost_filesystem-vc140-mt-gd-1_61.lib;C:\Program Files\PCL 1.8.0\3rdParty\Boost\lib\libboost_thread-vc140-mt-gd-1_61.lib;C:\Program Files\PCL 1.8.0\3rdParty\Boost\lib\libboost_date_time-vc140-mt-gd-1_61.lib;C:\Program Files\PCL 1.8.0\3rdParty\Boost\lib\libboost_iostreams-vc140-mt-gd-1_61.lib;C:\Program Files\PCL 1.8.0\3rdParty\Boost\lib\libboost_serialization-vc140-mt-gd-1_61.lib;C:\Program Files\PCL 1.8.0\3rdParty\Boost\lib\libboost_chrono-vc140-mt-gd-1_61.lib;C:\Program Files\PCL 1.8.0\3rdParty\Boost\lib\libboost_atomic-vc140-mt-gd-1_61.lib;C:\Program Files\PCL 1.8.0\3rdParty\Boost\lib\libboost_regex-vc140-mt-gd-1_61.lib;C:\Program Files\PCL 1.8.0\3rdParty\Qhull\lib\qhullstatic_d.lib;C:\Program Files\OpenNI2\Lib\OpenNI2.lib;C:\Program Files\PCL 1.8.0\3rdParty\FLANN\lib\flann_cpp_s-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkalglib-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkChartsCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonColor-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonDataModel-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonMath-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtksys-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonMisc-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonSystem-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonTransforms-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkInfovisCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersExtraction-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonExecutionModel-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersGeneral-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonComputationalGeometry-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersStatistics-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingFourier-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingContext2D-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersGeometry-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersSources-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingFreeType-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkfreetype-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkzlib-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkDICOMParser-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkDomainsChemistry-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOXML-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOGeometry-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOXMLParser-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkexpat-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkexoIIc-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkNetCDF-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkNetCDF_cxx-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkhdf5_hl-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkhdf5-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersAMR-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkParallelCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOLegacy-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersFlowPaths-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersGeneric-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersHybrid-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingSources-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersHyperTree-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersImaging-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingGeneral-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersModeling-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersParallel-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersParallelImaging-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersProgrammable-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersSelection-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersSMP-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersTexture-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersVerdict-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkverdict-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkGeovisCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkInfovisLayout-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingHybrid-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOImage-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkmetaio-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkjpeg-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkpng-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtktiff-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkInteractionStyle-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkInteractionWidgets-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingAnnotation-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingColor-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingVolume-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkViewsCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkproj4-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkgl2ps-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingMath-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingMorphological-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingStatistics-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingStencil-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkInteractionImage-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOAMR-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOEnSight-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOExodus-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOExport-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingGL2PS-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingContextOpenGL-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingOpenGL-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingLabel-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOImport-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOInfovis-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtklibxml2-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOLSDyna-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOMINC-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOMovie-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkoggtheora-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIONetCDF-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOParallel-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkjsoncpp-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOParallelXML-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOPLY-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOSQL-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtksqlite-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOVideo-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingImage-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingLIC-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingLOD-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingVolumeOpenGL-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkViewsContext2D-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkViewsInfovis-7.0-gd.lib;C:\Program Files\PCL 1.8.0\lib\pcl_common_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_octree_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_io_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_kdtree_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_search_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_sample_consensus_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_filters_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_features_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_ml_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_segmentation_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_visualization_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_surface_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_registration_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_keypoints_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_tracking_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_recognition_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_stereo_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_outofcore_debug.lib;C:\Program Files\PCL 1.8.0\lib\pcl_people_debug.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersAMR-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkgl2ps-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkexoIIc-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersParallel-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIONetCDF-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkNetCDF_cxx-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkNetCDF-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkhdf5_hl-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkhdf5-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkParallelCore-7.0-gd.lib;vfw32.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOXML-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOGeometry-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOXMLParser-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkexpat-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOLegacy-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingOpenGL-7.0-gd.lib;glu32.lib;opengl32.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkChartsCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingContext2D-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersImaging-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkInfovisLayout-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkInfovisCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkViewsCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkInteractionWidgets-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersHybrid-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingGeneral-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingSources-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersModeling-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingHybrid-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOImage-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkDICOMParser-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkIOCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkmetaio-7.0-gd.lib;comctl32.lib;wsock32.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkpng-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtktiff-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkjpeg-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkInteractionStyle-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingAnnotation-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingColor-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingVolume-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingLabel-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingFreeType-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkRenderingCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonColor-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersExtraction-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersStatistics-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkalglib-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingFourier-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkImagingCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersGeometry-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersSources-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersGeneral-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkFiltersCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonExecutionModel-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonComputationalGeometry-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonDataModel-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonMisc-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonTransforms-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonMath-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonSystem-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkCommonCore-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtksys-7.0-gd.lib;ws2_32.lib;Psapi.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkfreetype-7.0-gd.lib;C:\Program Files\PCL 1.8.0\3rdParty\VTK\lib\vtkzlib-7.0-gd.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;$(NOINHERIT);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <Link>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent />
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\audioAnalyzer.cpp" />
+    <ClCompile Include="src\gestureTracker.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\ofApp.cpp" />
+    <ClCompile Include="src\videoContainer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\gestureTracker.h" />
+    <ClInclude Include="src\ofApp.h" />
+    <ClInclude Include="src\videoContainer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(OF_ROOT)\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">
+      <Project>{5837595d-aca9-485c-8e76-729040ce4b0b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\addons\ofxKinectForWindows2\ofxKinectForWindows2Lib\ofxKinectForWindows2Lib.vcxproj">
+      <Project>{f6008d6a-6d39-4b68-840e-e7ac8ed855da}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="icon.rc">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/D_DEBUG %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">/D_DEBUG %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(OF_ROOT)\libs\openFrameworksCompiled\project\vs</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="icon.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
