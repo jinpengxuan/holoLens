@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ofApp.h"
+#include "ofMain.h"
 
 class videoContainer {
 
@@ -10,6 +10,7 @@ public:
 	void pause();
 	void playByTime(int time);
 	void init();
+	void draw(ofVec2f center);
 
 	// video
 	ofVideoPlayer actualVideo;
@@ -19,4 +20,9 @@ public:
 
 	int videoPosition = 0;
 
+private:
+
+	ofImage getSampleFrame(std::string path);
+
 };
+

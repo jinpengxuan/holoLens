@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxKinectForWindows2.h"
 #include <iostream>
+#include "videoContainer.h"
 //#include <pcl/io/pcd_io.h>
 //#include <pcl/point_types.h>
 
@@ -35,7 +36,11 @@ public:
 	//time measurement
 	float time;
 
+	// visualizing the hand on the mapped image frame
 	ofImage handImage;
+
+	// video container for slides
+	videoContainer videoContainer;
 
 	//light
 	ofLight light;

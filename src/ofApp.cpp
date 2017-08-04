@@ -8,11 +8,6 @@ int DEPTH_SIZE = DEPTH_WIDTH * DEPTH_HEIGHT;
 
 void ofApp::init() {
 
-	// set colors an positions for the lights and the material
-	light.setDiffuseColor(ofColor(0.f, 255.f, 0.f));
-	light.setAmbientColor(ofColor(255.f, 255.f, 255.f));
-	light.setPosition(0, 0, -2000);
-
 }
 
 //--------------------------------------------------------------
@@ -41,6 +36,14 @@ void ofApp::setup() {
 
 	//get the starting time
 	time = ofGetElapsedTimef();
+
+	// set colors an positions for the lights and the material
+	light.setDiffuseColor(ofColor(0.f, 255.f, 0.f));
+	light.setAmbientColor(ofColor(255.f, 255.f, 255.f));
+	light.setPosition(0, 0, -2000);
+
+	//Video Init
+	videoContainer.init();
 
 	//ofVec3f pos = ofVec3f(0,0,-1);
 	//ofVec3f target = ofVec3f(0, 0, 0);
@@ -189,6 +192,8 @@ void ofApp::draw() {
 		ofSetColor(ofColor(255, 14, 120));
 		ofDrawSphere(ofPoint(DEPTH_WIDTH - ((ofVec3f)*iteratorTemp).x, DEPTH_HEIGHT - ((ofVec3f)*iteratorTemp).y, -((ofVec3f)*iteratorTemp).z), 2);
 	}
+
+	videoContainer.draw(ofVec2f(0,0));
 
 	//kinect.getInfraredSource()->draw(0, 0, previewWidth*2, previewHeight*2);
 	//kinect.getDepthSource()->draw(0, 0, previewWidth, previewHeight);  // note that the depth texture is RAW so may appear dark

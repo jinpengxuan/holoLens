@@ -2,12 +2,31 @@
 
 void videoContainer::init() {
 	// loop through directory and create video visual
-	sampleFrames.resize(2);
-	actualVideo.load("vids/1.mkv");
-	actualVideo.play();
-	float pct = 0.5f;
-	actualVideo.setPosition(pct);
-	actualVideo.getCurrentFrame();
+	sampleFrames.resize(3);
+
+	ofImage currentVideoFrame = getSampleFrame("vids/4.avi");
+	if(currentVideoFrame.isAllocated())sampleFrames.push_back(currentVideoFrame);
+
+	currentVideoFrame = getSampleFrame("vids/2.mkv");
+	if (currentVideoFrame.isAllocated())sampleFrames.push_back(currentVideoFrame);
+
+	currentVideoFrame = getSampleFrame("vids/3.mkv");
+	if (currentVideoFrame.isAllocated())sampleFrames.push_back(currentVideoFrame);
+
+	currentVideoFrame = getSampleFrame("vids/1.mkv");
+	if (currentVideoFrame.isAllocated())sampleFrames.push_back(currentVideoFrame);
+}
+
+void videoContainer::draw(ofVec2f center) {
+	std::vector<ofImage>::iterator iteratorTemp;
+	int count = 0;
+	for (iteratorTemp = sampleFrames.begin(); iteratorTemp < sampleFrames.end(); iteratorTemp++) {
+		ofImage actualFrame = ((ofImage)*iteratorTemp);
+		float drawX = center.x - actualFrame.getWidth() / 2;
+		float drawY = center.y - actualFrame.getHeight() / 2;
+		actualFrame.draw(drawX, drawY, (float)(-1 - count * 5));
+		count++;
+	}
 }
 
 void videoContainer::play() {
@@ -20,4 +39,15 @@ void videoContainer::pause() {
 
 void videoContainer::playByTime(int time) {
 
+}
+
+ofImage videoContainer::getSampleFrame(std::string path) {
+	actualVideo.load(path);
+	if (!actualVideo.isLoaded())return ofImage();
+
+	actualVideo.play();
+	float pct = 0.5f;
+	actualVideo.setPosition(pct);
+
+	return ofImage(actualVideo.getPixels());
 }
