@@ -1,16 +1,49 @@
 #pragma once
 
+#include "ofxKinectForWindows2.h"
+#include "staticMembers.h"
+#include <limits>
+
 class gestureTracker {
 
 public:
 	
 	void startDrag();
 	void stopDrag();
+	void init();
+	void update();
+	void draw();
+
+	ofxKFW2::Device kinect;
 
 	bool dragged = false;
 	int trackingTime = 0;
 
 	float rotationDegree = 0.f;
 	int translation = 0;
+
+	int minZ = std::numeric_limits<int>::max();
+	int xShift = -200;
+	int yShift = -400;
+	int zShift = -300;
+
+	vector<ofVec2f> colorCoords;
+	vector<ofVec3f> depthCoords;
+	vector<ofVec3f> drawingCoords;
+
+	//central position
+	ofVec3f center;
+
+	//mapping coordinates from depth to color image and vice versa
+	ICoordinateMapper * coordinateMapper;
+
+	//time measurement
+	float time;
+
+	//static parameters like width/height of depth and color image
+	staticMembers staticMembers;
+
+	// visualizing the hand on the mapped image frame
+	ofImage handImage;
 
 };

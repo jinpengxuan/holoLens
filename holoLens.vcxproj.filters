@@ -16,6 +16,9 @@
     <ClCompile Include="src\videoContainer.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\staticMembers.h">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">

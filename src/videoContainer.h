@@ -19,6 +19,7 @@ public:
 	vector <ofImage> sampleFrames;
 
 	int videoPosition = 0;
+	int maxHeight = 1024;
 
 private:
 

@@ -4,6 +4,9 @@
 #include "ofxKinectForWindows2.h"
 #include <iostream>
 #include "videoContainer.h"
+#include "gestureTracker.h"
+#include "staticMembers.h"
+
 //#include <pcl/io/pcd_io.h>
 //#include <pcl/point_types.h>
 
@@ -13,8 +16,6 @@ public:
 	void setup();
 	void update();
 	void draw();
-
-	void init();
 
 	void testPCL();
 	void keyPressed(int key);
@@ -26,24 +27,20 @@ public:
 	void windowResized(int w, int h);
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
-	
-	ofxKFW2::Device kinect;
+
 	ofEasyCam cam;
-	vector<ofVec2f> colorCoords;
-	vector<ofVec3f> depthCoords;
-	vector<ofVec3f> drawingCoords;
 
 	//time measurement
 	float time;
 
-	// visualizing the hand on the mapped image frame
-	ofImage handImage;
-
 	// video container for slides
 	videoContainer videoContainer;
+
+	// gesture Tracker class
+	gestureTracker gestureTracker;
 
 	//light
 	ofLight light;
 
-	ICoordinateMapper * coordinateMapper;
+	staticMembers staticMembers;
 };

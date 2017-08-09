@@ -181,6 +181,7 @@
     <ClCompile Include="src\gestureTracker.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
+    <ClCompile Include="src\staticMembers.h" />
     <ClCompile Include="src\videoContainer.cpp" />
   </ItemGroup>
   <ItemGroup>

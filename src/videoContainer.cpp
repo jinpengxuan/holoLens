@@ -2,7 +2,7 @@
 
 void videoContainer::init() {
 	// loop through directory and create video visual
-	sampleFrames.resize(3);
+	sampleFrames.resize(4);
 
 	ofImage currentVideoFrame = getSampleFrame("vids/4.avi");
 	if(currentVideoFrame.isAllocated())sampleFrames.push_back(currentVideoFrame);
@@ -15,17 +15,22 @@ void videoContainer::init() {
 
 	currentVideoFrame = getSampleFrame("vids/1.mkv");
 	if (currentVideoFrame.isAllocated())sampleFrames.push_back(currentVideoFrame);
+
+	actualVideo.closeMovie();
 }
 
 void videoContainer::draw(ofVec2f center) {
 	std::vector<ofImage>::iterator iteratorTemp;
-	int count = 0;
+	int count = sampleFrames.size();
 	for (iteratorTemp = sampleFrames.begin(); iteratorTemp < sampleFrames.end(); iteratorTemp++) {
+		
 		ofImage actualFrame = ((ofImage)*iteratorTemp);
+		int height = actualFrame.getHeight() > maxHeight ? maxHeight : actualFrame.getHeight();
+
 		float drawX = center.x - actualFrame.getWidth() / 2;
-		float drawY = center.y - actualFrame.getHeight() / 2;
-		actualFrame.draw(drawX, drawY, (float)(-1 - count * 5));
-		count++;
+		float drawY = center.y - maxHeight / 2;
+		actualFrame.draw(drawX, drawY, (float)(-10 - count * 500), actualFrame.getWidth(), height);
+		count--;
 	}
 }
 
