@@ -25,12 +25,18 @@ public:
 	ofxDatGuiButton* openButton;
 	ofxDatGuiButton* upButton;
 
+	ofxDatGuiLabel* pathLabel;
+
 	//available drives list
 	vector <string> availableDrives;
+
+	//current parent folder
+	string currentParent;
 
 private:
 
 	void loadSubOptions(string directory);
+	void removeSubstrs(string& s, string& p);
 
 	void onButtonEvent(ofxDatGuiButtonEvent e);
 	void onDropdownEvent(ofxDatGuiDropdownEvent e);

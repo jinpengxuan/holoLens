@@ -29,8 +29,10 @@ void menu::init() {
 	openButton = gui->addButton("Open Videos");
 	openButton->onButtonEvent(this, &menu::onButtonEvent);
 
-	gui->addBreak()->setHeight(20.0f);
+	gui->addBreak()->setHeight(40.0f);
 
+	pathLabel = gui->addLabel("");
+	pathLabel->setBackgroundColor(ofColor(0.4f,1.f));
 	upButton = gui->addButton("Up");
 	upButton->onButtonEvent(this, &menu::onButtonEvent);
 
@@ -41,8 +43,26 @@ void menu::init() {
 		vector<string> options;
 		for (auto & entry : fs::directory_iterator(value)) {
 			string entryStr = entry.path().string();
-			if (entryStr.find(".") == std::string::npos) {
+			/*if (entryStr.find(".") == std::string::npos) {
 				options.push_back(entry.path().string());
+			}*/
+			struct stat s;
+			const char * c = entryStr.c_str();
+			if (stat(c, &s) == 0)
+			{
+				if (s.st_mode & S_IFDIR)
+				{
+					removeSubstrs(entryStr, (string)value);
+					options.push_back(entryStr);
+				}
+				else if (s.st_mode & S_IFREG)
+				{
+					//file
+				}
+			}
+			else
+			{
+				//error
 			}
 		}
 		ofxDatGuiDropdown* dropDown = gui->addDropdown(value, options);
@@ -55,13 +75,15 @@ void menu::init() {
 }
 
 void menu::loadSubOptions(string directory) {
+
 	for (int i = 0; i < elements; i++) {
-		gui->removeItem(4);
+		gui->removeItem(7);
 	}
 
 	elements = 0;
 
-	if (directory.length == 0) {
+	//ROOT
+	if (directory.length() == 0) {
 		for (auto& path : drives) {
 			try {
 				for (auto & entry : fs::directory_iterator(path)) {
@@ -78,8 +100,23 @@ void menu::loadSubOptions(string directory) {
 			vector<string> options;
 			for (auto & entry : fs::directory_iterator(value)) {
 				string entryStr = entry.path().string();
-				if (entryStr.find(".") == std::string::npos) {
-					options.push_back(entry.path().string());
+				struct stat s;
+				const char * c = entryStr.c_str();
+				if (stat(c, &s) == 0)
+				{
+					if (s.st_mode & S_IFDIR)
+					{
+						removeSubstrs(entryStr, (string)value);
+						options.push_back(entryStr);
+					}
+					else if (s.st_mode & S_IFREG)
+					{
+						//file
+					}
+				}
+				else
+				{
+					//error
 				}
 			}
 			ofxDatGuiDropdown* dropDown = gui->addDropdown(value, options);
@@ -87,6 +124,7 @@ void menu::loadSubOptions(string directory) {
 			elements++;
 		}
 	}
+	//IN DIRECTORY
 	else {
 		try {
 			for (auto & entry1 : fs::directory_iterator(directory)) {
@@ -95,13 +133,45 @@ void menu::loadSubOptions(string directory) {
 					vector<string> options;
 					for (auto & entry2 : fs::directory_iterator(directory1)) {
 						string entryStr2 = entry2.path().string();
-						if (entryStr2.find(".") == std::string::npos) {
-							options.push_back(entry2.path().string());
+						struct stat s;
+						const char * c = entryStr2.c_str();
+						if (stat(c, &s) == 0)
+						{
+							if (s.st_mode & S_IFDIR)
+							{
+								removeSubstrs(entryStr2, directory1+"\\");
+								options.push_back(entryStr2);
+							}
+							else if (s.st_mode & S_IFREG)
+							{
+								//file
+							}
+						}
+						else
+						{
+							//error
 						}
 					}
-					ofxDatGuiDropdown* dropDown = gui->addDropdown(directory1, options);
-					dropDown->onDropdownEvent(this, &menu::onDropdownEvent);
-					elements++;
+					struct stat s;
+					const char * c = directory1.c_str();
+					if (stat(c, &s) == 0)
+					{
+						if (s.st_mode & S_IFDIR)
+						{
+							removeSubstrs(directory1, directory+"\\");
+							ofxDatGuiDropdown* dropDown = gui->addDropdown(directory1, options);
+							dropDown->onDropdownEvent(this, &menu::onDropdownEvent);
+							elements++;
+						}
+						else if (s.st_mode & S_IFREG)
+						{
+							//file
+						}
+					}
+					else
+					{
+						//error
+					}
 				}
 				catch (const std::exception& e) {
 
@@ -128,12 +198,22 @@ void menu::onButtonEvent(ofxDatGuiButtonEvent e)
 
 void menu::onDropdownEvent(ofxDatGuiDropdownEvent e)
 {
-	loadSubOptions(e.target->getLabel());
+	cout << "Dropdown Event" << endl;
+	string path1 = (pathLabel->getLabel()).length()>0 ? (pathLabel->getLabel()+"\\") : "";
+	string path2 = (pathLabel->getLabel()).length()>0 ? (e.target->getName() + "\\") : e.target->getName();
+	loadSubOptions(path1 + path2 + e.target->getLabel());
+	pathLabel->setLabel(path1 + path2 + e.target->getLabel());
 	gui->layoutGui(); // musste schnittstelle erweitern, da refresh methode nicht public war
 }
 
-
-
 void menu::draw() {
 	
+}
+
+void menu::removeSubstrs(string& s, string& p) {
+	string::size_type n = p.length();
+	for (string::size_type i = s.find(p);
+		i != string::npos;
+		i = s.find(p))
+		s.erase(i, n);
 }
