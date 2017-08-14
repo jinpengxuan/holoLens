@@ -20,11 +20,11 @@ void ofApp::setup() {
 	light.setAmbientColor(ofColor(255.f, 255.f, 255.f));
 	light.setPosition(0, 0, -2000);
 
-	//Video Init
-	videoContainer.init();
-
 	//Gesture Init
 	gestureTracker.init();
+
+	//Menu Init
+	menu.init();
 
 	//ofVec3f pos = ofVec3f(0,0,-1);
 	//ofVec3f target = ofVec3f(0, 0, 0);
@@ -44,7 +44,7 @@ void ofApp::draw() {
 
 	cam.begin();
 
-	videoContainer.draw(ofVec2f(0,0));
+	videoContainer.draw();
 
 	gestureTracker.draw();
 

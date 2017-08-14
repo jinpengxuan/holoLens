@@ -9,8 +9,11 @@ public:
 	void play();
 	void pause();
 	void playByTime(int time);
-	void init();
-	void draw(ofVec2f center);
+	void init(ofVec2f center, vector<string> elements);
+	void draw();
+	void startAnimation();
+
+	bool readyState = false;
 
 	// video
 	ofVideoPlayer actualVideo;
@@ -18,8 +21,17 @@ public:
 	//frames
 	vector <ofImage> sampleFrames;
 
+	//frame positions
+	vector <ofVec3f> framePositions;
+
+	//frame dimensions
+	vector <ofVec2f> frameDimensions;
+
+	ofVec2f displayCenter;
 	int videoPosition = 0;
-	int maxHeight = 1024;
+	int maxHeight = 0;
+
+	int animationTime = 5; // seconds
 
 private:
 

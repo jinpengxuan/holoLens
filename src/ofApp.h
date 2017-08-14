@@ -5,6 +5,7 @@
 #include <iostream>
 #include "videoContainer.h"
 #include "gestureTracker.h"
+#include "menu.h"
 #include "staticMembers.h"
 
 //#include <pcl/io/pcd_io.h>
@@ -38,6 +39,9 @@ public:
 
 	// gesture Tracker class
 	gestureTracker gestureTracker;
+
+	// menu wrapper
+	menu menu;
 
 	//light
 	ofLight light;

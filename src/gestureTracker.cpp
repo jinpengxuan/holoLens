@@ -11,8 +11,8 @@ void gestureTracker::init() {
 	colorCoords.resize(staticMembers.DEPTH_SIZE);
 	depthCoords.resize(staticMembers.DEPTH_SIZE);
 
-	handImage = ofImage();
-	handImage.allocate(staticMembers.DEPTH_WIDTH, staticMembers.DEPTH_HEIGHT, OF_IMAGE_COLOR);
+	//handImage = ofImage();
+	//handImage.allocate(staticMembers.DEPTH_WIDTH, staticMembers.DEPTH_HEIGHT, OF_IMAGE_COLOR);
 }
 
 void gestureTracker::update() {
