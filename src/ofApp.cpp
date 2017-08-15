@@ -37,6 +37,12 @@ void ofApp::setup() {
 //--------------------------------------------------------------
 void ofApp::update() {
 	gestureTracker.update();
+
+	vector<string> videoElements = menu.getVideoPath();
+	if (videoElements.size() > 0) {
+		cout << "init videos" << endl;
+		videoContainer.init(ofVec2f(0,0),videoElements);
+	}
 }
 
 //--------------------------------------------------------------

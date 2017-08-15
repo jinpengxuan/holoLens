@@ -31,7 +31,8 @@ public:
 	int videoPosition = 0;
 	int maxHeight = 0;
 
-	int animationTime = 5; // seconds
+	float animationStart = 0.f;
+	float animationTime = 5.f; // seconds
 
 private:
 

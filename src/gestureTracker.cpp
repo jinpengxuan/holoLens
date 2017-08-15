@@ -1,5 +1,7 @@
 #include "gestureTracker.h"
 
+bool sortVecByDepth(ofVec3f i, ofVec3f j) { return (i.z < j.z); }
+
 void gestureTracker::init() {
 	kinect.open();
 	kinect.initDepthSource();
@@ -68,10 +70,13 @@ void gestureTracker::update() {
 					depthPix[indexRight] < (boundaryMin) || depthPix[indexRight] > (boundaryMax)) {
 				}
 				else {
-					if (distance < minZ) {
-						minZ = distance;
+					float xCoord = staticMembers.DEPTH_WIDTH - x + xShift;
+					float yCoord = staticMembers.DEPTH_HEIGHT - y + yShift;
+					float zCoord = distance + zShift;
+					if (zCoord < minZ) {
+						minZ = zCoord;
 					}
-					depthCoords.insert(iteratorDepth, ofVec3f(x, y, distance));
+					depthCoords.insert(iteratorDepth, ofVec3f(xCoord, yCoord, zCoord));
 				}
 			}
 			else {
@@ -80,9 +85,33 @@ void gestureTracker::update() {
 			}
 		}
 	}
+	sort(depthCoords.begin(), depthCoords.end(), sortVecByDepth);
+	coordinateClusers.clear();
+
+	std::vector<ofVec3f>::iterator iteratorTemp;
+	int clusterRadius = 20;
+	for (iteratorTemp = depthCoords.begin(); iteratorTemp < depthCoords.end(); iteratorTemp++) {
+		float x = ((ofVec3f)*iteratorTemp).x;
+		float y = ((ofVec3f)*iteratorTemp).y;
+		float z = ((ofVec3f)*iteratorTemp).z;
+		if (z < (minZ + 50)) {
+			bool found = false;
+			std::vector<ofVec3f>::iterator iteratorCluster;
+			for (iteratorCluster = coordinateClusers.begin(); iteratorCluster < coordinateClusers.end(); iteratorCluster++) {
+				if (x > (((ofVec2f)*iteratorCluster).x - clusterRadius) 
+					&& x <(((ofVec2f)*iteratorCluster).x + clusterRadius)
+					&& y > (((ofVec2f)*iteratorCluster).y - clusterRadius) 
+					&& y <(((ofVec2f)*iteratorCluster).y + clusterRadius)
+					) {
+					found = true;
+				}
+			}
+			if(!found)coordinateClusers.push_back(ofVec3f(x, y, z));
+		}
+	}
 
 	//setze alle x Sekunden neue Kamera Position anhand der zentralen koordinate
-	if ((int)(ofGetElapsedTimef() - time) % 10 == 0) {
+	/*if ((int)(ofGetElapsedTimef() - time) % 10 == 0) {
 		std::vector<ofVec3f>::iterator iteratorTemp;
 		int sumX = 0;
 		int sumY = 0;
@@ -97,6 +126,7 @@ void gestureTracker::update() {
 
 		center = ofVec3f(sumX, sumY, 5);
 	}
+	*/
 
 	//--
 	//Getting joint positions (skeleton tracking)
@@ -151,15 +181,9 @@ void gestureTracker::draw() {
 	//kinect.getBodySource()->drawProjected(previewWidth, 0 + colorTop, previewWidth, colorHeight);
 
 	ofSetColor(ofColor(255, 14, 120));
-	for (iteratorTemp = depthCoords.begin(); iteratorTemp < depthCoords.end(); iteratorTemp++) {
-		if (((ofVec3f)*iteratorTemp).z < (minZ + 50)) {
-			ofSetColor(ofColor(255, 14, 120));
-			ofDrawSphere(ofPoint(staticMembers.DEPTH_WIDTH - ((ofVec3f)*iteratorTemp).x + xShift, staticMembers.DEPTH_HEIGHT - ((ofVec3f)*iteratorTemp).y + yShift, ((ofVec3f)*iteratorTemp).z + zShift) , 2);
-		}
-		else {
-			ofSetColor(ofColor(255, 255, 255));
-			ofDrawSphere(ofPoint(staticMembers.DEPTH_WIDTH - ((ofVec3f)*iteratorTemp).x + xShift, staticMembers.DEPTH_HEIGHT - ((ofVec3f)*iteratorTemp).y + yShift, ((ofVec3f)*iteratorTemp).z + zShift), 2);
-		}
+	for (iteratorTemp = coordinateClusers.begin(); iteratorTemp < coordinateClusers.end(); iteratorTemp++) {
+		ofSetColor(ofColor(255, 14, 120));			
+		ofDrawSphere(ofPoint(((ofVec3f)*iteratorTemp).x, ((ofVec3f)*iteratorTemp).y, ((ofVec3f)*iteratorTemp).z), 5);
 	}
 	ofSetColor(ofColor(255, 255, 255));
 

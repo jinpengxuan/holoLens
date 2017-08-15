@@ -40,38 +40,15 @@ void menu::init() {
 
 	elements = 0;
 	for (auto const& value : availableDrives) {
-		vector<string> options;
-		for (auto & entry : fs::directory_iterator(value)) {
-			string entryStr = entry.path().string();
-			/*if (entryStr.find(".") == std::string::npos) {
-				options.push_back(entry.path().string());
-			}*/
-			struct stat s;
-			const char * c = entryStr.c_str();
-			if (stat(c, &s) == 0)
-			{
-				if (s.st_mode & S_IFDIR)
-				{
-					removeSubstrs(entryStr, (string)value);
-					options.push_back(entryStr);
-				}
-				else if (s.st_mode & S_IFREG)
-				{
-					//file
-				}
-			}
-			else
-			{
-				//error
-			}
-		}
-		ofxDatGuiDropdown* dropDown = gui->addDropdown(value, options);
-		dropDown->onDropdownEvent(this, &menu::onDropdownEvent);
+		ofxDatGuiButton* tempButton = gui->addButton(value);
+		tempButton->onButtonEvent(this, &menu::onButtonEvent);
 		elements++;
 	}
-	gui->addBreak()->setHeight(10.0f);
+
 	gui->addFooter();
 
+	//setVideoElements("c:\\vids");
+	//isReady = true;
 }
 
 void menu::loadSubOptions(string directory) {
@@ -84,6 +61,7 @@ void menu::loadSubOptions(string directory) {
 
 	//ROOT
 	if (directory.length() == 0) {
+		availableDrives.clear();
 		for (auto& path : drives) {
 			try {
 				for (auto & entry : fs::directory_iterator(path)) {
@@ -97,30 +75,8 @@ void menu::loadSubOptions(string directory) {
 		}
 
 		for (auto const& value : availableDrives) {
-			vector<string> options;
-			for (auto & entry : fs::directory_iterator(value)) {
-				string entryStr = entry.path().string();
-				struct stat s;
-				const char * c = entryStr.c_str();
-				if (stat(c, &s) == 0)
-				{
-					if (s.st_mode & S_IFDIR)
-					{
-						removeSubstrs(entryStr, (string)value);
-						options.push_back(entryStr);
-					}
-					else if (s.st_mode & S_IFREG)
-					{
-						//file
-					}
-				}
-				else
-				{
-					//error
-				}
-			}
-			ofxDatGuiDropdown* dropDown = gui->addDropdown(value, options);
-			dropDown->onDropdownEvent(this, &menu::onDropdownEvent);
+			ofxDatGuiButton* tempButton = gui->addButton(value);
+			tempButton->onButtonEvent(this, &menu::onButtonEvent);
 			elements++;
 		}
 	}
@@ -130,37 +86,16 @@ void menu::loadSubOptions(string directory) {
 			for (auto & entry1 : fs::directory_iterator(directory)) {
 				string directory1 = entry1.path().string();
 				try {
-					vector<string> options;
-					for (auto & entry2 : fs::directory_iterator(directory1)) {
-						string entryStr2 = entry2.path().string();
-						struct stat s;
-						const char * c = entryStr2.c_str();
-						if (stat(c, &s) == 0)
-						{
-							if (s.st_mode & S_IFDIR)
-							{
-								removeSubstrs(entryStr2, directory1+"\\");
-								options.push_back(entryStr2);
-							}
-							else if (s.st_mode & S_IFREG)
-							{
-								//file
-							}
-						}
-						else
-						{
-							//error
-						}
-					}
 					struct stat s;
 					const char * c = directory1.c_str();
 					if (stat(c, &s) == 0)
 					{
 						if (s.st_mode & S_IFDIR)
 						{
-							removeSubstrs(directory1, directory+"\\");
-							ofxDatGuiDropdown* dropDown = gui->addDropdown(directory1, options);
-							dropDown->onDropdownEvent(this, &menu::onDropdownEvent);
+							string remove = hasEnding(directory,"\\") ? directory : directory + "\\";
+							removeSubstrs(directory1, remove);
+							ofxDatGuiButton* tempButton = gui->addButton(directory1);
+							tempButton->onButtonEvent(this, &menu::onButtonEvent);
 							elements++;
 						}
 						else if (s.st_mode & S_IFREG)
@@ -186,24 +121,49 @@ void menu::loadSubOptions(string directory) {
 	gui->layoutGui();
 }
 
+vector<string> menu::getVideoPath() {
+	vector<string> tempElements;
+	if (!isReady)return tempElements;
+	isReady = false;
+	cout << "Get Videos" << endl;
+	
+	return videoElements;
+}
+
 void menu::onButtonEvent(ofxDatGuiButtonEvent e)
 {
-	if ((e.target->getLabel()).compare("Up")) {
-
+	if (e.target == openButton) {
+		cout << "Open Button" << endl;
+		setVideoElements(pathLabel->getLabel());
+		isReady = true;
+	}
+	else if (e.target == upButton) {
+		string parentLabel = pathLabel->getLabel();
+		if (hasEnding(parentLabel, ":\\")) {
+			parentLabel = "";
+			loadSubOptions(parentLabel);
+			pathLabel->setLabel(parentLabel);
+		}
+		else {
+			std::size_t found = parentLabel.find_last_of("/\\");
+			removeSubstrs(parentLabel, parentLabel.substr(found));
+			if (hasEnding(parentLabel, ":"))parentLabel += "\\";
+			loadSubOptions(parentLabel);
+			pathLabel->setLabel(parentLabel);
+		}
 	}
 	else {
-
+		string buttonLabel = e.target->getLabel();
+		string path1 = (hasEnding(pathLabel->getLabel(), "\\")||(pathLabel->getLabel()).length()==0) ? pathLabel->getLabel() : (pathLabel->getLabel() + "\\");
+		loadSubOptions(path1 + buttonLabel);
+		pathLabel->setLabel(path1 + buttonLabel);
+		gui->layoutGui(); // musste schnittstelle erweitern, da refresh methode nicht public war
 	}
 }
 
 void menu::onDropdownEvent(ofxDatGuiDropdownEvent e)
 {
-	cout << "Dropdown Event" << endl;
-	string path1 = (pathLabel->getLabel()).length()>0 ? (pathLabel->getLabel()+"\\") : "";
-	string path2 = (pathLabel->getLabel()).length()>0 ? (e.target->getName() + "\\") : e.target->getName();
-	loadSubOptions(path1 + path2 + e.target->getLabel());
-	pathLabel->setLabel(path1 + path2 + e.target->getLabel());
-	gui->layoutGui(); // musste schnittstelle erweitern, da refresh methode nicht public war
+	
 }
 
 void menu::draw() {
@@ -216,4 +176,49 @@ void menu::removeSubstrs(string& s, string& p) {
 		i != string::npos;
 		i = s.find(p))
 		s.erase(i, n);
+}
+
+bool menu::hasEnding(std::string const &fullString, std::string const &ending) {
+	if (fullString.length() >= ending.length()) {
+		return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
+	}
+	else {
+		return false;
+	}
+}
+
+void menu::setVideoElements(string path) {
+	videoElements.clear();
+	try {
+		for (auto & entry1 : fs::directory_iterator(path)) {
+			string file = entry1.path().string();
+			try {
+				struct stat s;
+				const char * c = file.c_str();
+				if (stat(c, &s) == 0)
+				{
+					if (s.st_mode & S_IFDIR)
+					{
+						//directory
+					}
+					else if (s.st_mode & S_IFREG)
+					{
+						if (hasEnding(file, ".mkv") || hasEnding(file, ".avi")) {
+							videoElements.push_back(file);
+						}
+					}
+				}
+				else
+				{
+					//error
+				}
+			}
+			catch (const std::exception& e) {
+
+			}
+		}
+	}
+	catch (const std::exception& e) {
+
+	}
 }

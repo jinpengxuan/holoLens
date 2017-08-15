@@ -31,6 +31,8 @@ public:
 	vector<ofVec3f> depthCoords;
 	vector<ofVec3f> drawingCoords;
 
+	vector<ofVec3f> coordinateClusers;
+
 	//central position
 	ofVec3f center;
 
