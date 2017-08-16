@@ -62,8 +62,8 @@ void gestureTracker::update() {
 				int boundaryMin = distance - 10;
 				int indexTop = index - depthPix.getWidth();
 				int indexBottom = index + depthPix.getWidth();
-				int indexLeft = index + depthPix.getWidth();
-				int indexRight = index + depthPix.getWidth();
+				int indexLeft = index - 1;
+				int indexRight = index + 1;
 				if (depthPix[indexTop] < (boundaryMin) || depthPix[indexTop] > (boundaryMax) ||
 					depthPix[indexBottom] < (boundaryMin) || depthPix[indexBottom] > (boundaryMax) ||
 					depthPix[indexLeft] < (boundaryMin) || depthPix[indexLeft] > (boundaryMax) ||
