@@ -101,6 +101,9 @@ void ofApp::setup() {
 //--------------------------------------------------------------
 void ofApp::update() {
 	gestureTracker.update();
+
+	//if mouse mode is activated by gesture tracker, manipulate mouse position and clicks
+	// SetCursorPos(100,100);
 }
 
 //--------------------------------------------------------------

@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "appUtils.h"
+#include "videoProperties.h"
 
 class videoContainer {
 
@@ -21,13 +22,7 @@ public:
 	ofVideoPlayer actualVideo;
 
 	//frames
-	vector <ofImage> sampleFrames;
-
-	//frame positions
-	vector <ofVec3f> framePositions;
-
-	//frame dimensions
-	vector <ofVec2f> frameDimensions;
+	vector <videoProperties> sampleFrames;
 
 	ofVec2f displayCenter;
 	int videoPosition = 0;

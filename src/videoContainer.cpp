@@ -9,7 +9,9 @@ void videoContainer::init(ofVec2f center, vector<string> elements) {
 	ofImage currentVideoFrame;
 	for (iteratorTemp = elements.begin(); iteratorTemp < elements.end(); iteratorTemp++) {
 		currentVideoFrame = getSampleFrame((string)*iteratorTemp);
-		if (currentVideoFrame.isAllocated())sampleFrames.push_back(currentVideoFrame);
+		videoProperties currentProperty = videoProperties();
+		currentProperty.sampleFrame = currentVideoFrame;
+		if (currentVideoFrame.isAllocated())sampleFrames.push_back(currentProperty);
 	}
 
 	displayCenter = center;
@@ -22,9 +24,7 @@ void videoContainer::init(ofVec2f center, vector<string> elements) {
 void videoContainer::draw() {
 	if (!readyState)return;
 
-	vector<ofImage>::iterator iteratorFrames;
-	vector<ofVec2f>::iterator iteratorDimensions = frameDimensions.begin();
-	vector<ofVec3f>::iterator iteratorPositions = framePositions.begin();
+	vector<videoProperties>::iterator iteratorFrames;
 
 	float alphaValue = 255;
 	float zAnimation = 0;
@@ -37,12 +37,10 @@ void videoContainer::draw() {
 	ofSetColor(255, 255, 255, alphaValue);
 	for (iteratorFrames = sampleFrames.begin(); iteratorFrames < sampleFrames.end(); iteratorFrames++) {
 
-		ofImage actualFrame = ((ofImage)*iteratorFrames);
+		ofImage actualFrame = ((videoProperties)*iteratorFrames).sampleFrame;
 
-		actualFrame.allocate(((ofVec2f)*iteratorDimensions).x, ((ofVec2f)*iteratorDimensions).y, OF_IMAGE_COLOR);
-		actualFrame.draw(((ofVec3f)*iteratorPositions).x, ((ofVec3f)*iteratorPositions).y, ((ofVec3f)*iteratorPositions).z-zAnimation, ((ofVec2f)*iteratorDimensions).x, ((ofVec2f)*iteratorDimensions).y);
-		iteratorDimensions++;
-		iteratorPositions++;
+		actualFrame.allocate(((videoProperties)*iteratorFrames).dimension.x, ((videoProperties)*iteratorFrames).dimension.y, OF_IMAGE_COLOR);
+		actualFrame.draw(((videoProperties)*iteratorFrames).position.x, ((videoProperties)*iteratorFrames).position.y, ((videoProperties)*iteratorFrames).position.z-zAnimation, ((videoProperties)*iteratorFrames).dimension.x, ((videoProperties)*iteratorFrames).dimension.y);
 	}
 	ofDisableAlphaBlending();
 }
@@ -74,22 +72,21 @@ ofImage videoContainer::getSampleFrame(string path) {
 }
 
 void videoContainer::startAnimation() {
-	vector<ofImage>::iterator iteratorTemp;
 	int count = sampleFrames.size()-1;
 	animationStart = ofGetElapsedTimef();
-	for (iteratorTemp = sampleFrames.begin(); iteratorTemp < sampleFrames.end(); iteratorTemp++) {
+	for (videoProperties& iteratorTemp : sampleFrames) {
 
-		ofImage actualFrame = ((ofImage)*iteratorTemp);
-		int height = actualFrame.getHeight() > maxHeight ? maxHeight : actualFrame.getHeight();
-		int width = actualFrame.getHeight() > maxHeight ? (int)(height / (float)maxHeight * actualFrame.getWidth()) : actualFrame.getWidth();
+		ofImage actualFrame = iteratorTemp.sampleFrame;
+		int height = actualFrame.getHeight();
+		int width = actualFrame.getWidth();
 		int difference = (maxHeight - height) / 2;
 
 		float drawX = displayCenter.x - width / 2;
 		float drawY = displayCenter.y - height + (difference)+(count * 500);
 		float drawZ = (float)(-100 - count * 1000);
 
-		framePositions.push_back(ofVec3f(drawX, drawY, drawZ));
-		frameDimensions.push_back(ofVec2f(width, height));
+		iteratorTemp.position = ofVec3f(drawX, drawY, drawZ);
+		iteratorTemp.dimension = ofVec2f(width, height);
 		count--;
 	}
 	readyState = true;

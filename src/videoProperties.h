@@ -8,7 +8,6 @@ public:
 
 	ofImage sampleFrame;
 	ofVec2f dimension;
-	ofVec2f originalDimension;
 	ofVec3f position;
 
 };
