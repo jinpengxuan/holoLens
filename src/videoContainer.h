@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "appUtils.h"
 
 class videoContainer {
 
@@ -12,6 +13,7 @@ public:
 	void init(ofVec2f center, vector<string> elements);
 	void draw();
 	void startAnimation();
+	void reorderVideos(appUtils::VideoOrder videoOrder);
 
 	bool readyState = false;
 
@@ -32,11 +34,11 @@ public:
 	int maxHeight = 0;
 
 	float animationStart = 0.f;
-	float animationTime = 5.f; // seconds
+	float animationTime = 2.f; // seconds
 
 private:
 
-	ofImage getSampleFrame(std::string path);
+	ofImage getSampleFrame(string path);
 
 };
 

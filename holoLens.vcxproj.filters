@@ -22,10 +22,10 @@
     <ClCompile Include="..\..\..\addons\ofxDatGui\src\ofxDatGui.cpp">
       <Filter>addons\ofxDatGui\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils.h">
+    <ClCompile Include="src\videoProperties.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils.cpp">
+    <ClCompile Include="src\appUtils.h">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -130,6 +130,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\addons\ofxDatGui\src\ofxDatGui.h">
       <Filter>addons\ofxDatGui\src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\videoProperties.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

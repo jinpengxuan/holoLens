@@ -183,9 +183,9 @@
     <ClCompile Include="src\gestureTracker.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
-    <ClCompile Include="src\utils.cpp" />
-    <ClCompile Include="src\utils.h" />
+    <ClCompile Include="src\appUtils.h" />
     <ClCompile Include="src\videoContainer.cpp" />
+    <ClCompile Include="src\videoProperties.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\addons\ofxDatGui\src\components\ofxDatGui2dPad.h" />
@@ -212,6 +212,7 @@
     <ClInclude Include="src\gestureTracker.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="src\videoContainer.h" />
+    <ClInclude Include="src\videoProperties.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="$(OF_ROOT)\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">

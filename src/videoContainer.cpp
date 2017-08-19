@@ -5,7 +5,7 @@ void videoContainer::init(ofVec2f center, vector<string> elements) {
 	readyState = false;
 	sampleFrames.clear();
 
-	std::vector<string>::iterator iteratorTemp;
+	vector<string>::iterator iteratorTemp;
 	ofImage currentVideoFrame;
 	for (iteratorTemp = elements.begin(); iteratorTemp < elements.end(); iteratorTemp++) {
 		currentVideoFrame = getSampleFrame((string)*iteratorTemp);
@@ -22,9 +22,9 @@ void videoContainer::init(ofVec2f center, vector<string> elements) {
 void videoContainer::draw() {
 	if (!readyState)return;
 
-	std::vector<ofImage>::iterator iteratorFrames;
-	std::vector<ofVec2f>::iterator iteratorDimensions = frameDimensions.begin();
-	std::vector<ofVec3f>::iterator iteratorPositions = framePositions.begin();
+	vector<ofImage>::iterator iteratorFrames;
+	vector<ofVec2f>::iterator iteratorDimensions = frameDimensions.begin();
+	vector<ofVec3f>::iterator iteratorPositions = framePositions.begin();
 
 	float alphaValue = 255;
 	float zAnimation = 0;
@@ -59,7 +59,7 @@ void videoContainer::playByTime(int time) {
 
 }
 
-ofImage videoContainer::getSampleFrame(std::string path) {
+ofImage videoContainer::getSampleFrame(string path) {
 	actualVideo.load(path);
 	if (!actualVideo.isLoaded())return ofImage();
 
@@ -74,7 +74,7 @@ ofImage videoContainer::getSampleFrame(std::string path) {
 }
 
 void videoContainer::startAnimation() {
-	std::vector<ofImage>::iterator iteratorTemp;
+	vector<ofImage>::iterator iteratorTemp;
 	int count = sampleFrames.size()-1;
 	animationStart = ofGetElapsedTimef();
 	for (iteratorTemp = sampleFrames.begin(); iteratorTemp < sampleFrames.end(); iteratorTemp++) {
@@ -85,7 +85,7 @@ void videoContainer::startAnimation() {
 		int difference = (maxHeight - height) / 2;
 
 		float drawX = displayCenter.x - width / 2;
-		float drawY = displayCenter.y - height / 2 + (difference)+(count * 500);
+		float drawY = displayCenter.y - height + (difference)+(count * 500);
 		float drawZ = (float)(-100 - count * 1000);
 
 		framePositions.push_back(ofVec3f(drawX, drawY, drawZ));
@@ -94,4 +94,10 @@ void videoContainer::startAnimation() {
 	}
 	readyState = true;
 
+}
+
+void videoContainer::reorderVideos(appUtils::VideoOrder videoOrder) {
+	if (videoOrder == appUtils::VideoOrder::Length) {
+
+	}
 }

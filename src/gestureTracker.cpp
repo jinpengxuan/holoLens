@@ -10,8 +10,8 @@ void gestureTracker::init() {
 	kinect.initBodySource();
 	kinect.initBodyIndexSource();
 
-	colorCoords.resize(utils::DEPTH_SIZE);
-	depthCoords.resize(utils::DEPTH_SIZE);
+	colorCoords.resize(appUtils::DEPTH_SIZE);
+	depthCoords.resize(appUtils::DEPTH_SIZE);
 
 	//handImage = ofImage();
 	//handImage.allocate(staticMembers.DEPTH_WIDTH, staticMembers.DEPTH_HEIGHT, OF_IMAGE_COLOR);
@@ -26,17 +26,17 @@ void gestureTracker::update() {
 		ofLog() << "CoordinateMapper Not Found";
 	}
 	depthCoords.clear();
-	std::vector<ofVec3f>::iterator iteratorDepth = depthCoords.begin();
+	vector<ofVec3f>::iterator iteratorDepth = depthCoords.begin();
 
 	const auto & depthPix = kinect.getDepthSource()->getPixels();
 
-	coordinateMapper->MapDepthFrameToColorSpace(utils::DEPTH_SIZE, (UINT16 *)depthPix.getPixels(), utils::DEPTH_SIZE,
+	coordinateMapper->MapDepthFrameToColorSpace(appUtils::DEPTH_SIZE, (UINT16 *)depthPix.getPixels(), appUtils::DEPTH_SIZE,
 		(ColorSpacePoint *)colorCoords.data());
 	//cout <<  "Breite: " << depthPix.getWidth() << " -- Hoehe:" << depthPix.getHeight();
 
 	/*kinect.getInfraredSource()->draw(0, 0, depthPix.getWidth(), depthPix.getHeight());*/
 	int skip = 5;
-	minZ = std::numeric_limits<int>::max();
+	minZ = numeric_limits<int>::max();
 
 	if (depthPix.size() == 0)return;
 	for (int x = 1; x < depthPix.getWidth() - 1; x += skip) {
@@ -70,8 +70,8 @@ void gestureTracker::update() {
 					depthPix[indexRight] < (boundaryMin) || depthPix[indexRight] > (boundaryMax)) {
 				}
 				else {
-					float xCoord = utils::DEPTH_WIDTH - x + xShift;
-					float yCoord = utils::DEPTH_HEIGHT - y + yShift;
+					float xCoord = appUtils::DEPTH_WIDTH - x + xShift;
+					float yCoord = appUtils::DEPTH_HEIGHT - y + yShift;
 					float zCoord = distance + zShift;
 					if (zCoord < minZ) {
 						minZ = zCoord;
@@ -88,7 +88,7 @@ void gestureTracker::update() {
 	sort(depthCoords.begin(), depthCoords.end(), sortVecByDepth);
 	coordinateClusers.clear();
 
-	std::vector<ofVec3f>::iterator iteratorTemp;
+	vector<ofVec3f>::iterator iteratorTemp;
 	int clusterRadius = 20;
 	for (iteratorTemp = depthCoords.begin(); iteratorTemp < depthCoords.end(); iteratorTemp++) {
 		float x = ((ofVec3f)*iteratorTemp).x;
@@ -96,7 +96,7 @@ void gestureTracker::update() {
 		float z = ((ofVec3f)*iteratorTemp).z;
 		if (z < (minZ + 10)) {
 			bool found = false;
-			std::vector<ofVec3f>::iterator iteratorCluster;
+			vector<ofVec3f>::iterator iteratorCluster;
 			for (iteratorCluster = coordinateClusers.begin(); iteratorCluster < coordinateClusers.end(); iteratorCluster++) {
 				if (x > (((ofVec2f)*iteratorCluster).x - clusterRadius) 
 					&& x <(((ofVec2f)*iteratorCluster).x + clusterRadius)
@@ -112,7 +112,7 @@ void gestureTracker::update() {
 
 	//setze alle x Sekunden neue Kamera Position anhand der zentralen koordinate
 	/*if ((int)(ofGetElapsedTimef() - time) % 10 == 0) {
-		std::vector<ofVec3f>::iterator iteratorTemp;
+		vector<ofVec3f>::iterator iteratorTemp;
 		int sumX = 0;
 		int sumY = 0;
 		int count = 1;
@@ -173,11 +173,11 @@ void gestureTracker::draw() {
 	//check if hand position enables cursor functionality
 	
 
-	std::vector<ofVec3f>::iterator iteratorTemp;
+	vector<ofVec3f>::iterator iteratorTemp;
 
 	// Color is at 1920x1080 instead of 512x424 so we should fix aspect ratio
-	float colorHeight = utils::previewWidth * (kinect.getColorSource()->getHeight() / kinect.getColorSource()->getWidth());
-	float colorTop = (utils::previewHeight - colorHeight) / 2.0;
+	float colorHeight = appUtils::previewWidth * (kinect.getColorSource()->getHeight() / kinect.getColorSource()->getWidth());
+	float colorTop = (appUtils::previewHeight - colorHeight) / 2.0;
 
 	//kinect.getColorSource()->draw(0, 0 + colorTop, staticMembers.previewWidth, colorHeight);
 

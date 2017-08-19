@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofxKinectForWindows2.h"
-#include "utils.h"
+#include "appUtils.h"
 #include <limits>
 
 class gestureTracker {
@@ -25,7 +25,7 @@ public:
 	float rotationDegree = 0.f;
 	int translation = 0;
 
-	int minZ = std::numeric_limits<int>::max();
+	int minZ = numeric_limits<int>::max();
 	int xShift = -200;
 	int yShift = -400;
 	int zShift = -300;

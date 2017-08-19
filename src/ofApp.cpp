@@ -4,10 +4,10 @@
 void ofApp::setup() {
 
 	//ofSetWindowShape(previewWidth * 2, previewHeight * 2);
-	ofSetWindowShape(utils::WINDOW_WIDTH, utils::WINDOW_HEIGHT);
+	ofSetWindowShape(appUtils::WINDOW_WIDTH, appUtils::WINDOW_HEIGHT);
 
 	cam = ofEasyCam();
-	cam.setPosition(ofVec3f(0, 0, 5));
+	cam.setPosition(ofVec3f(0, 0, 500));
 	cam.lookAt(ofVec3f(0, 0, 0));
 
 	ofSetBackgroundColor(ofColor(0));
@@ -33,7 +33,7 @@ void ofApp::setup() {
 			}
 			availableDrives.push_back(path);
 		}
-		catch (const std::exception& e) {
+		catch (const exception& e) {
 
 		}
 	}
@@ -42,6 +42,8 @@ void ofApp::setup() {
 
 	fileSystemGui = new ofxDatGui(ofxDatGuiAnchor::TOP_LEFT);
 
+	fileSystemGui->addHeader(":: Directory Selector ::");
+	fileSystemGui->addBreak()->setHeight(10.0f);
 	openButton = fileSystemGui->addButton("Open Videos");
 	openButton->onButtonEvent(this, &ofApp::onButtonEvent);
 
@@ -66,10 +68,24 @@ void ofApp::setup() {
 	//Framerate gui
 
 	framerateGui = new ofxDatGui(ofxDatGuiAnchor::TOP_RIGHT);
+	framerateGui->addHeader(":: Details ::");
+	framerateGui->addBreak()->setHeight(10.0f);
+	framerateGui->addBreak()->setHeight(10.0f);
 	framerateGui->addFRM();
+	framerateGui->addBreak()->setHeight(10.0f);
+	framerateGui->addFooter();
 
-	fileSystemGui->setAutoDraw(false);
-	framerateGui->setAutoDraw(false);
+	//Sorting gui
+	sortingGui = new ofxDatGui(fileSystemGui->getWidth()+1,0);
+	sortingGui->addHeader(":: Sorting ::");
+	sortingGui->addBreak()->setHeight(10.0f);
+	sortLength = sortingGui->addToggle("By Length", false);
+	sortLength->onButtonEvent(this, &ofApp::onButtonEvent);
+	sortingGui->addBreak()->setHeight(10.0f);
+	sortSize = sortingGui->addToggle("By Size", false);
+	sortSize->onButtonEvent(this, &ofApp::onButtonEvent);
+	sortingGui->addBreak()->setHeight(10.0f);
+	sortingGui->addFooter();
 
 	//setVideoElements("c:\\vids");
 	//isReady = true;
@@ -96,9 +112,6 @@ void ofApp::draw() {
 
 	gestureTracker.draw();
 
-	fileSystemGui->draw();
-	framerateGui->draw();
-
 	cam.end();
 }
 
@@ -119,10 +132,10 @@ void ofApp::testPCL() {
 	}
 
 	pcl::io::savePCDFileASCII("test_pcd.pcd", cloud);
-	std::cerr << "Saved " << cloud.points.size() << " data points to test_pcd.pcd." << std::endl;
+	cerr << "Saved " << cloud.points.size() << " data points to test_pcd.pcd." << endl;
 
 	for (size_t i = 0; i < cloud.points.size(); ++i)
-	std::cerr << "    " << cloud.points[i].x << " " << cloud.points[i].y << " " << cloud.points[i].z << std::endl;*/
+	cerr << "    " << cloud.points[i].x << " " << cloud.points[i].y << " " << cloud.points[i].z << endl;*/
 }
 
 void ofApp::setVideoElements(string path) {
@@ -141,7 +154,7 @@ void ofApp::setVideoElements(string path) {
 					}
 					else if (s.st_mode & S_IFREG)
 					{
-						if (utils::hasEnding(file, ".mkv") || utils::hasEnding(file, ".avi")) {
+						if (appUtils::hasEnding(file, (string)".mkv") || appUtils::hasEnding(file, (string)".avi")) {
 							videoElements.push_back(file);
 						}
 					}
@@ -151,12 +164,12 @@ void ofApp::setVideoElements(string path) {
 					//error
 				}
 			}
-			catch (const std::exception& e) {
+			catch (const exception& e) {
 
 			}
 		}
 	}
-	catch (const std::exception& e) {
+	catch (const exception& e) {
 
 	}
 }
@@ -164,7 +177,7 @@ void ofApp::setVideoElements(string path) {
 void ofApp::loadSubOptions(string directory) {
 
 	for (int i = 0; i < elements; i++) {
-		fileSystemGui->removeItem(5);
+		fileSystemGui->removeItem(7);
 	}
 
 	elements = 0;
@@ -179,7 +192,7 @@ void ofApp::loadSubOptions(string directory) {
 				}
 				availableDrives.push_back(path);
 			}
-			catch (const std::exception& e) {
+			catch (const exception& e) {
 
 			}
 		}
@@ -202,8 +215,8 @@ void ofApp::loadSubOptions(string directory) {
 					{
 						if (s.st_mode & S_IFDIR)
 						{
-							string remove = utils::hasEnding(directory, "\\") ? directory : directory + "\\";
-							utils::removeSubstrs(directory1, remove);
+							string remove = appUtils::hasEnding(directory, (string)"\\") ? directory : directory + "\\";
+							appUtils::removeSubstrs(directory1, remove);
 							ofxDatGuiButton* tempButton = fileSystemGui->addButton(directory1);
 							tempButton->onButtonEvent(this, &ofApp::onButtonEvent);
 							elements++;
@@ -218,12 +231,12 @@ void ofApp::loadSubOptions(string directory) {
 						//error
 					}
 				}
-				catch (const std::exception& e) {
+				catch (const exception& e) {
 
 				}
 			}
 		}
-		catch (const std::exception& e) {
+		catch (const exception& e) {
 
 		}
 	}
@@ -233,29 +246,33 @@ void ofApp::loadSubOptions(string directory) {
 
 void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 {
-	if (e.target == openButton) {
+	if (e.target == sortLength) {
+
+	}
+	else if (e.target == openButton) {
 		setVideoElements(pathLabel->getLabel());
 		cout << "init videos" << endl;
 		videoContainer.init(ofVec2f(0, 0), videoElements);
 	}
 	else if (e.target == upButton) {
 		string parentLabel = pathLabel->getLabel();
-		if (utils::hasEnding(parentLabel, ":\\")) {
+		if (parentLabel.length() == 0)return;
+		if (appUtils::hasEnding(parentLabel, (string)":\\")) {
 			parentLabel = "";
 			loadSubOptions(parentLabel);
 			pathLabel->setLabel(parentLabel);
 		}
 		else {
-			std::size_t found = parentLabel.find_last_of("/\\");
-			utils::removeSubstrs(parentLabel, parentLabel.substr(found));
-			if (utils::hasEnding(parentLabel, ":"))parentLabel += "\\";
+			size_t found = parentLabel.find_last_of("/\\");
+			appUtils::removeSubstrs(parentLabel, parentLabel.substr(found));
+			if (appUtils::hasEnding(parentLabel, (string)":"))parentLabel += "\\";
 			loadSubOptions(parentLabel);
 			pathLabel->setLabel(parentLabel);
 		}
 	}
 	else {
 		string buttonLabel = e.target->getLabel();
-		string path1 = (utils::hasEnding(pathLabel->getLabel(), "\\") || (pathLabel->getLabel()).length() == 0) ? pathLabel->getLabel() : (pathLabel->getLabel() + "\\");
+		string path1 = (appUtils::hasEnding(pathLabel->getLabel(), (string)"\\") || (pathLabel->getLabel()).length() == 0) ? pathLabel->getLabel() : (pathLabel->getLabel() + "\\");
 		loadSubOptions(path1 + buttonLabel);
 		pathLabel->setLabel(path1 + buttonLabel);
 		fileSystemGui->layoutGui(); // musste schnittstelle erweitern, da refresh methode nicht public war

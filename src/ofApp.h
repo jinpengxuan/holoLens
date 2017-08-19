@@ -3,10 +3,9 @@
 #include "ofMain.h"
 #include "ofxKinectForWindows2.h"
 #include "ofxDatGui.h"
-#include <iostream>
 #include "videoContainer.h"
 #include "gestureTracker.h"
-#include "utils.h"
+#include "appUtils.h"
 
 //#include <pcl/io/pcd_io.h>
 //#include <pcl/point_types.h>
@@ -32,7 +31,7 @@ public:
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
 
-	ofEasyCam cam;
+	ofCamera cam;
 
 	//time measurement
 	float time;
@@ -48,23 +47,27 @@ public:
 
 	vector<string> videoElements;
 
-	//UI Objects -----------------------------------
+	//UI Objects ----------------------------------------------------------------------
 	int elements = 0;
-	bool isReady = false;
 
-	std::array<string, 6> drives{ { "c:\\","d:\\","e:\\","f:\\","g:\\","h:\\" } };
+	array<string, 6> drives{ { "c:\\","d:\\","e:\\","f:\\","g:\\","h:\\" } };
 
 	//gui panel objects
 	ofxDatGui* fileSystemGui;
 	ofxDatGui* framerateGui;
+	ofxDatGui* sortingGui;
 
-	//gui buttons
+	//gui filesystem elements
 	ofxDatGuiButton* openButton;
 	ofxDatGuiButton* upButton;
 
 	ofxDatGuiLabel* pathLabel;
 
 	string actualPath;
+
+	//gui sorting elements
+	ofxDatGuiToggle* sortLength;
+	ofxDatGuiToggle* sortSize;
 
 	//available drives list
 	vector <string> availableDrives;
