@@ -94,7 +94,7 @@ void gestureTracker::update() {
 		float x = ((ofVec3f)*iteratorTemp).x;
 		float y = ((ofVec3f)*iteratorTemp).y;
 		float z = ((ofVec3f)*iteratorTemp).z;
-		if (z < (minZ + 50)) {
+		if (z < (minZ + 10)) {
 			bool found = false;
 			std::vector<ofVec3f>::iterator iteratorCluster;
 			for (iteratorCluster = coordinateClusers.begin(); iteratorCluster < coordinateClusers.end(); iteratorCluster++) {
@@ -169,6 +169,10 @@ void gestureTracker::update() {
 }
 
 void gestureTracker::draw() {
+
+	//check if hand position enables cursor functionality
+	
+
 	std::vector<ofVec3f>::iterator iteratorTemp;
 
 	// Color is at 1920x1080 instead of 512x424 so we should fix aspect ratio
@@ -181,9 +185,8 @@ void gestureTracker::draw() {
 	//kinect.getBodySource()->drawProjected(previewWidth, 0 + colorTop, previewWidth, colorHeight);
 
 	ofSetColor(ofColor(255, 14, 120));
-	for (iteratorTemp = coordinateClusers.begin(); iteratorTemp < coordinateClusers.end(); iteratorTemp++) {
-		ofSetColor(ofColor(255, 14, 120));			
-		ofDrawSphere(ofPoint(((ofVec3f)*iteratorTemp).x, ((ofVec3f)*iteratorTemp).y, ((ofVec3f)*iteratorTemp).z), 5);
+	for (iteratorTemp = coordinateClusers.begin(); iteratorTemp < coordinateClusers.end(); iteratorTemp++) {			
+		ofDrawCircle(ofPoint(((ofVec3f)*iteratorTemp).x, ((ofVec3f)*iteratorTemp).y, ((ofVec3f)*iteratorTemp).z), 5);
 	}
 	ofSetColor(ofColor(255, 255, 255));
 

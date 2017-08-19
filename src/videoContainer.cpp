@@ -28,10 +28,10 @@ void videoContainer::draw() {
 
 	float alphaValue = 255;
 	float zAnimation = 0;
-	if ((ofGetElapsedTimef() - animationStart) < animationTime) {
+	if ((ofGetElapsedTimef() - animationStart) <= animationTime) {
 		float timeParameter = (ofGetElapsedTimef() - animationStart) / animationTime;
 		alphaValue = timeParameter * 255;
-		zAnimation = 1 - timeParameter * 50;
+		zAnimation = (1 - timeParameter) * 50;
 	}
 	ofEnableAlphaBlending();
 	ofSetColor(255, 255, 255, alphaValue);

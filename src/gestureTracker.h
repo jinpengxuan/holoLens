@@ -17,6 +17,9 @@ public:
 	ofxKFW2::Device kinect;
 
 	bool dragged = false;
+	bool isCursor = false;
+	ofVec2f cursorPosition;
+
 	int trackingTime = 0;
 
 	float rotationDegree = 0.f;
@@ -47,5 +50,10 @@ public:
 
 	// visualizing the hand on the mapped image frame
 	ofImage handImage;
+
+private:
+
+	//void initFingerCursor();
+	//void updateFingerCursor();
 
 };

@@ -20,8 +20,9 @@ public:
 
 	std::array<string, 6> drives{ { "c:\\","d:\\","e:\\","f:\\","g:\\","h:\\" } };
 
-	//gui object
-	ofxDatGui* gui;
+	//gui panel objects
+	ofxDatGui* fileSystemGui;
+	ofxDatGui* framerateGui;
 
 	//gui buttons
 	ofxDatGuiButton* openButton;

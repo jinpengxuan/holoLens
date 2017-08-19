@@ -20,32 +20,35 @@ void menu::init() {
 		}
 	}
 
-	//build gui
+	//Filesystem gui
 
-	gui = new ofxDatGui( ofxDatGuiAnchor::TOP_LEFT );
-	gui->addFRM();
-	gui->addBreak()->setHeight(10.0f);
+	fileSystemGui = new ofxDatGui( ofxDatGuiAnchor::TOP_LEFT );
 	
-	openButton = gui->addButton("Open Videos");
+	openButton = fileSystemGui->addButton("Open Videos");
 	openButton->onButtonEvent(this, &menu::onButtonEvent);
 
-	gui->addBreak()->setHeight(40.0f);
+	fileSystemGui->addBreak()->setHeight(40.0f);
 
-	pathLabel = gui->addLabel("");
+	pathLabel = fileSystemGui->addLabel("");
 	pathLabel->setBackgroundColor(ofColor(0.4f,1.f));
-	upButton = gui->addButton("Up");
+	upButton = fileSystemGui->addButton("Up");
 	upButton->onButtonEvent(this, &menu::onButtonEvent);
 
-	gui->addBreak()->setHeight(10.0f);
+	fileSystemGui->addBreak()->setHeight(10.0f);
 
 	elements = 0;
 	for (auto const& value : availableDrives) {
-		ofxDatGuiButton* tempButton = gui->addButton(value);
+		ofxDatGuiButton* tempButton = fileSystemGui->addButton(value);
 		tempButton->onButtonEvent(this, &menu::onButtonEvent);
 		elements++;
 	}
 
-	gui->addFooter();
+	fileSystemGui->addFooter();
+
+	//Framerate gui
+
+	framerateGui = new ofxDatGui(ofxDatGuiAnchor::TOP_RIGHT);
+	framerateGui->addFRM();
 
 	//setVideoElements("c:\\vids");
 	//isReady = true;
@@ -54,7 +57,7 @@ void menu::init() {
 void menu::loadSubOptions(string directory) {
 
 	for (int i = 0; i < elements; i++) {
-		gui->removeItem(7);
+		fileSystemGui->removeItem(5);
 	}
 
 	elements = 0;
@@ -75,7 +78,7 @@ void menu::loadSubOptions(string directory) {
 		}
 
 		for (auto const& value : availableDrives) {
-			ofxDatGuiButton* tempButton = gui->addButton(value);
+			ofxDatGuiButton* tempButton = fileSystemGui->addButton(value);
 			tempButton->onButtonEvent(this, &menu::onButtonEvent);
 			elements++;
 		}
@@ -94,7 +97,7 @@ void menu::loadSubOptions(string directory) {
 						{
 							string remove = hasEnding(directory,"\\") ? directory : directory + "\\";
 							removeSubstrs(directory1, remove);
-							ofxDatGuiButton* tempButton = gui->addButton(directory1);
+							ofxDatGuiButton* tempButton = fileSystemGui->addButton(directory1);
 							tempButton->onButtonEvent(this, &menu::onButtonEvent);
 							elements++;
 						}
@@ -118,7 +121,7 @@ void menu::loadSubOptions(string directory) {
 		}
 	}
 
-	gui->layoutGui();
+	fileSystemGui->layoutGui();
 }
 
 vector<string> menu::getVideoPath() {
@@ -157,7 +160,7 @@ void menu::onButtonEvent(ofxDatGuiButtonEvent e)
 		string path1 = (hasEnding(pathLabel->getLabel(), "\\")||(pathLabel->getLabel()).length()==0) ? pathLabel->getLabel() : (pathLabel->getLabel() + "\\");
 		loadSubOptions(path1 + buttonLabel);
 		pathLabel->setLabel(path1 + buttonLabel);
-		gui->layoutGui(); // musste schnittstelle erweitern, da refresh methode nicht public war
+		fileSystemGui->layoutGui(); // musste schnittstelle erweitern, da refresh methode nicht public war
 	}
 }
 
