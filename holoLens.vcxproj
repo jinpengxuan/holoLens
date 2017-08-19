@@ -182,9 +182,9 @@
     <ClCompile Include="..\..\..\addons\ofxDatGui\src\ofxDatGui.cpp" />
     <ClCompile Include="src\gestureTracker.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\menu.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
-    <ClCompile Include="src\staticMembers.h" />
+    <ClCompile Include="src\utils.cpp" />
+    <ClCompile Include="src\utils.h" />
     <ClCompile Include="src\videoContainer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -210,7 +210,6 @@
     <ClInclude Include="..\..\..\addons\ofxDatGui\src\themes\ofxDatGuiTheme.h" />
     <ClInclude Include="..\..\..\addons\ofxDatGui\src\themes\ofxDatGuiThemes.h" />
     <ClInclude Include="src\gestureTracker.h" />
-    <ClInclude Include="src\menu.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="src\videoContainer.h" />
   </ItemGroup>

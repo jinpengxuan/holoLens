@@ -2,11 +2,11 @@
 
 #include "ofMain.h"
 #include "ofxKinectForWindows2.h"
+#include "ofxDatGui.h"
 #include <iostream>
 #include "videoContainer.h"
 #include "gestureTracker.h"
-#include "menu.h"
-#include "staticMembers.h"
+#include "utils.h"
 
 //#include <pcl/io/pcd_io.h>
 //#include <pcl/point_types.h>
@@ -19,6 +19,9 @@ public:
 	void draw();
 
 	void testPCL();
+
+	void onButtonEvent(ofxDatGuiButtonEvent e);
+	void onDropdownEvent(ofxDatGuiDropdownEvent e);
 	void keyPressed(int key);
 	void keyReleased(int key);
 	void mouseMoved(int x, int y);
@@ -40,11 +43,38 @@ public:
 	// gesture Tracker class
 	gestureTracker gestureTracker;
 
-	// menu wrapper
-	menu menu;
-
 	//light
 	ofLight light;
 
-	staticMembers staticMembers;
+	vector<string> videoElements;
+
+	//UI Objects -----------------------------------
+	int elements = 0;
+	bool isReady = false;
+
+	std::array<string, 6> drives{ { "c:\\","d:\\","e:\\","f:\\","g:\\","h:\\" } };
+
+	//gui panel objects
+	ofxDatGui* fileSystemGui;
+	ofxDatGui* framerateGui;
+
+	//gui buttons
+	ofxDatGuiButton* openButton;
+	ofxDatGuiButton* upButton;
+
+	ofxDatGuiLabel* pathLabel;
+
+	string actualPath;
+
+	//available drives list
+	vector <string> availableDrives;
+
+	//current parent folder
+	string currentParent;
+
+private:
+
+	void loadSubOptions(string directory);
+	void setVideoElements(string path);
+
 };

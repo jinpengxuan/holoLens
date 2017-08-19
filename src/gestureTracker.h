@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofxKinectForWindows2.h"
-#include "staticMembers.h"
+#include "utils.h"
 #include <limits>
 
 class gestureTracker {
@@ -44,9 +44,6 @@ public:
 
 	//time measurement
 	float time;
-
-	//static parameters like width/height of depth and color image
-	staticMembers staticMembers;
 
 	// visualizing the hand on the mapped image frame
 	ofImage handImage;

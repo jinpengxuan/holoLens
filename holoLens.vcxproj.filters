@@ -13,9 +13,6 @@
     <ClCompile Include="src\videoContainer.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\staticMembers.h">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\addons\ofxDatGui\src\core\ofxDatGuiComponent.cpp">
       <Filter>addons\ofxDatGui\src\core</Filter>
     </ClCompile>
@@ -25,7 +22,10 @@
     <ClCompile Include="..\..\..\addons\ofxDatGui\src\ofxDatGui.cpp">
       <Filter>addons\ofxDatGui\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\menu.cpp">
+    <ClCompile Include="src\utils.h">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -130,9 +130,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\addons\ofxDatGui\src\ofxDatGui.h">
       <Filter>addons\ofxDatGui\src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\menu.h">
-      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -10,8 +10,8 @@ void gestureTracker::init() {
 	kinect.initBodySource();
 	kinect.initBodyIndexSource();
 
-	colorCoords.resize(staticMembers.DEPTH_SIZE);
-	depthCoords.resize(staticMembers.DEPTH_SIZE);
+	colorCoords.resize(utils::DEPTH_SIZE);
+	depthCoords.resize(utils::DEPTH_SIZE);
 
 	//handImage = ofImage();
 	//handImage.allocate(staticMembers.DEPTH_WIDTH, staticMembers.DEPTH_HEIGHT, OF_IMAGE_COLOR);
@@ -30,7 +30,7 @@ void gestureTracker::update() {
 
 	const auto & depthPix = kinect.getDepthSource()->getPixels();
 
-	coordinateMapper->MapDepthFrameToColorSpace(staticMembers.DEPTH_SIZE, (UINT16 *)depthPix.getPixels(), staticMembers.DEPTH_SIZE,
+	coordinateMapper->MapDepthFrameToColorSpace(utils::DEPTH_SIZE, (UINT16 *)depthPix.getPixels(), utils::DEPTH_SIZE,
 		(ColorSpacePoint *)colorCoords.data());
 	//cout <<  "Breite: " << depthPix.getWidth() << " -- Hoehe:" << depthPix.getHeight();
 
@@ -70,8 +70,8 @@ void gestureTracker::update() {
 					depthPix[indexRight] < (boundaryMin) || depthPix[indexRight] > (boundaryMax)) {
 				}
 				else {
-					float xCoord = staticMembers.DEPTH_WIDTH - x + xShift;
-					float yCoord = staticMembers.DEPTH_HEIGHT - y + yShift;
+					float xCoord = utils::DEPTH_WIDTH - x + xShift;
+					float yCoord = utils::DEPTH_HEIGHT - y + yShift;
 					float zCoord = distance + zShift;
 					if (zCoord < minZ) {
 						minZ = zCoord;
@@ -176,8 +176,8 @@ void gestureTracker::draw() {
 	std::vector<ofVec3f>::iterator iteratorTemp;
 
 	// Color is at 1920x1080 instead of 512x424 so we should fix aspect ratio
-	float colorHeight = staticMembers.previewWidth * (kinect.getColorSource()->getHeight() / kinect.getColorSource()->getWidth());
-	float colorTop = (staticMembers.previewHeight - colorHeight) / 2.0;
+	float colorHeight = utils::previewWidth * (kinect.getColorSource()->getHeight() / kinect.getColorSource()->getWidth());
+	float colorTop = (utils::previewHeight - colorHeight) / 2.0;
 
 	//kinect.getColorSource()->draw(0, 0 + colorTop, staticMembers.previewWidth, colorHeight);
 
