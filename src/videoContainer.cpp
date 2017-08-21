@@ -24,8 +24,6 @@ void videoContainer::init(ofVec2f center, vector<string> elements) {
 void videoContainer::draw() {
 	if (!readyState)return;
 
-	vector<videoProperties>::iterator iteratorFrames;
-
 	float alphaValue = 255;
 	float zAnimation = 0;
 	if ((ofGetElapsedTimef() - animationStart) <= animationTime) {
@@ -35,12 +33,12 @@ void videoContainer::draw() {
 	}
 	ofEnableAlphaBlending();
 	ofSetColor(255, 255, 255, alphaValue);
-	for (iteratorFrames = sampleFrames.begin(); iteratorFrames < sampleFrames.end(); iteratorFrames++) {
+	for (videoProperties& iteratorTemp : sampleFrames) {
 
-		ofImage actualFrame = ((videoProperties)*iteratorFrames).sampleFrame;
+		ofImage actualFrame = iteratorTemp.sampleFrame;
 
-		actualFrame.allocate(((videoProperties)*iteratorFrames).dimension.x, ((videoProperties)*iteratorFrames).dimension.y, OF_IMAGE_COLOR);
-		actualFrame.draw(((videoProperties)*iteratorFrames).position.x, ((videoProperties)*iteratorFrames).position.y, ((videoProperties)*iteratorFrames).position.z-zAnimation, ((videoProperties)*iteratorFrames).dimension.x, ((videoProperties)*iteratorFrames).dimension.y);
+		actualFrame.allocate(iteratorTemp.dimension.x, iteratorTemp.dimension.y, OF_IMAGE_COLOR);
+		actualFrame.draw(iteratorTemp.position.x, iteratorTemp.position.y, iteratorTemp.position.z-zAnimation, iteratorTemp.dimension.x, iteratorTemp.dimension.y);
 	}
 	ofDisableAlphaBlending();
 }
@@ -94,6 +92,7 @@ void videoContainer::startAnimation() {
 }
 
 void videoContainer::reorderVideos(appUtils::VideoOrder videoOrder) {
+	readyState = false;
 	if (videoOrder == appUtils::VideoOrder::Length) {
 
 	}
