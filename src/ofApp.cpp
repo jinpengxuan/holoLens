@@ -79,11 +79,9 @@ void ofApp::setup() {
 	sortingGui = new ofxDatGui(fileSystemGui->getWidth()+1,0);
 	sortingGui->addHeader(":: Sorting ::");
 	sortingGui->addBreak()->setHeight(10.0f);
-	sortLength = sortingGui->addToggle("By Length", false);
-	sortLength->onButtonEvent(this, &ofApp::onButtonEvent);
-	sortingGui->addBreak()->setHeight(10.0f);
-	sortSize = sortingGui->addToggle("By Size", false);
-	sortSize->onButtonEvent(this, &ofApp::onButtonEvent);
+	vector<string> options = {"Length Ascending", "Length Descending", "Size Ascending", "Size Descending" };
+	sortOptions = sortingGui->addDropdown("Sorting Options", options);
+	sortOptions->onDropdownEvent(this, &ofApp::onDropdownEvent);
 	sortingGui->addBreak()->setHeight(10.0f);
 	sortingGui->addFooter();
 
@@ -249,10 +247,7 @@ void ofApp::loadSubOptions(string directory) {
 
 void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 {
-	if (e.target == sortLength) {
-
-	}
-	else if (e.target == openButton) {
+	if (e.target == openButton) {
 		setVideoElements(pathLabel->getLabel());
 		cout << "init videos" << endl;
 		videoContainer.init(ofVec2f(0, 0), videoElements);
@@ -284,7 +279,18 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 
 void ofApp::onDropdownEvent(ofxDatGuiDropdownEvent e)
 {
-
+	if (!videoContainer.readyState)return;
+	if (e.target->getLabel() == "Length Ascending") {
+		videoContainer.reorderVideos(appUtils::VideoOrder::LengthAsc);
+	} else if (e.target->getLabel() == "Size Ascending") {
+		videoContainer.reorderVideos(appUtils::VideoOrder::SizeAsc);
+	}
+	else if (e.target->getLabel() == "Length Descending") {
+		videoContainer.reorderVideos(appUtils::VideoOrder::LengthDesc);
+	}
+	else if (e.target->getLabel() == "Size Descending") {
+		videoContainer.reorderVideos(appUtils::VideoOrder::SizeDesc);
+	}
 }
 
 //--------------------------------------------------------------

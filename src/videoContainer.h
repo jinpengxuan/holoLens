@@ -27,13 +27,16 @@ public:
 	ofVec2f displayCenter;
 	int videoPosition = 0;
 	int maxHeight = 0;
+	int maxWidth = 0;
 
 	float animationStart = 0.f;
 	float animationTime = 2.f; // seconds
 
+	appUtils::VideoOrder currentSorting;
+
 private:
 
-	ofImage getSampleFrame(string path);
+	void setVideoProperties(string path);
 
 };
 

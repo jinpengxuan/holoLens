@@ -18,7 +18,7 @@ public:
 	const static int WINDOW_HEIGHT = 900;
 	const static int DEPTH_SIZE = DEPTH_WIDTH * DEPTH_HEIGHT;
 
-	const enum VideoOrder { Length, Size };
+	const enum VideoOrder { LengthAsc, SizeAsc, LengthDesc, SizeDesc};
 
 	static void removeSubstrs(string& inputString, string& pattern) {
 		string::size_type n = pattern.length();

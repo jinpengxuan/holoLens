@@ -26,7 +26,6 @@ void gestureTracker::update() {
 		ofLog() << "CoordinateMapper Not Found";
 	}
 	depthCoords.clear();
-	vector<ofVec3f>::iterator iteratorDepth = depthCoords.begin();
 
 	const auto & depthPix = kinect.getDepthSource()->getPixels();
 
@@ -76,7 +75,7 @@ void gestureTracker::update() {
 					if (zCoord < minZ) {
 						minZ = zCoord;
 					}
-					depthCoords.insert(iteratorDepth, ofVec3f(xCoord, yCoord, zCoord));
+					depthCoords.insert(depthCoords.begin(), ofVec3f(xCoord, yCoord, zCoord));
 				}
 			}
 			else {
@@ -88,20 +87,18 @@ void gestureTracker::update() {
 	sort(depthCoords.begin(), depthCoords.end(), sortVecByDepth);
 	coordinateClusers.clear();
 
-	vector<ofVec3f>::iterator iteratorTemp;
 	int clusterRadius = 20;
-	for (iteratorTemp = depthCoords.begin(); iteratorTemp < depthCoords.end(); iteratorTemp++) {
-		float x = ((ofVec3f)*iteratorTemp).x;
-		float y = ((ofVec3f)*iteratorTemp).y;
-		float z = ((ofVec3f)*iteratorTemp).z;
+	for (ofVec3f& iteratorTemp : depthCoords) {
+		float x = iteratorTemp.x;
+		float y = iteratorTemp.y;
+		float z = iteratorTemp.z;
 		if (z < (minZ + 10)) {
 			bool found = false;
-			vector<ofVec3f>::iterator iteratorCluster;
-			for (iteratorCluster = coordinateClusers.begin(); iteratorCluster < coordinateClusers.end(); iteratorCluster++) {
-				if (x > (((ofVec2f)*iteratorCluster).x - clusterRadius) 
-					&& x <(((ofVec2f)*iteratorCluster).x + clusterRadius)
-					&& y > (((ofVec2f)*iteratorCluster).y - clusterRadius) 
-					&& y <(((ofVec2f)*iteratorCluster).y + clusterRadius)
+			for (ofVec3f& iteratorCluster : coordinateClusers) {
+				if (x > (iteratorCluster.x - clusterRadius)
+					&& x <(iteratorCluster.x + clusterRadius)
+					&& y > (iteratorCluster.y - clusterRadius)
+					&& y <(iteratorCluster.y + clusterRadius)
 					) {
 					found = true;
 				}
@@ -171,9 +168,6 @@ void gestureTracker::update() {
 void gestureTracker::draw() {
 
 	//check if hand position enables cursor functionality
-	
-
-	vector<ofVec3f>::iterator iteratorTemp;
 
 	// Color is at 1920x1080 instead of 512x424 so we should fix aspect ratio
 	float colorHeight = appUtils::previewWidth * (kinect.getColorSource()->getHeight() / kinect.getColorSource()->getWidth());
@@ -185,8 +179,9 @@ void gestureTracker::draw() {
 	//kinect.getBodySource()->drawProjected(previewWidth, 0 + colorTop, previewWidth, colorHeight);
 
 	ofSetColor(ofColor(255, 14, 120));
-	for (iteratorTemp = coordinateClusers.begin(); iteratorTemp < coordinateClusers.end(); iteratorTemp++) {			
-		ofDrawCircle(ofPoint(((ofVec3f)*iteratorTemp).x, ((ofVec3f)*iteratorTemp).y, ((ofVec3f)*iteratorTemp).z), 5);
+	for (ofVec3f& iteratorTemp : depthCoords) {
+		if (iteratorTemp.z > (minZ + 80))continue;
+		ofDrawCircle(ofPoint(iteratorTemp.x, iteratorTemp.y, iteratorTemp.z), 2);
 	}
 	ofSetColor(ofColor(255, 255, 255));
 

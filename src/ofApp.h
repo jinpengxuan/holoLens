@@ -66,8 +66,7 @@ public:
 	string actualPath;
 
 	//gui sorting elements
-	ofxDatGuiToggle* sortLength;
-	ofxDatGuiToggle* sortSize;
+	ofxDatGuiDropdown* sortOptions;
 
 	//available drives list
 	vector <string> availableDrives;

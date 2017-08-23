@@ -9,5 +9,6 @@ public:
 	ofImage sampleFrame;
 	ofVec2f dimension;
 	ofVec3f position;
+	float duration;
 
 };
