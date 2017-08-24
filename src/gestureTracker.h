@@ -13,6 +13,7 @@ public:
 	void init();
 	void update();
 	void draw();
+	void capture();
 
 	ofxKFW2::Device kinect;
 
@@ -26,13 +27,19 @@ public:
 	int translation = 0;
 
 	int minZ = numeric_limits<int>::max();
+
+	int minX = numeric_limits<int>::max();
+	int minY = numeric_limits<int>::max();
+	int maxX = numeric_limits<int>::min();
+	int maxY = numeric_limits<int>::min();
+
 	int xShift = -200;
 	int yShift = -400;
 	int zShift = -300;
 
-	vector<ofVec2f> colorCoords;
+	//vector<ofVec2f> colorCoords;
 	vector<ofVec3f> depthCoords;
-	vector<ofVec3f> drawingCoords;
+	//vector<ofVec3f> drawingCoords;
 
 	vector<ofVec3f> coordinateClusers;
 
@@ -47,6 +54,9 @@ public:
 
 	// visualizing the hand on the mapped image frame
 	ofImage handImage;
+	ofImage featureImage;
+
+	float featuresReference[11 * 11];
 
 private:
 

@@ -1,4 +1,4 @@
-#include "ofApp.h"
+﻿#include "ofApp.h"
 
 //--------------------------------------------------------------
 void ofApp::setup() {
@@ -38,19 +38,35 @@ void ofApp::setup() {
 		}
 	}
 
+	//Framerate gui
+
+	framerateGui = new ofxDatGui(ofxDatGuiAnchor::TOP_LEFT);
+	collapseButton = framerateGui->addButton("-");
+	collapseButton->setLabelAlignment(ofxDatGuiAlignment::CENTER);
+	collapseButton->onButtonEvent(this, &ofApp::onButtonEvent);
+	framerateGui->addBreak()->setHeight(10.0f);
+	framerateGui->addFRM();
+	framerateGui->addBreak()->setHeight(10.0f);
+	playButton = framerateGui->addButton("Play");
+	playButton->onButtonEvent(this, &ofApp::onButtonEvent);
+	framerateGui->addBreak()->setHeight(10.0f);
+	captureButton = framerateGui->addButton("Capture");
+	captureButton->onButtonEvent(this, &ofApp::onButtonEvent);
+	framerateGui->addBreak()->setHeight(10.0f);
+
 	//Filesystem gui
 
-	fileSystemGui = new ofxDatGui(ofxDatGuiAnchor::TOP_LEFT);
+	fileSystemGui = new ofxDatGui(framerateGui->getWidth() + 1, 0);
 
-	fileSystemGui->addHeader(":: Directory Selector ::");
+	(fileSystemGui->addLabel(":: Directory Selector ::"))->setLabelAlignment(ofxDatGuiAlignment::CENTER);
 	fileSystemGui->addBreak()->setHeight(10.0f);
 	openButton = fileSystemGui->addButton("Open Videos");
 	openButton->onButtonEvent(this, &ofApp::onButtonEvent);
-
-	fileSystemGui->addBreak()->setHeight(40.0f);
-
+	fileSystemGui->addBreak()->setHeight(10.0f);
 	pathLabel = fileSystemGui->addLabel("");
-	pathLabel->setBackgroundColor(ofColor(0.4f, 1.f));
+	pathLabel->setBackgroundColor(ofColor(0.f, 1.f));
+	pathLabel->setStripeVisible(false);
+	fileSystemGui->addBreak()->setHeight(10.0f);
 	upButton = fileSystemGui->addButton("Up");
 	upButton->onButtonEvent(this, &ofApp::onButtonEvent);
 
@@ -60,30 +76,25 @@ void ofApp::setup() {
 	for (auto const& value : availableDrives) {
 		ofxDatGuiButton* tempButton = fileSystemGui->addButton(value);
 		tempButton->onButtonEvent(this, &ofApp::onButtonEvent);
+		tempButton->setStripeColor(ofColor::orange);
 		elements++;
 	}
 
 	fileSystemGui->addFooter();
-
-	//Framerate gui
-
-	framerateGui = new ofxDatGui(ofxDatGuiAnchor::TOP_RIGHT);
-	framerateGui->addHeader(":: Details ::");
-	framerateGui->addBreak()->setHeight(10.0f);
-	framerateGui->addBreak()->setHeight(10.0f);
-	framerateGui->addFRM();
-	framerateGui->addBreak()->setHeight(10.0f);
-	framerateGui->addFooter();
+	fileSystemGui->getFooter()->setLabelWhenExpanded("");
+	fileSystemGui->getFooter()->setLabelWhenCollapsed("");
 
 	//Sorting gui
-	sortingGui = new ofxDatGui(fileSystemGui->getWidth()+1,0);
-	sortingGui->addHeader(":: Sorting ::");
+	sortingGui = new ofxDatGui(ofxDatGuiAnchor::TOP_RIGHT);
+	(sortingGui->addLabel(":: Sorting ::"))->setLabelAlignment(ofxDatGuiAlignment::CENTER);
 	sortingGui->addBreak()->setHeight(10.0f);
 	vector<string> options = {"Length Ascending", "Length Descending", "Size Ascending", "Size Descending" };
 	sortOptions = sortingGui->addDropdown("Sorting Options", options);
 	sortOptions->onDropdownEvent(this, &ofApp::onDropdownEvent);
 	sortingGui->addBreak()->setHeight(10.0f);
 	sortingGui->addFooter();
+	sortingGui->getFooter()->setLabelWhenExpanded("");
+	sortingGui->getFooter()->setLabelWhenCollapsed("");
 
 	//setVideoElements("c:\\vids");
 	//isReady = true;
@@ -178,7 +189,7 @@ void ofApp::setVideoElements(string path) {
 void ofApp::loadSubOptions(string directory) {
 
 	for (int i = 0; i < elements; i++) {
-		fileSystemGui->removeItem(7);
+		fileSystemGui->removeItem(8);
 	}
 
 	elements = 0;
@@ -247,7 +258,27 @@ void ofApp::loadSubOptions(string directory) {
 
 void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 {
-	if (e.target == openButton) {
+	if (e.target == collapseButton) {
+		if (collapsed) {
+			collapsed = false;
+			fileSystemGui->expand();
+			sortingGui->expand();
+			collapseButton->setLabel("-");
+		}
+		else {
+			collapsed = true;
+			fileSystemGui->collapse();
+			sortingGui->collapse();
+			collapseButton->setLabel("+");
+		}
+	} 
+	else if(e.target == playButton) {
+		
+	}
+	else if (e.target == captureButton) {
+		gestureTracker.capture();
+	}
+	else if (e.target == openButton) {
 		setVideoElements(pathLabel->getLabel());
 		cout << "init videos" << endl;
 		videoContainer.init(ofVec2f(0, 0), videoElements);

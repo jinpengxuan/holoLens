@@ -5,16 +5,17 @@ bool sortVecByDepth(ofVec3f i, ofVec3f j) { return (i.z < j.z); }
 void gestureTracker::init() {
 	kinect.open();
 	kinect.initDepthSource();
-	kinect.initColorSource();
+	//kinect.initColorSource();
 	kinect.initInfraredSource();
-	kinect.initBodySource();
-	kinect.initBodyIndexSource();
+	//kinect.initBodySource();
+	//kinect.initBodyIndexSource();
 
-	colorCoords.resize(appUtils::DEPTH_SIZE);
+	//colorCoords.resize(appUtils::DEPTH_SIZE);
 	depthCoords.resize(appUtils::DEPTH_SIZE);
 
-	//handImage = ofImage();
-	//handImage.allocate(staticMembers.DEPTH_WIDTH, staticMembers.DEPTH_HEIGHT, OF_IMAGE_COLOR);
+	ofImage testImage;
+	testImage.load("capture707.png");
+	appUtils::setFeatureVector(testImage.getPixels(), featuresReference);
 }
 
 void gestureTracker::update() {
@@ -29,19 +30,23 @@ void gestureTracker::update() {
 
 	const auto & depthPix = kinect.getDepthSource()->getPixels();
 
-	coordinateMapper->MapDepthFrameToColorSpace(appUtils::DEPTH_SIZE, (UINT16 *)depthPix.getPixels(), appUtils::DEPTH_SIZE,
-		(ColorSpacePoint *)colorCoords.data());
+	//coordinateMapper->MapDepthFrameToColorSpace(appUtils::DEPTH_SIZE, (UINT16 *)depthPix.getPixels(), appUtils::DEPTH_SIZE, (ColorSpacePoint *)colorCoords.data());
 	//cout <<  "Breite: " << depthPix.getWidth() << " -- Hoehe:" << depthPix.getHeight();
 
 	/*kinect.getInfraredSource()->draw(0, 0, depthPix.getWidth(), depthPix.getHeight());*/
-	int skip = 5;
+	int skip = 1;
 	minZ = numeric_limits<int>::max();
+	minX = numeric_limits<int>::max();
+	minY = numeric_limits<int>::max();
+	maxX = numeric_limits<int>::min();
+	maxY = numeric_limits<int>::min();
 
 	if (depthPix.size() == 0)return;
-	for (int x = 1; x < depthPix.getWidth() - 1; x += skip) {
-		for (int y = 1; y < depthPix.getHeight() - 1; y += skip) {
+	for (int y = 1; y < depthPix.getHeight() - 1; y += skip){
+		for (int x = 1; x < depthPix.getWidth() - 1; x += skip) {
 			int index = x + y*depthPix.getWidth();
 			int distance = depthPix[index];
+			if (distance < 400 || distance > 600) continue;
 			//ofVec2f mappedCoord = colorCoords[index];
 
 			//mappedCoord.x = floor(mappedCoord.x);
@@ -53,37 +58,65 @@ void gestureTracker::update() {
 			//	//cout << mappedCoord.x << " -- " << mappedCoord.y << "\n";
 			//	continue;
 			//}
-
-			if (distance > 350 && distance < 800) {
-
 				// Outlier Removal
-				int boundaryMax = distance + 10;
-				int boundaryMin = distance - 10;
-				int indexTop = index - depthPix.getWidth();
-				int indexBottom = index + depthPix.getWidth();
-				int indexLeft = index - 1;
-				int indexRight = index + 1;
-				if (depthPix[indexTop] < (boundaryMin) || depthPix[indexTop] > (boundaryMax) ||
-					depthPix[indexBottom] < (boundaryMin) || depthPix[indexBottom] > (boundaryMax) ||
-					depthPix[indexLeft] < (boundaryMin) || depthPix[indexLeft] > (boundaryMax) ||
-					depthPix[indexRight] < (boundaryMin) || depthPix[indexRight] > (boundaryMax)) {
-				}
-				else {
-					float xCoord = appUtils::DEPTH_WIDTH - x + xShift;
-					float yCoord = appUtils::DEPTH_HEIGHT - y + yShift;
-					float zCoord = distance + zShift;
-					if (zCoord < minZ) {
-						minZ = zCoord;
-					}
-					depthCoords.insert(depthCoords.begin(), ofVec3f(xCoord, yCoord, zCoord));
-				}
+			int boundaryMax = distance + 10;
+			int boundaryMin = distance - 10;
+			int indexTop = index - depthPix.getWidth();
+			int indexBottom = index + depthPix.getWidth();
+			int indexLeft = index - 1;
+			int indexRight = index + 1;
+			if (depthPix[indexTop] < (boundaryMin) || depthPix[indexTop] > (boundaryMax) ||
+				depthPix[indexBottom] < (boundaryMin) || depthPix[indexBottom] > (boundaryMax) ||
+				depthPix[indexLeft] < (boundaryMin) || depthPix[indexLeft] > (boundaryMax) ||
+				depthPix[indexRight] < (boundaryMin) || depthPix[indexRight] > (boundaryMax)) {
 			}
 			else {
-				//ofSetColor(ofColor(0));
-				//ofDrawLine(ofPoint(x - (depthPix.getWidth() / 2), y, 0), ofPoint(x, y, distance));
+				float xCoord = x;//appUtils::DEPTH_WIDTH - x + xShift;
+				float yCoord = y;//appUtils::DEPTH_HEIGHT - y + yShift;
+				float zCoord = distance;//distance + zShift;
+
+				minZ = zCoord < minZ ? zCoord : minZ;
+				minX = xCoord < minX ? xCoord : minX;
+				maxX = xCoord > maxX ? xCoord : maxX;
+				minY = yCoord < minY ? yCoord : minY;
+				maxY = yCoord > maxY ? yCoord : maxY;
+
+				//depthCoords.insert(depthCoords.begin(), ofVec3f(xCoord, yCoord, zCoord));
 			}
 		}
 	}
+	int widthImg = maxX - minX + 20;
+	int heightImg = maxY - minY + 20;
+	int maxZ = minZ + 50;
+
+	handImage = ofImage();
+	handImage.allocate(widthImg, heightImg, OF_IMAGE_GRAYSCALE);
+
+	ofPixels pix = ofPixels();
+	
+	pix.allocate(widthImg, heightImg, OF_IMAGE_GRAYSCALE);
+	pix.setColor(0);
+
+	for (int y = minY; y < maxY; y += skip) {
+		for (int x = minX; x < maxX; x += skip) {
+			int index = x + y*depthPix.getWidth();
+			int distance = depthPix[index];
+
+			distance = distance > maxZ ? maxZ : distance;
+			int thumbIndex = (x - minX + 10) + (y - minY + 10) * widthImg;
+			float greyVal = (maxZ - distance) / 50.f * 255.f;
+			pix.setColor(thumbIndex, ofColor(greyVal < 0 ? 0 : greyVal));
+		}
+	}
+
+	handImage.setFromPixels(pix);
+	float features[11 * 11];
+	handImage.resize(appUtils::HOG_SIZE, appUtils::HOG_SIZE);
+	appUtils::setFeatureVector(handImage.getPixels(), features);
+
+	float difference = appUtils::getEuclideanDist(featuresReference, features);
+	cout << difference << endl;
+	/*
 	sort(depthCoords.begin(), depthCoords.end(), sortVecByDepth);
 	coordinateClusers.clear();
 
@@ -97,18 +130,18 @@ void gestureTracker::update() {
 			for (ofVec3f& iteratorCluster : coordinateClusers) {
 				if (x > (iteratorCluster.x - clusterRadius)
 					&& x <(iteratorCluster.x + clusterRadius)
-					&& y > (iteratorCluster.y - clusterRadius)
-					&& y <(iteratorCluster.y + clusterRadius)
+					&& y >(iteratorCluster.y - clusterRadius)
+					&& y < (iteratorCluster.y + clusterRadius)
 					) {
 					found = true;
 				}
 			}
-			if(!found)coordinateClusers.push_back(ofVec3f(x, y, z));
+			if (!found)coordinateClusers.push_back(ofVec3f(x, y, z));
 		}
 	}
 
 	//setze alle x Sekunden neue Kamera Position anhand der zentralen koordinate
-	/*if ((int)(ofGetElapsedTimef() - time) % 10 == 0) {
+	if ((int)(ofGetElapsedTimef() - time) % 10 == 0) {
 		vector<ofVec3f>::iterator iteratorTemp;
 		int sumX = 0;
 		int sumY = 0;
@@ -167,7 +200,15 @@ void gestureTracker::update() {
 
 void gestureTracker::draw() {
 
-	//check if hand position enables cursor functionality
+	if (featureImage.isAllocated()) {
+		featureImage.draw(0, 0);
+	}
+	else if (handImage.isAllocated()) {
+		handImage.resize(appUtils::HOG_SIZE, appUtils::HOG_SIZE);
+		handImage.draw(0, 0);
+	}
+
+	/*check if hand position enables cursor functionality
 
 	// Color is at 1920x1080 instead of 512x424 so we should fix aspect ratio
 	float colorHeight = appUtils::previewWidth * (kinect.getColorSource()->getHeight() / kinect.getColorSource()->getWidth());
@@ -189,7 +230,21 @@ void gestureTracker::draw() {
 	//kinect.getDepthSource()->draw(0, 0, previewWidth, previewHeight);  // note that the depth texture is RAW so may appear dark
 
 	//kinect.getBodyIndexSource()->draw(previewWidth, previewHeight, previewWidth, previewHeight);
-	//kinect.getBodySource()->drawProjected(previewWidth, previewHeight, previewWidth, previewHeight, ofxKFW2::ProjectionCoordinates::DepthCamera);
+	//kinect.getBodySource()->drawProjected(previewWidth, previewHeight, previewWidth, previewHeight, ofxKFW2::ProjectionCoordinates::DepthCamera);*/
+}
+
+void gestureTracker::capture() {
+	if (handImage.isAllocated()) {
+		//handImage.save("capture"+ to_string(rand() % 1000) +".png", ofImageQualityType::OF_IMAGE_QUALITY_HIGH);
+		featureImage.allocate(11, 11, OF_IMAGE_COLOR);
+		if (handImage.isAllocated()) {
+			float features[11 * 11];
+			handImage.resize(appUtils::HOG_SIZE, appUtils::HOG_SIZE);
+			appUtils::setFeatureVector(handImage.getPixels(), features);
+			appUtils::setFeatureImage(featureImage, features);
+			featureImage.resize(appUtils::HOG_SIZE, appUtils::HOG_SIZE);
+		}
+	}
 }
 
 void gestureTracker::startDrag() {

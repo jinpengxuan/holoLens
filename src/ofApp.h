@@ -33,6 +33,8 @@ public:
 
 	ofCamera cam;
 
+	bool collapsed = false;
+
 	//time measurement
 	float time;
 
@@ -56,6 +58,11 @@ public:
 	ofxDatGui* fileSystemGui;
 	ofxDatGui* framerateGui;
 	ofxDatGui* sortingGui;
+
+	//main menu options
+	ofxDatGuiButton* collapseButton;
+	ofxDatGuiButton* playButton;
+	ofxDatGuiButton* captureButton;
 
 	//gui filesystem elements
 	ofxDatGuiButton* openButton;
