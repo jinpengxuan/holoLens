@@ -2,7 +2,7 @@
 
 bool sortVecByDepth(ofVec3f i, ofVec3f j) { return (i.z < j.z); }
 
-void gestureTracker::init() {
+void gestureTracker::init(vector<string> featureElements) {
 	kinect.open();
 	kinect.initDepthSource();
 	//kinect.initColorSource();
@@ -12,10 +12,7 @@ void gestureTracker::init() {
 
 	//colorCoords.resize(appUtils::DEPTH_SIZE);
 	depthCoords.resize(appUtils::DEPTH_SIZE);
-
-	ofImage testImage;
-	testImage.load("capture707.png");
-	appUtils::setFeatureVector(testImage.getPixels(), featuresReference);
+	//initFeatures(featureElements);
 }
 
 void gestureTracker::update() {
@@ -110,12 +107,31 @@ void gestureTracker::update() {
 	}
 
 	handImage.setFromPixels(pix);
-	float features[11 * 11];
 	handImage.resize(appUtils::HOG_SIZE, appUtils::HOG_SIZE);
-	appUtils::setFeatureVector(handImage.getPixels(), features);
+	
+	// calculate matching
+	if (!featuresLoaded)return;
 
-	float difference = appUtils::getEuclideanDist(featuresReference, features);
-	cout << difference << endl;
+	std::array<float, 11 * 11> features{};
+	appUtils::setFeatureVector(handImage.getPixels(), features);
+	int minDistance = numeric_limits<int>::max();
+	for (std::array<float, 11 * 11> featuresRef : mouseFeaturesReference) {
+
+		int difference = appUtils::getEuclideanDist(featuresRef, features);
+		minDistance = difference < minDistance ? difference : minDistance;
+	}
+	//cout << "Mouse Control:" << minDistance << endl;
+	mouseAccuracy = minDistance;
+
+	minDistance = numeric_limits<int>::max();
+	for (std::array<float, 11 * 11> featuresRef : videoFeaturesReference) {
+
+		float difference = appUtils::getEuclideanDist(featuresRef, features);
+		minDistance = difference < minDistance ? difference : minDistance;
+	}
+	//cout << "Video Control:" << minDistance << endl;
+	videoAccuracy = minDistance;
+	
 	/*
 	sort(depthCoords.begin(), depthCoords.end(), sortVecByDepth);
 	coordinateClusers.clear();
@@ -200,12 +216,11 @@ void gestureTracker::update() {
 
 void gestureTracker::draw() {
 
-	if (featureImage.isAllocated()) {
-		featureImage.draw(0, 0);
-	}
-	else if (handImage.isAllocated()) {
+	if (handImage.isAllocated()) {
+		int height = ofGetHeight();
+		int width = ofGetWidth();
 		handImage.resize(appUtils::HOG_SIZE, appUtils::HOG_SIZE);
-		handImage.draw(0, 0);
+		handImage.draw(0 - (width/3.5), 0 - (height/3.5));
 	}
 
 	/*check if hand position enables cursor functionality
@@ -233,18 +248,43 @@ void gestureTracker::draw() {
 	//kinect.getBodySource()->drawProjected(previewWidth, previewHeight, previewWidth, previewHeight, ofxKFW2::ProjectionCoordinates::DepthCamera);*/
 }
 
-void gestureTracker::capture() {
+void gestureTracker::capture(string gestureType) {
 	if (handImage.isAllocated()) {
-		//handImage.save("capture"+ to_string(rand() % 1000) +".png", ofImageQualityType::OF_IMAGE_QUALITY_HIGH);
-		featureImage.allocate(11, 11, OF_IMAGE_COLOR);
 		if (handImage.isAllocated()) {
-			float features[11 * 11];
+			std::array<float, 11 * 11> features;
 			handImage.resize(appUtils::HOG_SIZE, appUtils::HOG_SIZE);
-			appUtils::setFeatureVector(handImage.getPixels(), features);
-			appUtils::setFeatureImage(featureImage, features);
-			featureImage.resize(appUtils::HOG_SIZE, appUtils::HOG_SIZE);
+			handImage.save("captures\\" + gestureType + to_string(rand() % 1000000) + ".png", ofImageQualityType::OF_IMAGE_QUALITY_HIGH);
 		}
 	}
+}
+
+void gestureTracker::initFeatures(vector<string> featureElements) {
+	featuresLoaded = false;
+	mouseAccuracy = numeric_limits<int>::max();
+	videoAccuracy = numeric_limits<int>::max();
+	// loop through elements and create features
+	mouseFeaturesReference.clear();
+	videoFeaturesReference.clear();
+
+	vector<string>::iterator iteratorTemp;
+	for (iteratorTemp = featureElements.begin(); iteratorTemp < featureElements.end(); iteratorTemp++) {
+		string item = (string)*iteratorTemp;
+		if (item.find("mouse") != std::string::npos && appUtils::hasEnding(item, (string)"png")) {
+			ofImage testImage;
+			testImage.load(item);
+			std::array<float, 11 * 11> features{};
+			appUtils::setFeatureVector(testImage.getPixels(), features);
+			mouseFeaturesReference.push_back(features);
+		}
+		else if (item.find("video") != std::string::npos && appUtils::hasEnding(item, (string)"png")) {
+			ofImage testImage;
+			testImage.load(item);
+			std::array<float, 11 * 11> features{};
+			appUtils::setFeatureVector(testImage.getPixels(), features);
+			videoFeaturesReference.push_back(features);
+		}
+	}
+	featuresLoaded = true;
 }
 
 void gestureTracker::startDrag() {

@@ -31,6 +31,8 @@ public:
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
 
+	const enum MediaType { Video, Feature };
+
 	ofCamera cam;
 
 	bool collapsed = false;
@@ -62,7 +64,11 @@ public:
 	//main menu options
 	ofxDatGuiButton* collapseButton;
 	ofxDatGuiButton* playButton;
-	ofxDatGuiButton* captureButton;
+	ofxDatGuiButton* evaluateButton;
+	ofxDatGuiButton* learnMouseControlButton;
+	ofxDatGuiButton* learnVideoControlButton;
+	ofxDatGuiSlider* mouseControlPrecision;
+	ofxDatGuiSlider* videoControlPrecision;
 
 	//gui filesystem elements
 	ofxDatGuiButton* openButton;
@@ -70,7 +76,7 @@ public:
 
 	ofxDatGuiLabel* pathLabel;
 
-	string actualPath;
+	const string capturePath = "c:\\of_v0.9.8_vs_release\\apps\\myApps\\holoLens\\bin\\data\\captures\\";
 
 	//gui sorting elements
 	ofxDatGuiDropdown* sortOptions;
@@ -84,6 +90,6 @@ public:
 private:
 
 	void loadSubOptions(string directory);
-	void setVideoElements(string path);
+	void setPathElements(vector<string>& elements, string path, MediaType type);
 
 };

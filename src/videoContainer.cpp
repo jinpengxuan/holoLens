@@ -16,42 +16,50 @@ void videoContainer::init(ofVec2f center, vector<string> elements) {
 	for (iteratorTemp = elements.begin(); iteratorTemp < elements.end(); iteratorTemp++) {
 		setVideoProperties((string)*iteratorTemp);
 	}
+	sort(sampleFrames.begin(), sampleFrames.end(), sortVecBySizeDesc);
+
 
 	displayCenter = center;
-
-	actualVideo.closeMovie();
 
 	startAnimation();
 }
 
-void videoContainer::draw() {
+void videoContainer::update() {
 	if (!readyState)return;
+	if (!actualVideo.isPaused()) actualVideo.update();
 
-	float alphaValue = 255;
-	float zAnimation = 0;
+	alphaValue = 255;
+	zAnimation = 0;
 	if ((ofGetElapsedTimef() - animationStart) <= animationTime) {
 		float timeParameter = (ofGetElapsedTimef() - animationStart) / animationTime;
 		alphaValue = timeParameter * 255;
 		zAnimation = (1 - timeParameter) * 50;
 	}
+}
+
+void videoContainer::draw() {
+	if (!readyState)return;
+
 	ofEnableAlphaBlending();
 	ofSetColor(255, 255, 255, alphaValue);
+	int count = sampleFrames.size()-1;
 	for (videoProperties& iteratorTemp : sampleFrames) {
 
-		ofImage actualFrame = iteratorTemp.sampleFrame;
-
-		actualFrame.allocate(iteratorTemp.dimension.x, iteratorTemp.dimension.y, OF_IMAGE_COLOR);
-		actualFrame.draw(iteratorTemp.position.x, iteratorTemp.position.y, iteratorTemp.position.z-zAnimation, iteratorTemp.dimension.x, iteratorTemp.dimension.y);
+		if (count > 0) {
+			ofImage actualFrame = iteratorTemp.sampleFrame;
+			actualFrame.allocate(iteratorTemp.dimension.x, iteratorTemp.dimension.y, OF_IMAGE_COLOR);
+			actualFrame.draw(iteratorTemp.position.x, iteratorTemp.position.y, iteratorTemp.position.z - zAnimation, iteratorTemp.dimension.x, iteratorTemp.dimension.y);
+		}
+		else {
+			actualVideo.draw(ofPoint(iteratorTemp.position.x, iteratorTemp.position.y, iteratorTemp.position.z - zAnimation), iteratorTemp.dimension.x, iteratorTemp.dimension.y);
+		}
+		count--;
 	}
 	ofDisableAlphaBlending();
 }
 
-void videoContainer::play() {
-
-}
-
-void videoContainer::pause() {
-
+void videoContainer::pause(bool paused) {
+	actualVideo.setPaused(paused);
 }
 
 void videoContainer::playByTime(int time) {
@@ -73,6 +81,7 @@ void videoContainer::setVideoProperties(string path) {
 	if (sampleImage.getWidth() > maxWidth) maxWidth = sampleImage.getWidth();
 
 	currentProperty.sampleFrame = sampleImage;
+	currentProperty.name = path;// .substr(path.find_last_of("\\") + 1);
 	if (sampleImage.isAllocated())sampleFrames.push_back(currentProperty);
 }
 
@@ -96,6 +105,16 @@ void videoContainer::startAnimation() {
 		iteratorTemp.dimension = ofVec2f(width, height);
 		count--;
 	}
+
+	actualVideo.closeMovie();
+	actualVideo.load(sampleFrames.back().name);
+	actualVideo.setVolume(0);
+	actualVideo.play();
+	float pct = 0.01f;
+	actualVideo.setPosition(pct);
+	actualVideo.update();
+	actualVideo.setPaused(true);
+
 	readyState = true;
 
 }

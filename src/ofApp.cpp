@@ -21,7 +21,9 @@ void ofApp::setup() {
 	light.setPosition(0, 0, -2000);
 
 	//Gesture Init
-	gestureTracker.init();
+	vector<string> featureElements;
+	setPathElements(featureElements, capturePath, MediaType::Feature);
+	gestureTracker.init(featureElements);
 
 	//Menu Init
 	//Check existing drives
@@ -44,14 +46,37 @@ void ofApp::setup() {
 	collapseButton = framerateGui->addButton("-");
 	collapseButton->setLabelAlignment(ofxDatGuiAlignment::CENTER);
 	collapseButton->onButtonEvent(this, &ofApp::onButtonEvent);
+	collapseButton->setStripeColor(ofColor::white);
 	framerateGui->addBreak()->setHeight(10.0f);
-	framerateGui->addFRM();
+	framerateGui->addFRM()->setStripeColor(ofColor::green);
 	framerateGui->addBreak()->setHeight(10.0f);
 	playButton = framerateGui->addButton("Play");
 	playButton->onButtonEvent(this, &ofApp::onButtonEvent);
+	playButton->setStripeColor(ofColor::green);
 	framerateGui->addBreak()->setHeight(10.0f);
-	captureButton = framerateGui->addButton("Capture");
-	captureButton->onButtonEvent(this, &ofApp::onButtonEvent);
+	evaluateButton = framerateGui->addButton("Evaluate");
+	evaluateButton->onButtonEvent(this, &ofApp::onButtonEvent);
+	evaluateButton->setStripeColor(ofColor::green);
+	framerateGui->addBreak()->setHeight(10.0f);
+	framerateGui->addLabel("Mouse Control")->setStripeVisible(false);
+	framerateGui->addBreak()->setHeight(10.0f);
+	mouseControlPrecision = framerateGui->addSlider("Precision", 0.f, 100.f);
+	mouseControlPrecision->setStripeColor(ofColor::blue);
+	mouseControlPrecision->setValue(0.f);
+	framerateGui->addBreak()->setHeight(10.0f);
+	learnMouseControlButton = framerateGui->addButton("Learn");
+	learnMouseControlButton->onButtonEvent(this, &ofApp::onButtonEvent);
+	learnMouseControlButton->setStripeColor(ofColor::blue);
+	framerateGui->addBreak()->setHeight(10.0f);
+	framerateGui->addLabel("Video Control")->setStripeVisible(false);
+	framerateGui->addBreak()->setHeight(10.0f);
+	videoControlPrecision = framerateGui->addSlider("Precision", 0.f, 100.f);
+	videoControlPrecision->setStripeColor(ofColor::blueSteel);
+	videoControlPrecision->setValue(0.f);
+	framerateGui->addBreak()->setHeight(10.0f);
+	learnVideoControlButton = framerateGui->addButton("Learn");
+	learnVideoControlButton->onButtonEvent(this, &ofApp::onButtonEvent);
+	learnVideoControlButton->setStripeColor(ofColor::blueSteel);
 	framerateGui->addBreak()->setHeight(10.0f);
 
 	//Filesystem gui
@@ -64,7 +89,7 @@ void ofApp::setup() {
 	openButton->onButtonEvent(this, &ofApp::onButtonEvent);
 	fileSystemGui->addBreak()->setHeight(10.0f);
 	pathLabel = fileSystemGui->addLabel("");
-	pathLabel->setBackgroundColor(ofColor(0.f, 1.f));
+	pathLabel->setBackgroundColor(ofColor(50.f, 1.f));
 	pathLabel->setStripeVisible(false);
 	fileSystemGui->addBreak()->setHeight(10.0f);
 	upButton = fileSystemGui->addButton("Up");
@@ -110,7 +135,20 @@ void ofApp::setup() {
 //--------------------------------------------------------------
 void ofApp::update() {
 	gestureTracker.update();
+	videoContainer.update();
+	
+	float mousePrecision = gestureTracker.mouseAccuracy;
+	float videoPrecision = gestureTracker.videoAccuracy;
 
+	mousePrecision = (2000.f - mousePrecision) / 1000.f * 100.f;
+	videoPrecision = (2000.f - videoPrecision) / 1000.f * 100.f;
+
+	mousePrecision = mousePrecision < 0 ? 0 : (mousePrecision > 100.f  ? 100.f : mousePrecision);
+	videoPrecision = videoPrecision < 0 ? 0 : (videoPrecision > 100.f ? 100.f : videoPrecision);
+
+	mouseControlPrecision->setValue(mousePrecision);
+	videoControlPrecision->setValue(videoPrecision);
+	
 	//if mouse mode is activated by gesture tracker, manipulate mouse position and clicks
 	// SetCursorPos(100,100);
 }
@@ -150,8 +188,8 @@ void ofApp::testPCL() {
 	cerr << "    " << cloud.points[i].x << " " << cloud.points[i].y << " " << cloud.points[i].z << endl;*/
 }
 
-void ofApp::setVideoElements(string path) {
-	videoElements.clear();
+void ofApp::setPathElements(vector<string>& elements, string path, MediaType type) {
+	elements.clear();
 	try {
 		for (auto & entry1 : fs::directory_iterator(path)) {
 			string file = entry1.path().string();
@@ -166,8 +204,10 @@ void ofApp::setVideoElements(string path) {
 					}
 					else if (s.st_mode & S_IFREG)
 					{
-						if (appUtils::hasEnding(file, (string)".mkv") || appUtils::hasEnding(file, (string)".avi")) {
-							videoElements.push_back(file);
+						if (type == MediaType::Video && (appUtils::hasEnding(file, (string)".mkv") || appUtils::hasEnding(file, (string)".avi"))) {
+							elements.push_back(file);
+						} else if (type == MediaType::Feature && (appUtils::hasEnding(file, (string)".png"))) {
+							elements.push_back(file);
 						}
 					}
 				}
@@ -273,13 +313,28 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 		}
 	} 
 	else if(e.target == playButton) {
-		
+		if (playButton->getLabel() == "Play") {
+			videoContainer.pause(false);
+			playButton->setLabel("Pause");
+		}
+		else {
+			videoContainer.pause(true);
+			playButton->setLabel("Play");
+		}
 	}
-	else if (e.target == captureButton) {
-		gestureTracker.capture();
+	else if (e.target == evaluateButton) {
+		vector<string> featureElements;
+		setPathElements(featureElements, capturePath, MediaType::Feature);
+		gestureTracker.initFeatures(featureElements);
+	}
+	else if (e.target == learnMouseControlButton) {
+		gestureTracker.capture("mouse");
+	}
+	else if (e.target == learnVideoControlButton) {
+		gestureTracker.capture("video");
 	}
 	else if (e.target == openButton) {
-		setVideoElements(pathLabel->getLabel());
+		setPathElements(videoElements, pathLabel->getLabel(), MediaType::Video);
 		cout << "init videos" << endl;
 		videoContainer.init(ofVec2f(0, 0), videoElements);
 	}

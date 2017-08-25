@@ -38,7 +38,7 @@ public:
 		}
 	}
 
-	static void setFeatureVector(const ofPixels &pixels, float features[11*11]) {
+	static void setFeatureVector(const ofPixels &pixels, std::array<float, 11 * 11> &features) {
 
 		const int width = appUtils::HOG_SIZE;
 		const int height = appUtils::HOG_SIZE;
@@ -186,7 +186,7 @@ public:
 		return grad;
 	}
 
-	static float getEuclideanDist(float val1[11 * 11], float val2[11 * 11]) {
+	static float getEuclideanDist(std::array<float, 11 * 11> val1, std::array<float, 11 * 11> val2) {
 		float dist = 0;
 		for (int i = 0; i < (11 * 11); i++) {
 			float buff = val1[i] - val2[i];
@@ -195,7 +195,7 @@ public:
 		return dist;
 	}
 
-	static void setFeatureImage(ofImage& image, float features[11 * 11]) {
+	static void setFeatureImage(ofImage& image, std::array<float, 11 * 11> features) {
 
 		const int w = 11;
 		const int h = 11;

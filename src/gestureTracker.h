@@ -10,15 +10,17 @@ public:
 	
 	void startDrag();
 	void stopDrag();
-	void init();
+	void init(vector<string> featureElements);
 	void update();
 	void draw();
-	void capture();
+	void capture(string gestureType);
+	void initFeatures(vector<string> featureElements);
 
 	ofxKFW2::Device kinect;
 
 	bool dragged = false;
 	bool isCursor = false;
+	bool featuresLoaded = false;
 	ofVec2f cursorPosition;
 
 	int trackingTime = 0;
@@ -56,7 +58,10 @@ public:
 	ofImage handImage;
 	ofImage featureImage;
 
-	float featuresReference[11 * 11];
+	vector<std::array<float, 11 * 11>> mouseFeaturesReference;
+	vector<std::array<float, 11 * 11>> videoFeaturesReference;
+	float mouseAccuracy = numeric_limits<int>::max();
+	float videoAccuracy = numeric_limits<int>::max();
 
 private:
 
