@@ -6,6 +6,7 @@
 #include "videoContainer.h"
 #include "gestureTracker.h"
 #include "appUtils.h"
+#include "mouseCursor.h"
 
 //#include <pcl/io/pcd_io.h>
 //#include <pcl/point_types.h>
@@ -51,6 +52,9 @@ public:
 
 	vector<string> videoElements;
 
+	//handCursor
+	mouseCursor mouseCursor;
+
 	//UI Objects ----------------------------------------------------------------------
 	int elements = 0;
 
@@ -62,6 +66,7 @@ public:
 	ofxDatGui* sortingGui;
 
 	//main menu options
+	ofxDatGuiLabel* videoNameLabel;
 	ofxDatGuiButton* collapseButton;
 	ofxDatGuiButton* playButton;
 	ofxDatGuiButton* evaluateButton;

@@ -78,7 +78,7 @@ void gestureTracker::update() {
 				minY = yCoord < minY ? yCoord : minY;
 				maxY = yCoord > maxY ? yCoord : maxY;
 
-				//depthCoords.insert(depthCoords.begin(), ofVec3f(xCoord, yCoord, zCoord));
+				depthCoords.push_back(ofVec3f(xCoord, yCoord, zCoord));
 			}
 		}
 	}
@@ -132,7 +132,12 @@ void gestureTracker::update() {
 	//cout << "Video Control:" << minDistance << endl;
 	videoAccuracy = minDistance;
 	
+	sort(depthCoords.begin(), depthCoords.end(), sortVecByDepth);
+
+	cursorPosition.x = depthCoords.front().x;
+	cursorPosition.y = depthCoords.front().y;
 	/*
+	
 	sort(depthCoords.begin(), depthCoords.end(), sortVecByDepth);
 	coordinateClusers.clear();
 
@@ -155,7 +160,7 @@ void gestureTracker::update() {
 			if (!found)coordinateClusers.push_back(ofVec3f(x, y, z));
 		}
 	}
-
+	/*
 	//setze alle x Sekunden neue Kamera Position anhand der zentralen koordinate
 	if ((int)(ofGetElapsedTimef() - time) % 10 == 0) {
 		vector<ofVec3f>::iterator iteratorTemp;

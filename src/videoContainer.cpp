@@ -77,8 +77,7 @@ void videoContainer::setVideoProperties(string path) {
 	float pct = 0.5f;
 	actualVideo.setPosition(pct);
 	ofImage sampleImage = ofImage(actualVideo.getPixels());
-	if (sampleImage.getHeight() > maxHeight) maxHeight = sampleImage.getHeight();
-	if (sampleImage.getWidth() > maxWidth) maxWidth = sampleImage.getWidth();
+	sampleImage.getHeight();
 
 	currentProperty.sampleFrame = sampleImage;
 	currentProperty.name = path;// .substr(path.find_last_of("\\") + 1);
@@ -93,16 +92,16 @@ void videoContainer::startAnimation() {
 	for (videoProperties& iteratorTemp : sampleFrames) {
 
 		ofImage actualFrame = iteratorTemp.sampleFrame;
-		int height = actualFrame.getHeight();
-		int width = actualFrame.getWidth();
-		int difference = (maxHeight - height) / 2;
+		int height = actualFrame.getHeight() > maxHeight ? maxHeight : actualFrame.getHeight();
+		int width = actualFrame.getHeight() > maxHeight ? (int)(maxHeight / (float)actualFrame.getHeight() * actualFrame.getWidth()) : actualFrame.getWidth();
 
 		float drawX = displayCenter.x - width / 2;
-		float drawY = displayCenter.y - height + (difference)+(count * 500);
-		float drawZ = (float)(-300 - count * 1000);
+		float drawY = displayCenter.y - height + 100 + (count * 300);
+		float drawZ = (float)(-300 - count * 500);
 
 		iteratorTemp.position = ofVec3f(drawX, drawY, drawZ);
 		iteratorTemp.dimension = ofVec2f(width, height);
+		iteratorTemp.sampleFrame.resize(width, height);
 		count--;
 	}
 
@@ -114,6 +113,7 @@ void videoContainer::startAnimation() {
 	actualVideo.setPosition(pct);
 	actualVideo.update();
 	actualVideo.setPaused(true);
+	videoName = sampleFrames.front().name;
 
 	readyState = true;
 

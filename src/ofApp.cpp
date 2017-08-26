@@ -50,6 +50,10 @@ void ofApp::setup() {
 	framerateGui->addBreak()->setHeight(10.0f);
 	framerateGui->addFRM()->setStripeColor(ofColor::green);
 	framerateGui->addBreak()->setHeight(10.0f);
+	videoNameLabel = framerateGui->addLabel("");
+	videoNameLabel->setBackgroundColor(ofColor(50.f, 1.f));
+	videoNameLabel->setStripeVisible(false);
+	framerateGui->addBreak()->setHeight(10.0f);
 	playButton = framerateGui->addButton("Play");
 	playButton->onButtonEvent(this, &ofApp::onButtonEvent);
 	playButton->setStripeColor(ofColor::green);
@@ -136,15 +140,26 @@ void ofApp::setup() {
 void ofApp::update() {
 	gestureTracker.update();
 	videoContainer.update();
-	
+
 	float mousePrecision = gestureTracker.mouseAccuracy;
 	float videoPrecision = gestureTracker.videoAccuracy;
+
+	if (mousePrecision == numeric_limits<int>::max() && mousePrecision == numeric_limits<int>::max()) return;
 
 	mousePrecision = (2000.f - mousePrecision) / 1000.f * 100.f;
 	videoPrecision = (2000.f - videoPrecision) / 1000.f * 100.f;
 
 	mousePrecision = mousePrecision < 0 ? 0 : (mousePrecision > 100.f  ? 100.f : mousePrecision);
 	videoPrecision = videoPrecision < 0 ? 0 : (videoPrecision > 100.f ? 100.f : videoPrecision);
+
+	if (mousePrecision > 50) {
+		if (!mouseCursor.initialized) {
+			mouseCursor.setup(ofVec2f(gestureTracker.cursorPosition.x, gestureTracker.cursorPosition.y));
+		}
+		else {
+			mouseCursor.update(ofVec2f(gestureTracker.cursorPosition.x, gestureTracker.cursorPosition.y));
+		}
+	}
 
 	mouseControlPrecision->setValue(mousePrecision);
 	videoControlPrecision->setValue(videoPrecision);
@@ -161,6 +176,10 @@ void ofApp::draw() {
 	videoContainer.draw();
 
 	gestureTracker.draw();
+
+	if (mouseCursor.initialized) {
+		mouseCursor.draw();
+	}
 
 	cam.end();
 }
@@ -337,6 +356,7 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 		setPathElements(videoElements, pathLabel->getLabel(), MediaType::Video);
 		cout << "init videos" << endl;
 		videoContainer.init(ofVec2f(0, 0), videoElements);
+		videoNameLabel->setLabel(videoContainer.videoName);
 	}
 	else if (e.target == upButton) {
 		string parentLabel = pathLabel->getLabel();
@@ -377,6 +397,7 @@ void ofApp::onDropdownEvent(ofxDatGuiDropdownEvent e)
 	else if (e.target->getLabel() == "Size Descending") {
 		videoContainer.reorderVideos(appUtils::VideoOrder::SizeDesc);
 	}
+	videoNameLabel->setLabel(videoContainer.videoName);
 }
 
 //--------------------------------------------------------------

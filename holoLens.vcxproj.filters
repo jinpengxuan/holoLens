@@ -28,6 +28,9 @@
     <ClCompile Include="src\appUtils.h">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\mouseCursor.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -132,6 +135,9 @@
       <Filter>addons\ofxDatGui\src</Filter>
     </ClInclude>
     <ClInclude Include="src\videoProperties.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mouseCursor.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

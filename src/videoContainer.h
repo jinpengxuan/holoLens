@@ -19,6 +19,8 @@ public:
 	bool readyState = false;
 	bool playing = false;
 
+	string videoName;
+
 	// video
 	ofVideoPlayer actualVideo;
 
@@ -27,7 +29,7 @@ public:
 
 	ofVec2f displayCenter;
 	int videoPosition = 0;
-	int maxHeight = 0;
+	int maxHeight = 300;
 	int maxWidth = 0;
 
 	float animationStart = 0.f;
