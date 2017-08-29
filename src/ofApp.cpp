@@ -57,37 +57,12 @@ void ofApp::setup() {
 	playButton = framerateGui->addButton("Play");
 	playButton->onButtonEvent(this, &ofApp::onButtonEvent);
 	playButton->setStripeColor(ofColor::green);
-	framerateGui->addBreak()->setHeight(10.0f);
-	evaluateButton = framerateGui->addButton("Evaluate");
-	evaluateButton->onButtonEvent(this, &ofApp::onButtonEvent);
-	evaluateButton->setStripeColor(ofColor::green);
-	framerateGui->addBreak()->setHeight(10.0f);
-	framerateGui->addLabel("Mouse Control")->setStripeVisible(false);
-	framerateGui->addBreak()->setHeight(10.0f);
-	mouseControlPrecision = framerateGui->addSlider("Precision", 0.f, 100.f);
-	mouseControlPrecision->setStripeColor(ofColor::blue);
-	mouseControlPrecision->setValue(0.f);
-	framerateGui->addBreak()->setHeight(10.0f);
-	learnMouseControlButton = framerateGui->addButton("Learn");
-	learnMouseControlButton->onButtonEvent(this, &ofApp::onButtonEvent);
-	learnMouseControlButton->setStripeColor(ofColor::blue);
-	framerateGui->addBreak()->setHeight(10.0f);
-	framerateGui->addLabel("Video Control")->setStripeVisible(false);
-	framerateGui->addBreak()->setHeight(10.0f);
-	videoControlPrecision = framerateGui->addSlider("Precision", 0.f, 100.f);
-	videoControlPrecision->setStripeColor(ofColor::blueSteel);
-	videoControlPrecision->setValue(0.f);
-	framerateGui->addBreak()->setHeight(10.0f);
-	learnVideoControlButton = framerateGui->addButton("Learn");
-	learnVideoControlButton->onButtonEvent(this, &ofApp::onButtonEvent);
-	learnVideoControlButton->setStripeColor(ofColor::blueSteel);
-	framerateGui->addBreak()->setHeight(10.0f);
 
 	//Filesystem gui
 
-	fileSystemGui = new ofxDatGui(framerateGui->getWidth() + 1, 0);
+	fileSystemGui = new ofxDatGui(ofxDatGuiAnchor::TOP_HALF_LEFT);
 
-	(fileSystemGui->addLabel(":: Directory Selector ::"))->setLabelAlignment(ofxDatGuiAlignment::CENTER);
+	(fileSystemGui->addLabel(":: File ::"))->setLabelAlignment(ofxDatGuiAlignment::CENTER);
 	fileSystemGui->addBreak()->setHeight(10.0f);
 	openButton = fileSystemGui->addButton("Open Videos");
 	openButton->onButtonEvent(this, &ofApp::onButtonEvent);
@@ -114,7 +89,8 @@ void ofApp::setup() {
 	fileSystemGui->getFooter()->setLabelWhenCollapsed("");
 
 	//Sorting gui
-	sortingGui = new ofxDatGui(ofxDatGuiAnchor::TOP_RIGHT);
+
+	sortingGui = new ofxDatGui(ofxDatGuiAnchor::TOP_HALF_RIGHT);
 	(sortingGui->addLabel(":: Sorting ::"))->setLabelAlignment(ofxDatGuiAlignment::CENTER);
 	sortingGui->addBreak()->setHeight(10.0f);
 	vector<string> options = {"Length Ascending", "Length Descending", "Size Ascending", "Size Descending" };
@@ -124,6 +100,38 @@ void ofApp::setup() {
 	sortingGui->addFooter();
 	sortingGui->getFooter()->setLabelWhenExpanded("");
 	sortingGui->getFooter()->setLabelWhenCollapsed("");
+
+	//Gesture GUI
+
+	gestureGui = new ofxDatGui(ofxDatGuiAnchor::TOP_RIGHT);
+	(gestureGui->addLabel(":: Gestures ::"))->setLabelAlignment(ofxDatGuiAlignment::CENTER);
+	gestureGui->addBreak()->setHeight(10.0f);
+	evaluateButton = gestureGui->addButton("Evaluate");
+	evaluateButton->onButtonEvent(this, &ofApp::onButtonEvent);
+	evaluateButton->setStripeColor(ofColor::green);
+	gestureGui->addBreak()->setHeight(10.0f);
+	gestureGui->addLabel("Mouse Control")->setStripeVisible(false);
+	gestureGui->addBreak()->setHeight(10.0f);
+	mouseControlPrecision = gestureGui->addSlider("Precision", 0.f, 100.f);
+	mouseControlPrecision->setStripeColor(ofColor::blue);
+	mouseControlPrecision->setValue(0.f);
+	gestureGui->addBreak()->setHeight(10.0f);
+	learnMouseControlButton = gestureGui->addButton("Learn");
+	learnMouseControlButton->onButtonEvent(this, &ofApp::onButtonEvent);
+	learnMouseControlButton->setStripeColor(ofColor::blue);
+	gestureGui->addBreak()->setHeight(10.0f);
+	gestureGui->addLabel("Video Control")->setStripeVisible(false);
+	gestureGui->addBreak()->setHeight(10.0f);
+	videoControlPrecision = gestureGui->addSlider("Precision", 0.f, 100.f);
+	videoControlPrecision->setStripeColor(ofColor::blueSteel);
+	videoControlPrecision->setValue(0.f);
+	gestureGui->addBreak()->setHeight(10.0f);
+	learnVideoControlButton = gestureGui->addButton("Learn");
+	learnVideoControlButton->onButtonEvent(this, &ofApp::onButtonEvent);
+	learnVideoControlButton->setStripeColor(ofColor::blueSteel);
+	gestureGui->addFooter();
+	gestureGui->getFooter()->setLabelWhenExpanded("");
+	gestureGui->getFooter()->setLabelWhenCollapsed("");
 
 	//setVideoElements("c:\\vids");
 	//isReady = true;
@@ -322,12 +330,14 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 			collapsed = false;
 			fileSystemGui->expand();
 			sortingGui->expand();
+			gestureGui->expand();
 			collapseButton->setLabel("-");
 		}
 		else {
 			collapsed = true;
 			fileSystemGui->collapse();
 			sortingGui->collapse();
+			gestureGui->collapse();
 			collapseButton->setLabel("+");
 		}
 	} 

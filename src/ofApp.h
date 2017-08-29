@@ -62,6 +62,7 @@ public:
 
 	//gui panel objects
 	ofxDatGui* fileSystemGui;
+	ofxDatGui* gestureGui;
 	ofxDatGui* framerateGui;
 	ofxDatGui* sortingGui;
 
