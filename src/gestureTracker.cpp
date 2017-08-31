@@ -18,11 +18,11 @@ void gestureTracker::init(vector<string> featureElements) {
 void gestureTracker::update() {
 	kinect.update();
 
-	HRESULT hresult = kinect.getSensor()->get_CoordinateMapper(&coordinateMapper);
+	//HRESULT hresult = kinect.getSensor()->get_CoordinateMapper(&coordinateMapper);
 
-	if (FAILED(hresult)) {
-		ofLog() << "CoordinateMapper Not Found";
-	}
+	//if (FAILED(hresult)) {
+	//	ofLog() << "CoordinateMapper Not Found";
+	//}
 	depthCoords.clear();
 
 	const auto & depthPix = kinect.getDepthSource()->getPixels();

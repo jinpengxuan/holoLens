@@ -14,8 +14,9 @@ void mouseCursor::update(ofVec2f actualCursorPos) {
 void mouseCursor::draw() {
 	float actualX = (actualPos.x - startPos.x) * 2;
 	float actualY = (actualPos.y - startPos.y) * 2;
-
+	ofEnableAlphaBlending();
 	cursorImage.draw(actualX, actualY);
+	ofDisableAlphaBlending();
 }
 
 void mouseCursor::tearDown() {

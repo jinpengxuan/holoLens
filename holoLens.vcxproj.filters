@@ -7,12 +7,6 @@
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\gestureTracker.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\videoContainer.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\addons\ofxDatGui\src\core\ofxDatGuiComponent.cpp">
       <Filter>addons\ofxDatGui\src\core</Filter>
     </ClCompile>
@@ -22,14 +16,20 @@
     <ClCompile Include="..\..\..\addons\ofxDatGui\src\ofxDatGui.cpp">
       <Filter>addons\ofxDatGui\src</Filter>
     </ClCompile>
+    <ClCompile Include="src\mouseCursor.cpp">
+      <Filter>src\model</Filter>
+    </ClCompile>
     <ClCompile Include="src\videoProperties.cpp">
-      <Filter>src</Filter>
+      <Filter>src\model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\videoContainer.cpp">
+      <Filter>src\model</Filter>
     </ClCompile>
     <ClCompile Include="src\appUtils.h">
-      <Filter>src</Filter>
+      <Filter>src\utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\mouseCursor.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="src\gestureTracker.cpp">
+      <Filter>src\gesture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -60,15 +60,18 @@
     <Filter Include="addons\ofxDatGui\src\libs\ofxSmartFont">
       <UniqueIdentifier>{f962bd19-c4b2-4692-9361-0e67a8b95dbe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\utils">
+      <UniqueIdentifier>{a747cbee-c10f-4d5b-9c39-7f783ab69da0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\model">
+      <UniqueIdentifier>{271c9c5d-7d4e-444a-ad06-89b58cb3832d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\gesture">
+      <UniqueIdentifier>{d3d76e99-709b-436e-b5f2-1e0640f1c9fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ofApp.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\gestureTracker.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\videoContainer.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\addons\ofxDatGui\src\components\ofxDatGui2dPad.h">
@@ -134,11 +137,17 @@
     <ClInclude Include="..\..\..\addons\ofxDatGui\src\ofxDatGui.h">
       <Filter>addons\ofxDatGui\src</Filter>
     </ClInclude>
-    <ClInclude Include="src\videoProperties.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\mouseCursor.h">
-      <Filter>src</Filter>
+      <Filter>src\model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\videoProperties.h">
+      <Filter>src\model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\videoContainer.h">
+      <Filter>src\model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gestureTracker.h">
+      <Filter>src\gesture</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
