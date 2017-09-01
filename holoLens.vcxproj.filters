@@ -29,7 +29,7 @@
       <Filter>src\utils</Filter>
     </ClCompile>
     <ClCompile Include="src\gestureTracker.cpp">
-      <Filter>src\gesture</Filter>
+      <Filter>src\model</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -66,8 +66,8 @@
     <Filter Include="src\model">
       <UniqueIdentifier>{271c9c5d-7d4e-444a-ad06-89b58cb3832d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\gesture">
-      <UniqueIdentifier>{d3d76e99-709b-436e-b5f2-1e0640f1c9fe}</UniqueIdentifier>
+    <Filter Include="src\view">
+      <UniqueIdentifier>{ffe05f2d-5b74-4b55-b8e1-484d622ecc12}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -146,8 +146,20 @@
     <ClInclude Include="src\videoContainer.h">
       <Filter>src\model</Filter>
     </ClInclude>
+    <ClInclude Include="src\imageUtils.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stringUtils.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pathUtils.h">
+      <Filter>src\utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\menuWrapper.h">
+      <Filter>src\view</Filter>
+    </ClInclude>
     <ClInclude Include="src\gestureTracker.h">
-      <Filter>src\gesture</Filter>
+      <Filter>src\model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,8 @@
 
 #include "ofxKinectForWindows2.h"
 #include "appUtils.h"
+#include "imageUtils.h"
+#include "stringUtils.h"
 #include <limits>
 
 class gestureTracker {
@@ -19,9 +21,10 @@ public:
 	ofxKFW2::Device kinect;
 
 	bool dragged = false;
-	bool isCursor = false;
 	bool featuresLoaded = false;
-	ofVec2f cursorPosition;
+
+	appUtils::CursorMode cursorMode = appUtils::CursorMode::None;
+	vector<ofVec2f> cursorPositions;
 
 	int trackingTime = 0;
 
@@ -43,7 +46,7 @@ public:
 	vector<ofVec3f> depthCoords;
 	//vector<ofVec3f> drawingCoords;
 
-	vector<ofVec3f> coordinateClusers;
+	vector<ofVec2f> coordinateClusers;
 
 	//central position
 	ofVec3f center;
@@ -60,8 +63,8 @@ public:
 
 	vector<std::array<float, 11 * 11>> mouseFeaturesReference;
 	vector<std::array<float, 11 * 11>> videoFeaturesReference;
-	float mouseAccuracy = numeric_limits<int>::max();
-	float videoAccuracy = numeric_limits<int>::max();
+	float mouseAccuracy = 0;
+	float videoAccuracy = 0;
 
 private:
 

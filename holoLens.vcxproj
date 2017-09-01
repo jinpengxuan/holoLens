@@ -211,8 +211,12 @@
     <ClInclude Include="..\..\..\addons\ofxDatGui\src\themes\ofxDatGuiTheme.h" />
     <ClInclude Include="..\..\..\addons\ofxDatGui\src\themes\ofxDatGuiThemes.h" />
     <ClInclude Include="src\gestureTracker.h" />
+    <ClInclude Include="src\imageUtils.h" />
+    <ClInclude Include="src\menuWrapper.h" />
     <ClInclude Include="src\mouseCursor.h" />
     <ClInclude Include="src\ofApp.h" />
+    <ClInclude Include="src\pathUtils.h" />
+    <ClInclude Include="src\stringUtils.h" />
     <ClInclude Include="src\videoContainer.h" />
     <ClInclude Include="src\videoProperties.h" />
   </ItemGroup>

@@ -1,22 +1,29 @@
 #include "mouseCursor.h"
 
-void mouseCursor::setup(ofVec2f initCursorPos) {
+void mouseCursor::setup(vector<ofVec2f>& initCursorPos) {
 	startPos = initCursorPos;
 	actualPos = initCursorPos;
 	cursorImage.load("cursor.png");
 	initialized = true;
 }
 
-void mouseCursor::update(ofVec2f actualCursorPos) {
+void mouseCursor::update(vector<ofVec2f>& actualCursorPos) {
 	actualPos = actualCursorPos;
 }
 
 void mouseCursor::draw() {
-	float actualX = (actualPos.x - startPos.x) * 2;
-	float actualY = (actualPos.y - startPos.y) * 2;
-	ofEnableAlphaBlending();
-	cursorImage.draw(actualX, actualY);
-	ofDisableAlphaBlending();
+	if (startPos.size() != actualPos.size())return;
+	int count = 0;
+
+	for (ofVec2f& pos : actualPos) {
+		float actualX = pos.x - 100.f;
+		float actualY = pos.y - 250.f;
+		ofEnableAlphaBlending();
+		//SetCursorPos(actualX, actualY);
+		cursorImage.draw(actualX, actualY);
+		ofDisableAlphaBlending();
+		count++;
+	}
 }
 
 void mouseCursor::tearDown() {

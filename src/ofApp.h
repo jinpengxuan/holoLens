@@ -6,7 +6,10 @@
 #include "videoContainer.h"
 #include "gestureTracker.h"
 #include "appUtils.h"
+#include "pathUtils.h"
+#include "stringUtils.h"
 #include "mouseCursor.h"
+#include "menuWrapper.h"
 
 //#include <pcl/io/pcd_io.h>
 //#include <pcl/point_types.h>
@@ -17,8 +20,6 @@ public:
 	void setup();
 	void update();
 	void draw();
-
-	void testPCL();
 
 	void onButtonEvent(ofxDatGuiButtonEvent e);
 	void onDropdownEvent(ofxDatGuiDropdownEvent e);
@@ -32,11 +33,7 @@ public:
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
 
-	const enum MediaType { Video, Feature };
-
 	ofCamera cam;
-
-	bool collapsed = false;
 
 	//time measurement
 	float time;
@@ -55,47 +52,13 @@ public:
 	//handCursor
 	mouseCursor mouseCursor;
 
-	//UI Objects ----------------------------------------------------------------------
-	int elements = 0;
-
-	array<string, 6> drives{ { "c:\\","d:\\","e:\\","f:\\","g:\\","h:\\" } };
-
-	//gui panel objects
-	ofxDatGui* fileSystemGui;
-	ofxDatGui* gestureGui;
-	ofxDatGui* framerateGui;
-	ofxDatGui* sortingGui;
-
-	//main menu options
-	ofxDatGuiLabel* videoNameLabel;
-	ofxDatGuiButton* collapseButton;
-	ofxDatGuiButton* playButton;
-	ofxDatGuiButton* evaluateButton;
-	ofxDatGuiButton* learnMouseControlButton;
-	ofxDatGuiButton* learnVideoControlButton;
-	ofxDatGuiSlider* mouseControlPrecision;
-	ofxDatGuiSlider* videoControlPrecision;
-
-	//gui filesystem elements
-	ofxDatGuiButton* openButton;
-	ofxDatGuiButton* upButton;
-
-	ofxDatGuiLabel* pathLabel;
-
 	const string capturePath = "c:\\of_v0.9.8_vs_release\\apps\\myApps\\holoLens\\bin\\data\\captures\\";
-
-	//gui sorting elements
-	ofxDatGuiDropdown* sortOptions;
-
-	//available drives list
-	vector <string> availableDrives;
 
 	//current parent folder
 	string currentParent;
 
-private:
+	menuWrapper menu;
 
-	void loadSubOptions(string directory);
-	void setPathElements(vector<string>& elements, string path, MediaType type);
+private:
 
 };
