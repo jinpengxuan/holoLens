@@ -101,7 +101,6 @@ void gestureTracker::draw() {
 	if (handImage.isAllocated()) {
 		int height = ofGetHeight();
 		int width = ofGetWidth();
-		handImage.resize(appUtils::HOG_SIZE, appUtils::HOG_SIZE);
 		handImage.draw(0 - (width/3.5), 0 - (height/3.5));
 	}
 }

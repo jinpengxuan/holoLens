@@ -15,6 +15,20 @@ public:
 
 	static void setHandImage(ofImage& handImage, frame frame) {
 
+		//we need a frame that is equal in height and width
+		if (frame.widthImg > frame.heightImg) {
+			float difference = frame.widthImg - frame.heightImg;
+			frame.minYImg = frame.minYImg - difference / 2;
+			frame.maxYImg = frame.maxYImg + difference / 2;
+			frame.heightImg = frame.widthImg;
+		}
+		else {
+			float difference = frame.heightImg - frame.widthImg;
+			frame.minXImg = frame.minXImg - difference / 2;
+			frame.maxXImg = frame.maxXImg + difference / 2;
+			frame.widthImg = frame.heightImg;
+		}
+
 		handImage.allocate(frame.widthImg, frame.heightImg, OF_IMAGE_GRAYSCALE);
 		ofPixels pix = ofPixels();
 
@@ -85,7 +99,7 @@ public:
 				int index = x + y*pixels.getWidth();
 				int indexFrame = (x - frameObj.minX) + (y - frameObj.minY)*frameObj.width;
 				int distance = pixels[index];
-				if (distance < 400 || distance > 800) continue;
+				if (distance < 400 || distance > 700) continue;
 
 				// Outlier Removal
 
