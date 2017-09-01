@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-#include "appUtils.h"
+#include "frame.h"
 #include <string>
 #include <iostream>
 #include <filesystem>
@@ -10,6 +10,106 @@ namespace fs = filesystem;
 class imageUtils {
 
 public:
+
+	bool sortVecByDepth(ofVec3f i, ofVec3f j) { return (i.z < j.z); }
+
+	static void setHandImage(ofImage& handImage, frame frame) {
+
+		handImage.allocate(frame.widthImg, frame.heightImg, OF_IMAGE_GRAYSCALE);
+		ofPixels pix = ofPixels();
+
+		float depthAmount = (frame.maxZ - frame.minZ);
+
+		pix.allocate(frame.widthImg, frame.heightImg, OF_IMAGE_GRAYSCALE);
+		pix.setColor(0);
+
+		for (int y = frame.minYImg; y < frame.maxYImg; y++) {
+			for (int x = frame.minXImg; x < frame.maxXImg; x++) {
+				int index = x + y*frame.width;
+				int distance = frame.pixels[index];
+
+				int thumbIndex = (x - frame.minXImg) + (y - frame.minYImg) * frame.widthImg;
+				float greyVal = (frame.maxZ - distance) / depthAmount * 255.f;
+				pix.setColor(thumbIndex, ofColor(greyVal < 0 ? 0 : greyVal));
+			}
+		}
+
+		handImage.setFromPixels(pix);
+		handImage.resize(appUtils::HOG_SIZE, appUtils::HOG_SIZE);
+	}
+
+	static void setDepthCoordinatesSorted(vector<ofVec3f>& depthCoordinates, frame& frame) {
+		depthCoordinates.clear();
+
+		float difference = 80;
+
+		int minX = numeric_limits<int>::max();
+		int minY = numeric_limits<int>::max();
+
+		int maxX = numeric_limits<int>::min();
+		int maxY = numeric_limits<int>::min();
+
+		for (int y = 0; y < frame.height; y++) {
+			for (int x = 0; x < frame.width; x++) {
+				int index = x + y*frame.width;
+				int distance = frame.pixels[index];
+
+				if (distance > frame.maxZ || distance < frame.minZ)continue;
+
+				minX = x < minX ? x : minX;
+				maxX = x > maxX ? x : maxX;
+				minY = y < minY ? y : minY;
+				maxY = y > maxY ? y : maxY;
+
+				depthCoordinates.push_back(ofVec3f(x, y, distance));
+			}
+		}
+
+		frame.minXImg = minX;
+		frame.maxXImg = maxX;
+		frame.minYImg = minY;
+		frame.maxYImg = maxY;
+		frame.widthImg = maxX - minX;
+		frame.heightImg = maxY - minY;
+	}
+
+	static void setFrame(frame& frameObj, const ofShortPixels& pixels) {
+		int minZ = numeric_limits<int>::max();
+		int length = frameObj.width*frameObj.height;
+		frameObj.width = frameObj.maxX - frameObj.minX;
+		frameObj.height = frameObj.maxY - frameObj.minY;
+		frameObj.pixels = new int[length];
+
+		for (int y = frameObj.minY; y < frameObj.maxY; y ++) {
+			for (int x = frameObj.minX; x < frameObj.maxX; x ++) {
+				int index = x + y*pixels.getWidth();
+				int indexFrame = (x - frameObj.minX) + (y - frameObj.minY)*frameObj.width;
+				int distance = pixels[index];
+				if (distance < 400 || distance > 800) continue;
+
+				// Outlier Removal
+
+				int boundaryMax = distance + 10;
+				int boundaryMin = distance - 10;
+				int indexTop = index - pixels.getWidth();
+				int indexBottom = index + pixels.getWidth();
+				int indexLeft = index - 1;
+				int indexRight = index + 1;
+				if (pixels[indexTop] < (boundaryMin) || pixels[indexTop] > (boundaryMax) ||
+					pixels[indexBottom] < (boundaryMin) || pixels[indexBottom] > (boundaryMax) ||
+					pixels[indexLeft] < (boundaryMin) || pixels[indexLeft] > (boundaryMax) ||
+					pixels[indexRight] < (boundaryMin) || pixels[indexRight] > (boundaryMax)) {
+					frameObj.pixels[indexFrame] = (pixels[indexTop] + pixels[indexBottom] + pixels[indexLeft] + pixels[indexRight]) / 4;
+				}
+				else {
+					frameObj.pixels[indexFrame] = distance;
+					minZ = distance < minZ ? distance : minZ;
+				}
+			}
+		}
+		frameObj.minZ = minZ;
+		frameObj.maxZ = minZ + 80.f;
+	}
 
 	static void setFeatureVector(const ofPixels &pixels, std::array<float, 11 * 11> &features) {
 

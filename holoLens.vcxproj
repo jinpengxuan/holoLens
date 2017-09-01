@@ -186,7 +186,6 @@
     <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="src\appUtils.h" />
     <ClCompile Include="src\videoContainer.cpp" />
-    <ClCompile Include="src\videoProperties.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\addons\ofxDatGui\src\components\ofxDatGui2dPad.h" />
@@ -210,6 +209,7 @@
     <ClInclude Include="..\..\..\addons\ofxDatGui\src\ofxDatGui.h" />
     <ClInclude Include="..\..\..\addons\ofxDatGui\src\themes\ofxDatGuiTheme.h" />
     <ClInclude Include="..\..\..\addons\ofxDatGui\src\themes\ofxDatGuiThemes.h" />
+    <ClInclude Include="src\frame.h" />
     <ClInclude Include="src\gestureTracker.h" />
     <ClInclude Include="src\imageUtils.h" />
     <ClInclude Include="src\menuWrapper.h" />

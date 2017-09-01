@@ -2,6 +2,7 @@
 
 #include "ofxKinectForWindows2.h"
 #include "appUtils.h"
+#include "frame.h"
 #include "imageUtils.h"
 #include "stringUtils.h"
 #include <limits>
@@ -30,13 +31,6 @@ public:
 
 	float rotationDegree = 0.f;
 	int translation = 0;
-
-	int minZ = numeric_limits<int>::max();
-
-	int minX = numeric_limits<int>::max();
-	int minY = numeric_limits<int>::max();
-	int maxX = numeric_limits<int>::min();
-	int maxY = numeric_limits<int>::min();
 
 	int xShift = -200;
 	int yShift = -400;

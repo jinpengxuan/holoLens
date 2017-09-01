@@ -19,9 +19,6 @@
     <ClCompile Include="src\mouseCursor.cpp">
       <Filter>src\model</Filter>
     </ClCompile>
-    <ClCompile Include="src\videoProperties.cpp">
-      <Filter>src\model</Filter>
-    </ClCompile>
     <ClCompile Include="src\videoContainer.cpp">
       <Filter>src\model</Filter>
     </ClCompile>
@@ -159,6 +156,9 @@
       <Filter>src\view</Filter>
     </ClInclude>
     <ClInclude Include="src\gestureTracker.h">
+      <Filter>src\model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\frame.h">
       <Filter>src\model</Filter>
     </ClInclude>
   </ItemGroup>

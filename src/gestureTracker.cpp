@@ -1,7 +1,5 @@
 #include "gestureTracker.h"
 
-bool sortVecByDepth(ofVec3f i, ofVec3f j) { return (i.z < j.z); }
-
 void gestureTracker::init(vector<string> featureElements) {
 	kinect.open();
 	kinect.initDepthSource();
@@ -12,93 +10,29 @@ void gestureTracker::init(vector<string> featureElements) {
 void gestureTracker::update() {
 	kinect.update();
 
-	depthCoords.clear();
-
 	const auto & depthPix = kinect.getDepthSource()->getPixels();
 
 	int skip = 1;
-	minZ = numeric_limits<int>::max();
-	minX = numeric_limits<int>::max();
-	minY = numeric_limits<int>::max();
-	maxX = numeric_limits<int>::min();
-	maxY = numeric_limits<int>::min();
 
 	if (depthPix.size() == 0)return;
 
+	frame frame; 
+	frame.minX = 1;
+	frame.maxX = depthPix.getWidth() - 1;
 
+	frame.minY = depthPix.getHeight() * 0.25f;
+	frame.maxY = depthPix.getHeight() * 0.75f;
 
-	for (int y = 1; y < depthPix.getHeight() - 1; y += skip){
-		for (int x = 1; x < depthPix.getWidth() - 1; x += skip) {
-			int index = x + y*depthPix.getWidth();
-			int distance = depthPix[index];
-			if (distance < 400 || distance > 700) continue;
-			
-			// Outlier Removal
+	frame.width = frame.maxX - frame.minX;
+	frame.height = frame.maxY - frame.minY;
 
-			int boundaryMax = distance + 10;
-			int boundaryMin = distance - 10;
-			int indexTop = index - depthPix.getWidth();
-			int indexBottom = index + depthPix.getWidth();
-			int indexLeft = index - 1;
-			int indexRight = index + 1;
-			if (depthPix[indexTop] < (boundaryMin) || depthPix[indexTop] > (boundaryMax) ||
-				depthPix[indexBottom] < (boundaryMin) || depthPix[indexBottom] > (boundaryMax) ||
-				depthPix[indexLeft] < (boundaryMin) || depthPix[indexLeft] > (boundaryMax) ||
-				depthPix[indexRight] < (boundaryMin) || depthPix[indexRight] > (boundaryMax)) {
-			}
-			else {
-
-				minZ = distance < minZ ? distance : minZ;
-				
-			}
-		}
-	}
-
-	float difference = 80;
-	float maxZ = minZ + difference;
-
-	for (int y = 1; y < depthPix.getHeight() - 1; y += skip) {
-		for (int x = 1; x < depthPix.getWidth() - 1; x += skip) {
-			int index = x + y*depthPix.getWidth();
-			int distance = depthPix[index];
-
-			if (distance > maxZ || distance < minZ)continue;
-
-			minX = x < minX ? x : minX;
-			maxX = x > maxX ? x : maxX;
-			minY = y < minY ? y : minY;
-			maxY = y > maxY ? y : maxY;
-
-			depthCoords.push_back(ofVec3f(x, y, distance));
-		}
-	}
-
-	int widthImg = maxX - minX + 20;
-	int heightImg = maxY - minY + 20;
+	imageUtils::setFrame(frame, depthPix);
 	
+	imageUtils::setDepthCoordinatesSorted(depthCoords, frame);
 
 	handImage = ofImage();
-	handImage.allocate(widthImg, heightImg, OF_IMAGE_GRAYSCALE);
+	imageUtils::setHandImage(handImage, frame);
 
-	ofPixels pix = ofPixels();
-	
-	pix.allocate(widthImg, heightImg, OF_IMAGE_GRAYSCALE);
-	pix.setColor(0);
-
-	for (int y = minY; y < maxY; y += skip) {
-		for (int x = minX; x < maxX; x += skip) {
-			int index = x + y*depthPix.getWidth();
-			int distance = depthPix[index];
-
-			int thumbIndex = (x - minX + 10) + (y - minY + 10) * widthImg;
-			float greyVal = (maxZ - distance) / difference * 255.f;
-			pix.setColor(thumbIndex, ofColor(greyVal < 0 ? 0 : greyVal));
-		}
-	}
-
-	handImage.setFromPixels(pix);
-	handImage.resize(appUtils::HOG_SIZE, appUtils::HOG_SIZE);
-	
 	// calculate matching
 	if (!featuresLoaded)return;
 
@@ -130,12 +64,10 @@ void gestureTracker::update() {
 
 	coordinateClusers.clear();
 	if (mouseAccuracy > 50) {
-		sort(depthCoords.begin(), depthCoords.end(), sortVecByDepth);
 		cursorMode = appUtils::CursorMode::Pointer;
 		coordinateClusers.push_back(depthCoords.front());
 	}
 	else if (videoAccuracy > 50) {
-		sort(depthCoords.begin(), depthCoords.end(), sortVecByDepth);
 		cursorMode = appUtils::CursorMode::Grab;
 		int clusterRadius = 20;
 		for (ofVec3f& iteratorTemp : depthCoords) {
@@ -143,7 +75,7 @@ void gestureTracker::update() {
 			float y = iteratorTemp.y;
 			float z = iteratorTemp.z;
 			if (coordinateClusers.size() == 5)break;
-			if (z < (minZ + 20)) {
+			if (z < (frame.minZ + 20)) {
 				bool found = false;
 				for (ofVec2f& iteratorCluster : coordinateClusers) {
 					if (x >(iteratorCluster.x - clusterRadius)
@@ -161,6 +93,7 @@ void gestureTracker::update() {
 	else {
 		cursorMode = appUtils::CursorMode::None;
 	}
+	delete[] frame.pixels;
 }
 
 void gestureTracker::draw() {
