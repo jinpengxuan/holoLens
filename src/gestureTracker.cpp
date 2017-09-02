@@ -1,5 +1,7 @@
 #include "gestureTracker.h"
 
+bool sortVecByDepth(ofVec3f i, ofVec3f j) { return (i.z < j.z); }
+
 void gestureTracker::init(vector<string> featureElements) {
 	kinect.open();
 	kinect.initDepthSource();
@@ -16,84 +18,54 @@ void gestureTracker::update() {
 
 	if (depthPix.size() == 0)return;
 
+	// set frame positions for evaluation
 	frame frame; 
 	frame.minX = 1;
 	frame.maxX = depthPix.getWidth() - 1;
 
-	frame.minY = depthPix.getHeight() * 0.25f;
-	frame.maxY = depthPix.getHeight() * 0.75f;
+	frame.minY = depthPix.getHeight() * 0.15f;
+	frame.maxY = depthPix.getHeight() * 0.85f;
 
 	frame.width = frame.maxX - frame.minX;
 	frame.height = frame.maxY - frame.minY;
 
+	// get a slightly smaller frame from the depth frame
 	imageUtils::setFrame(frame, depthPix);
 	
-	imageUtils::setDepthCoordinatesSorted(depthCoords, frame);
+	// set depth coordinates and frame to evaluate
+	imageUtils::setDepthCoordinates(depthCoords, frame);
 
+	// set the image of the depth coordinates from the nearest object
 	handImage = ofImage();
 	imageUtils::setHandImage(handImage, frame);
 
+	delete[] frame.pixels;
 	// calculate matching
 	if (!featuresLoaded)return;
 
+	// get features of current frame
 	std::array<float, 11 * 11> features{};
 	imageUtils::setFeatureVector(handImage.getPixels(), features);
-	int minDistance = numeric_limits<int>::max();
-	for (std::array<float, 11 * 11> featuresRef : mouseFeaturesReference) {
 
-		int difference = imageUtils::getEuclideanDist(featuresRef, features);
-		minDistance = difference < minDistance ? difference : minDistance;
-	}
-	//cout << "Mouse Control:" << minDistance << endl;
-	mouseAccuracy = minDistance;
+	// get accuracies
+	mouseAccuracy = imageUtils::getAccuracy(mouseFeaturesReference, features);
+	videoAccuracy = imageUtils::getAccuracy(videoFeaturesReference, features);
 
-	minDistance = numeric_limits<int>::max();
-	for (std::array<float, 11 * 11> featuresRef : videoFeaturesReference) {
-
-		float difference = imageUtils::getEuclideanDist(featuresRef, features);
-		minDistance = difference < minDistance ? difference : minDistance;
-	}
-	//cout << "Video Control:" << minDistance << endl;
-	videoAccuracy = minDistance;
-
-	mouseAccuracy = (2000.f - mouseAccuracy) / 1500.f * 100.f;
-	videoAccuracy = (2000.f - videoAccuracy) / 1500.f * 100.f;
-
-	mouseAccuracy = mouseAccuracy < 0 ? 0 : (mouseAccuracy > 100.f ? 100.f : mouseAccuracy);
-	videoAccuracy = videoAccuracy < 0 ? 0 : (videoAccuracy > 100.f ? 100.f : videoAccuracy);
-
+	// get clusters of finger tips
 	coordinateClusers.clear();
 	if (mouseAccuracy > 50) {
+		sort(depthCoords.begin(), depthCoords.end(), sortVecByDepth);
 		cursorMode = appUtils::CursorMode::Pointer;
-		coordinateClusers.push_back(depthCoords.front());
+		imageUtils::setClusters(depthCoords, coordinateClusers, frame, 1);
 	}
 	else if (videoAccuracy > 50) {
+		sort(depthCoords.begin(), depthCoords.end(), sortVecByDepth);
 		cursorMode = appUtils::CursorMode::Grab;
-		int clusterRadius = 20;
-		for (ofVec3f& iteratorTemp : depthCoords) {
-			float x = iteratorTemp.x;
-			float y = iteratorTemp.y;
-			float z = iteratorTemp.z;
-			if (coordinateClusers.size() == 5)break;
-			if (z < (frame.minZ + 20)) {
-				bool found = false;
-				for (ofVec2f& iteratorCluster : coordinateClusers) {
-					if (x >(iteratorCluster.x - clusterRadius)
-						&& x <(iteratorCluster.x + clusterRadius)
-						&& y >(iteratorCluster.y - clusterRadius)
-						&& y < (iteratorCluster.y + clusterRadius)
-						) {
-						found = true;
-					}
-				}
-				if (!found)coordinateClusers.push_back(ofVec2f(x, y));
-			}
-		}
+		imageUtils::setClusters(depthCoords, coordinateClusers, frame, 5);
 	}
 	else {
 		cursorMode = appUtils::CursorMode::None;
 	}
-	delete[] frame.pixels;
 }
 
 void gestureTracker::draw() {

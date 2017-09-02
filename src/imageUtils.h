@@ -11,9 +11,45 @@ class imageUtils {
 
 public:
 
-	bool sortVecByDepth(ofVec3f i, ofVec3f j) { return (i.z < j.z); }
+	static void setClusters(vector<ofVec3f>& depthCoords, vector<ofVec2f>& coordinateClusers, frame& frame, int clusterCount) {
+		int clusterRadius = 20;
+		for (ofVec3f& iteratorTemp : depthCoords) {
+			float x = iteratorTemp.x;
+			float y = iteratorTemp.y;
+			float z = iteratorTemp.z;
+			if (coordinateClusers.size() == clusterCount)break;
+			if (z < (frame.minZ + 20)) {
+				bool found = false;
+				for (ofVec2f& iteratorCluster : coordinateClusers) {
+					if (x >(iteratorCluster.x - clusterRadius)
+						&& x <(iteratorCluster.x + clusterRadius)
+						&& y >(iteratorCluster.y - clusterRadius)
+						&& y < (iteratorCluster.y + clusterRadius)
+						) {
+						found = true;
+					}
+				}
+				if (!found)coordinateClusers.push_back(ofVec2f(x, y));
+			}
+		}
+	}
 
-	static void setHandImage(ofImage& handImage, frame frame) {
+	static int getAccuracy(vector<std::array<float, 11 * 11>>& featuresReference, std::array<float, 11 * 11>& features) {
+		int accuracy = numeric_limits<int>::max();
+		for (std::array<float, 11 * 11> featuresRef : featuresReference) {
+
+			int difference = imageUtils::getEuclideanDist(featuresRef, features);
+			accuracy = difference < accuracy ? difference : accuracy;
+		}
+
+		accuracy = (2000.f - accuracy) / 1500.f * 100.f;
+
+		accuracy = accuracy < 0 ? 0 : (accuracy > 100.f ? 100.f : accuracy);
+
+		return accuracy;
+	}
+
+	static void setHandImage(ofImage& handImage, frame& frame) {
 
 		//we need a frame that is equal in height and width
 		if (frame.widthImg > frame.heightImg) {
@@ -21,13 +57,20 @@ public:
 			frame.minYImg = frame.minYImg - difference / 2;
 			frame.maxYImg = frame.maxYImg + difference / 2;
 			frame.heightImg = frame.widthImg;
+			frame.minYImg = frame.minYImg <= frame.minY ? frame.minY : frame.minYImg;
+			frame.maxYImg = frame.maxYImg >= frame.maxY ? frame.maxY : frame.maxYImg;
 		}
 		else {
 			float difference = frame.heightImg - frame.widthImg;
 			frame.minXImg = frame.minXImg - difference / 2;
 			frame.maxXImg = frame.maxXImg + difference / 2;
 			frame.widthImg = frame.heightImg;
+			frame.minXImg = frame.minXImg <= frame.minX ? frame.minX : frame.minXImg;
+			frame.maxXImg = frame.maxXImg >= frame.maxX ? frame.maxX : frame.maxXImg;
 		}
+
+		//cout << "minX: " << frame.minX << " maxX: " << frame.maxX << " minXImg: " << frame.minXImg << " maxXImg: " << frame.maxXImg << endl;
+		//cout << "minY: " << frame.minY << " maxY: " << frame.maxY << " minYImg: " << frame.minYImg << " maxYImg: " << frame.maxYImg << endl;
 
 		handImage.allocate(frame.widthImg, frame.heightImg, OF_IMAGE_GRAYSCALE);
 		ofPixels pix = ofPixels();
@@ -52,7 +95,7 @@ public:
 		handImage.resize(appUtils::HOG_SIZE, appUtils::HOG_SIZE);
 	}
 
-	static void setDepthCoordinatesSorted(vector<ofVec3f>& depthCoordinates, frame& frame) {
+	static void setDepthCoordinates(vector<ofVec3f>& depthCoordinates, frame& frame) {
 		depthCoordinates.clear();
 
 		float difference = 80;
@@ -90,8 +133,6 @@ public:
 	static void setFrame(frame& frameObj, const ofShortPixels& pixels) {
 		int minZ = numeric_limits<int>::max();
 		int length = frameObj.width*frameObj.height;
-		frameObj.width = frameObj.maxX - frameObj.minX;
-		frameObj.height = frameObj.maxY - frameObj.minY;
 		frameObj.pixels = new int[length];
 
 		for (int y = frameObj.minY; y < frameObj.maxY; y ++) {
@@ -122,7 +163,7 @@ public:
 			}
 		}
 		frameObj.minZ = minZ;
-		frameObj.maxZ = minZ + 80.f;
+		frameObj.maxZ = minZ + 100.f;
 	}
 
 	static void setFeatureVector(const ofPixels &pixels, std::array<float, 11 * 11> &features) {
