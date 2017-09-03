@@ -42,7 +42,7 @@ public:
 			accuracy = difference < accuracy ? difference : accuracy;
 		}
 
-		accuracy = (2000.f - accuracy) / 1500.f * 100.f;
+		accuracy = (2000.f - accuracy) / 2000.f * 100.f;
 
 		accuracy = accuracy < 0 ? 0 : (accuracy > 100.f ? 100.f : accuracy);
 

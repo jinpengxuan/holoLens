@@ -50,6 +50,7 @@ public:
 
 	//time measurement
 	float time;
+	float checkGestureTime = 0.f;
 
 	// visualizing the hand on the mapped image frame
 	ofImage handImage;
@@ -57,8 +58,10 @@ public:
 
 	vector<std::array<float, 11 * 11>> mouseFeaturesReference;
 	vector<std::array<float, 11 * 11>> videoFeaturesReference;
+	vector<std::array<float, 11 * 11>> abortFeaturesReference;
 	float mouseAccuracy = 0;
 	float videoAccuracy = 0;
+	float abortAccuracy = 0;
 
 private:
 

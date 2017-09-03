@@ -36,8 +36,10 @@ void ofApp::update() {
 
 	menu.mouseControlPrecision->setValue(gestureTracker.mouseAccuracy);
 	menu.videoControlPrecision->setValue(gestureTracker.videoAccuracy);
+	menu.abortControlPrecision->setValue(gestureTracker.abortAccuracy);
 
 	if (gestureTracker.cursorMode == appUtils::CursorMode::None) {
+		if (mouseCursor.initialized)mouseCursor.tearDown;
 		return;
 	}
 	else if (gestureTracker.cursorMode == appUtils::CursorMode::Pointer) {
@@ -115,6 +117,9 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 	}
 	else if (e.target == menu.learnVideoControlButton) {
 		gestureTracker.capture("video");
+	}
+	else if (e.target == menu.learnAbortControlButton) {
+		gestureTracker.capture("abort");
 	}
 	else if (e.target == menu.openButton) {
 		pathUtils::setPathElements(videoElements, menu.pathLabel->getLabel(), appUtils::MediaType::Video);

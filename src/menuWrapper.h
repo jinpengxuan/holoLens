@@ -25,8 +25,10 @@ public:
 	ofxDatGuiButton* evaluateButton;
 	ofxDatGuiButton* learnMouseControlButton;
 	ofxDatGuiButton* learnVideoControlButton;
+	ofxDatGuiButton* learnAbortControlButton;
 	ofxDatGuiSlider* mouseControlPrecision;
 	ofxDatGuiSlider* videoControlPrecision;
+	ofxDatGuiSlider* abortControlPrecision;
 
 	//gui filesystem elements
 	ofxDatGuiButton* openButton;
@@ -100,7 +102,7 @@ public:
 
 		fileSystemGui->addFooter();
 		fileSystemGui->getFooter()->setLabelWhenExpanded("");
-		fileSystemGui->getFooter()->setLabelWhenCollapsed("");
+		fileSystemGui->getFooter()->setLabelWhenCollapsed(":: File ::");
 
 		//Sorting gui
 
@@ -113,7 +115,7 @@ public:
 		sortingGui->addBreak()->setHeight(10.0f);
 		sortingGui->addFooter();
 		sortingGui->getFooter()->setLabelWhenExpanded("");
-		sortingGui->getFooter()->setLabelWhenCollapsed("");
+		sortingGui->getFooter()->setLabelWhenCollapsed("::Sorting ::");
 
 		//Gesture GUI
 
@@ -143,9 +145,19 @@ public:
 		learnVideoControlButton = gestureGui->addButton("Learn");
 		learnVideoControlButton->onButtonEvent(owner, buttonListenerMethod);
 		learnVideoControlButton->setStripeColor(ofColor::blueSteel);
+		gestureGui->addBreak()->setHeight(10.0f);
+		gestureGui->addLabel("Abort Control")->setStripeVisible(false);
+		gestureGui->addBreak()->setHeight(10.0f);
+		abortControlPrecision = gestureGui->addSlider("Precision", 0.f, 100.f);
+		abortControlPrecision->setStripeColor(ofColor::aliceBlue);
+		abortControlPrecision->setValue(0.f);
+		gestureGui->addBreak()->setHeight(10.0f);
+		learnAbortControlButton = gestureGui->addButton("Learn");
+		learnAbortControlButton->onButtonEvent(owner, buttonListenerMethod);
+		learnAbortControlButton->setStripeColor(ofColor::aliceBlue);
 		gestureGui->addFooter();
 		gestureGui->getFooter()->setLabelWhenExpanded("");
-		gestureGui->getFooter()->setLabelWhenCollapsed("");
+		gestureGui->getFooter()->setLabelWhenCollapsed("::Gestures ::");
 
 	}
 

@@ -35,32 +35,44 @@ void gestureTracker::update() {
 	// set depth coordinates and frame to evaluate
 	imageUtils::setDepthCoordinates(depthCoords, frame);
 
-	// set the image of the depth coordinates from the nearest object
-	handImage = ofImage();
-	imageUtils::setHandImage(handImage, frame);
+	if (ofGetElapsedTimeMillis() - checkGestureTime >= 500) {
+		checkGestureTime = ofGetElapsedTimeMillis();
+		// set the image of the depth coordinates from the nearest object
+		handImage = ofImage();
+		imageUtils::setHandImage(handImage, frame);
 
-	delete[] frame.pixels;
-	// calculate matching
-	if (!featuresLoaded)return;
+		delete[] frame.pixels;
+		// calculate matching
+		if (!featuresLoaded)return;
 
-	// get features of current frame
-	std::array<float, 11 * 11> features{};
-	imageUtils::setFeatureVector(handImage.getPixels(), features);
+		// get features of current frame
+		std::array<float, 11 * 11> features{};
+		imageUtils::setFeatureVector(handImage.getPixels(), features);
 
-	// get accuracies
-	mouseAccuracy = imageUtils::getAccuracy(mouseFeaturesReference, features);
-	videoAccuracy = imageUtils::getAccuracy(videoFeaturesReference, features);
+		// get accuracies
+		mouseAccuracy = imageUtils::getAccuracy(mouseFeaturesReference, features);
+		videoAccuracy = imageUtils::getAccuracy(videoFeaturesReference, features);
+		abortAccuracy = imageUtils::getAccuracy(videoFeaturesReference, features);
+
+		if (mouseAccuracy > 60) {
+			cursorMode = appUtils::CursorMode::Pointer;
+		}
+		else if (videoAccuracy > 60) {
+			cursorMode = appUtils::CursorMode::Grab;
+		}
+		else if (abortAccuracy > 60) {
+			cursorMode = appUtils::CursorMode::None;
+		}
+	}
 
 	// get clusters of finger tips
 	coordinateClusers.clear();
-	if (mouseAccuracy > 50) {
+	if (cursorMode == appUtils::CursorMode::Pointer) {
 		sort(depthCoords.begin(), depthCoords.end(), sortVecByDepth);
-		cursorMode = appUtils::CursorMode::Pointer;
 		imageUtils::setClusters(depthCoords, coordinateClusers, frame, 1);
 	}
-	else if (videoAccuracy > 50) {
+	else if (cursorMode == appUtils::CursorMode::Grab) {
 		sort(depthCoords.begin(), depthCoords.end(), sortVecByDepth);
-		cursorMode = appUtils::CursorMode::Grab;
 		imageUtils::setClusters(depthCoords, coordinateClusers, frame, 5);
 	}
 	else {
@@ -94,6 +106,7 @@ void gestureTracker::initFeatures(vector<string> featureElements) {
 	// loop through elements and create features
 	mouseFeaturesReference.clear();
 	videoFeaturesReference.clear();
+	abortFeaturesReference.clear();
 
 	vector<string>::iterator iteratorTemp;
 	for (iteratorTemp = featureElements.begin(); iteratorTemp < featureElements.end(); iteratorTemp++) {
@@ -111,6 +124,13 @@ void gestureTracker::initFeatures(vector<string> featureElements) {
 			std::array<float, 11 * 11> features{};
 			imageUtils::setFeatureVector(testImage.getPixels(), features);
 			videoFeaturesReference.push_back(features);
+		}
+		else if (item.find("abort") != std::string::npos && stringUtils::hasEnding(item, (string)"png")) {
+			ofImage testImage;
+			testImage.load(item);
+			std::array<float, 11 * 11> features{};
+			imageUtils::setFeatureVector(testImage.getPixels(), features);
+			abortFeaturesReference.push_back(features);
 		}
 	}
 	if(!mouseFeaturesReference.size()==0 || !videoFeaturesReference.size() == 0)featuresLoaded = true;
