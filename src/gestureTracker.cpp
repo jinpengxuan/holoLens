@@ -20,11 +20,11 @@ void gestureTracker::update() {
 
 	// set frame positions for evaluation
 	frame frame; 
-	frame.minX = 1;
-	frame.maxX = depthPix.getWidth() - 1;
+	frame.minX = 50;
+	frame.maxX = depthPix.getWidth() - 50;
 
-	frame.minY = depthPix.getHeight() * 0.15f;
-	frame.maxY = depthPix.getHeight() * 0.85f;
+	frame.minY = depthPix.getHeight() * 0.20f;
+	frame.maxY = depthPix.getHeight() * 0.80f;
 
 	frame.width = frame.maxX - frame.minX;
 	frame.height = frame.maxY - frame.minY;
@@ -52,7 +52,7 @@ void gestureTracker::update() {
 		// get accuracies
 		mouseAccuracy = imageUtils::getAccuracy(mouseFeaturesReference, features);
 		videoAccuracy = imageUtils::getAccuracy(videoFeaturesReference, features);
-		abortAccuracy = imageUtils::getAccuracy(videoFeaturesReference, features);
+		abortAccuracy = imageUtils::getAccuracy(abortFeaturesReference, features);
 
 		if (mouseAccuracy > 60) {
 			cursorMode = appUtils::CursorMode::Pointer;

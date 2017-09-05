@@ -39,20 +39,20 @@ void ofApp::update() {
 	menu.abortControlPrecision->setValue(gestureTracker.abortAccuracy);
 
 	if (gestureTracker.cursorMode == appUtils::CursorMode::None) {
-		if (mouseCursor.initialized)mouseCursor.tearDown;
+		if (mouseCursor.initialized)mouseCursor.tearDown();
 		return;
 	}
 	else if (gestureTracker.cursorMode == appUtils::CursorMode::Pointer) {
-		if (!mouseCursor.initialized) {
-			mouseCursor.setup(gestureTracker.coordinateClusers);
+		if (!mouseCursor.initialized || mouseCursor.currentCursorMode == appUtils::CursorMode::Grab) {
+			mouseCursor.setup(gestureTracker.coordinateClusers, gestureTracker.cursorMode);
 		}
 		else {
 			mouseCursor.update(gestureTracker.coordinateClusers);
 		}
 	}
 	else if (gestureTracker.cursorMode == appUtils::CursorMode::Grab) {
-		if (!mouseCursor.initialized) {
-			mouseCursor.setup(gestureTracker.coordinateClusers);
+		if (!mouseCursor.initialized || mouseCursor.currentCursorMode == appUtils::CursorMode::Pointer) {
+			mouseCursor.setup(gestureTracker.coordinateClusers, gestureTracker.cursorMode);
 		}
 		else {
 			mouseCursor.update(gestureTracker.coordinateClusers);

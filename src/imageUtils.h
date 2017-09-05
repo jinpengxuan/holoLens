@@ -11,6 +11,69 @@ class imageUtils {
 
 public:
 
+	static float getAngleBetweenVectors(ofVec2f v1, ofVec2f v2) {
+		float angle = atan2(v2.y, v2.x) - atan2(v1.y, v1.x);
+
+		return angle;
+	}
+
+	static void setFingerMap(map<std::string, ofVec2f>& fingerMap, vector<ofVec2f>& clusters) {
+		fingerMap.clear();
+		int thumbIndex = -1;
+		int clusterPos = 0;
+		float largestDistance = 0;
+		for (ofVec2f& pos : clusters) {
+			int otherClusterPos = 0;
+			float distance = numeric_limits<float>::max();
+			for (ofVec2f& otherPos : clusters) {
+				if (clusterPos == otherClusterPos)continue;
+				float currentDistance = abs(otherPos.x - pos.x) + abs(otherPos.y - pos.y);
+				if (currentDistance < distance) {
+					distance = currentDistance;
+				}
+				otherClusterPos++;
+			}
+			if (distance > largestDistance) thumbIndex = clusterPos;
+			clusterPos++;
+		}
+		if (thumbIndex >= 0)fingerMap["thumb"] = clusters.at(thumbIndex);
+
+		int firstOuterFingerIndex = -1;
+		int secondOuterFingerIndex = -1;
+		int secondOuterFingerTempIndex = -1;
+		clusterPos = 0;
+		largestDistance = 0;
+		for (ofVec2f& pos : clusters) {
+			if (clusterPos == thumbIndex)continue;
+			int otherClusterPos = 0;
+			float distance = 0;
+			for (ofVec2f& otherPos : clusters) {
+				if (clusterPos == otherClusterPos || otherClusterPos == thumbIndex)continue;
+				float currentDistance = abs(otherPos.x - pos.x) + abs(otherPos.y - pos.y);
+				if (currentDistance > distance) {
+					distance = currentDistance;
+					secondOuterFingerTempIndex = otherClusterPos;
+				}
+				otherClusterPos++;
+			}
+			if (distance > largestDistance) {
+				firstOuterFingerIndex = clusterPos;
+				secondOuterFingerIndex = secondOuterFingerTempIndex;
+			}
+			clusterPos++;
+		}
+		if (firstOuterFingerIndex >= 0)fingerMap["firstOuterFinger"] = clusters.at(firstOuterFingerIndex);
+		if (secondOuterFingerIndex >= 0)fingerMap["secondOuterFinger"] = clusters.at(secondOuterFingerIndex);
+		int otherFingerIndex = 1;
+		for (int i = 0; i < clusters.size(); i++) {
+			if (i != thumbIndex && i != firstOuterFingerIndex && i != secondOuterFingerIndex) {
+				string key = "otherFinger" + to_string(otherFingerIndex);
+				fingerMap[key] = clusters.at(otherFingerIndex);
+				otherFingerIndex++;
+			}
+		}
+	}
+
 	static void setClusters(vector<ofVec3f>& depthCoords, vector<ofVec2f>& coordinateClusers, frame& frame, int clusterCount) {
 		int clusterRadius = 20;
 		for (ofVec3f& iteratorTemp : depthCoords) {
@@ -18,7 +81,7 @@ public:
 			float y = iteratorTemp.y;
 			float z = iteratorTemp.z;
 			if (coordinateClusers.size() == clusterCount)break;
-			if (z < (frame.minZ + 20)) {
+			if (z < (frame.minZ + 10)) {
 				bool found = false;
 				for (ofVec2f& iteratorCluster : coordinateClusers) {
 					if (x >(iteratorCluster.x - clusterRadius)
