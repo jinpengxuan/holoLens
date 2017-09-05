@@ -114,7 +114,7 @@ public:
 
 	static void setHandImage(ofImage& handImage, frame& frame) {
 
-		//we need a frame that is equal in height and width
+		/*we need a frame that is equal in height and width
 		if (frame.widthImg > frame.heightImg) {
 			float difference = frame.widthImg - frame.heightImg;
 			frame.minYImg = frame.minYImg - difference / 2;
@@ -131,7 +131,7 @@ public:
 			frame.minXImg = frame.minXImg <= frame.minX ? frame.minX : frame.minXImg;
 			frame.maxXImg = frame.maxXImg >= frame.maxX ? frame.maxX : frame.maxXImg;
 		}
-
+		*/
 		//cout << "minX: " << frame.minX << " maxX: " << frame.maxX << " minXImg: " << frame.minXImg << " maxXImg: " << frame.maxXImg << endl;
 		//cout << "minY: " << frame.minY << " maxY: " << frame.maxY << " minYImg: " << frame.minYImg << " maxYImg: " << frame.maxYImg << endl;
 

@@ -41,7 +41,6 @@ void gestureTracker::update() {
 		handImage = ofImage();
 		imageUtils::setHandImage(handImage, frame);
 
-		delete[] frame.pixels;
 		// calculate matching
 		if (!featuresLoaded)return;
 
@@ -78,6 +77,7 @@ void gestureTracker::update() {
 	else {
 		cursorMode = appUtils::CursorMode::None;
 	}
+	delete[] frame.pixels;
 }
 
 void gestureTracker::draw() {
