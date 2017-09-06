@@ -8,8 +8,8 @@ class mouseCursor {
 
 public:
 
-	void setup(vector<ofVec2f>& initCursorPos, appUtils::CursorMode cursorMode);
-	void update(vector<ofVec2f>& actualCursorPos);
+	void setup(vector<ofVec3f>& initCursorPos, appUtils::CursorMode cursorMode);
+	void update(vector<ofVec3f>& actualCursorPos);
 	void draw();
 	void tearDown();
 
@@ -18,10 +18,10 @@ public:
 
 	ofImage normalFingerImage;
 	ofImage specialFingerImage;
-	vector<ofVec2f> startPos;
-	vector<ofVec2f> actualPos;
-	queue<ofVec2f> history;
-	map<std::string, ofVec2f> fingerMap;
+	vector<ofVec3f> startPos;
+	vector<ofVec3f> actualPos;
+	queue<ofVec3f> history;
+	map<std::string, ofVec3f> fingerMap;
 
 private:
 

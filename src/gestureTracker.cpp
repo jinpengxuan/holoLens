@@ -6,7 +6,8 @@ void gestureTracker::init(vector<string> featureElements) {
 	kinect.open();
 	kinect.initDepthSource();
 	kinect.initInfraredSource();
-	depthCoords.resize(appUtils::DEPTH_SIZE);
+	//depthCoords.resize(appUtils::DEPTH_SIZE);
+	initFeatures(featureElements);
 }
 
 void gestureTracker::update() {
@@ -33,7 +34,7 @@ void gestureTracker::update() {
 	imageUtils::setFrame(frame, depthPix);
 	
 	// set depth coordinates and frame to evaluate
-	imageUtils::setDepthCoordinates(depthCoords, frame);
+	imageUtils::setDepthCoordinates(frame);
 
 	if (ofGetElapsedTimeMillis() - checkGestureTime >= 500) {
 		checkGestureTime = ofGetElapsedTimeMillis();
@@ -67,12 +68,12 @@ void gestureTracker::update() {
 	// get clusters of finger tips
 	coordinateClusers.clear();
 	if (cursorMode == appUtils::CursorMode::Pointer) {
-		sort(depthCoords.begin(), depthCoords.end(), sortVecByDepth);
-		imageUtils::setClusters(depthCoords, coordinateClusers, frame, 1);
+		//sort(depthCoords.begin(), depthCoords.end(), sortVecByDepth);
+		imageUtils::setPixelClusters(coordinateClusers, frame);
 	}
 	else if (cursorMode == appUtils::CursorMode::Grab) {
-		sort(depthCoords.begin(), depthCoords.end(), sortVecByDepth);
-		imageUtils::setClusters(depthCoords, coordinateClusers, frame, 5);
+		//sort(depthCoords.begin(), depthCoords.end(), sortVecByDepth);
+		imageUtils::setPixelClusters(coordinateClusers, frame);
 	}
 	else {
 		cursorMode = appUtils::CursorMode::None;

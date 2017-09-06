@@ -37,10 +37,10 @@ public:
 	int zShift = -300;
 
 	//vector<ofVec2f> colorCoords;
-	vector<ofVec3f> depthCoords;
+	//vector<ofVec3f> depthCoords;
 	//vector<ofVec3f> drawingCoords;
 
-	vector<ofVec2f> coordinateClusers;
+	vector<ofVec3f> coordinateClusers;
 
 	//central position
 	ofVec3f center;

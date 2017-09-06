@@ -39,11 +39,17 @@ void ofApp::update() {
 	menu.abortControlPrecision->setValue(gestureTracker.abortAccuracy);
 
 	if (gestureTracker.cursorMode == appUtils::CursorMode::None) {
-		if (mouseCursor.initialized)mouseCursor.tearDown();
+		if (mouseCursor.initialized) {
+			menu.videoControlLabel->setBackgroundColor(ofColor(25.f, 1.f));
+			menu.mouseControlLabel->setBackgroundColor(ofColor(25.f, 1.f));
+			mouseCursor.tearDown();
+		}
 		return;
 	}
 	else if (gestureTracker.cursorMode == appUtils::CursorMode::Pointer) {
 		if (!mouseCursor.initialized || mouseCursor.currentCursorMode == appUtils::CursorMode::Grab) {
+			menu.videoControlLabel->setBackgroundColor(ofColor(25.f, 1.f));
+			menu.mouseControlLabel->setBackgroundColor(ofColor::forestGreen);
 			mouseCursor.setup(gestureTracker.coordinateClusers, gestureTracker.cursorMode);
 		}
 		else {
@@ -52,6 +58,8 @@ void ofApp::update() {
 	}
 	else if (gestureTracker.cursorMode == appUtils::CursorMode::Grab) {
 		if (!mouseCursor.initialized || mouseCursor.currentCursorMode == appUtils::CursorMode::Pointer) {
+			menu.videoControlLabel->setBackgroundColor(ofColor::forestGreen);
+			menu.mouseControlLabel->setBackgroundColor(ofColor(25.f, 1.f));
 			mouseCursor.setup(gestureTracker.coordinateClusers, gestureTracker.cursorMode);
 		}
 		else {

@@ -22,7 +22,11 @@ public:
 	ofxDatGuiLabel* videoNameLabel;
 	ofxDatGuiButton* collapseButton;
 	ofxDatGuiButton* playButton;
+
+	//gesture menu
 	ofxDatGuiButton* evaluateButton;
+	ofxDatGuiLabel*	 mouseControlLabel;
+	ofxDatGuiLabel*	 videoControlLabel;
 	ofxDatGuiButton* learnMouseControlButton;
 	ofxDatGuiButton* learnVideoControlButton;
 	ofxDatGuiButton* learnAbortControlButton;
@@ -126,7 +130,9 @@ public:
 		evaluateButton->onButtonEvent(owner, buttonListenerMethod);
 		evaluateButton->setStripeColor(ofColor::green);
 		gestureGui->addBreak()->setHeight(10.0f);
-		gestureGui->addLabel("Mouse Control")->setStripeVisible(false);
+		mouseControlLabel = gestureGui->addLabel("Mouse Control");
+		mouseControlLabel->setStripeVisible(false);
+		mouseControlLabel->setBackgroundColor(ofColor(25.f, 1.f));
 		gestureGui->addBreak()->setHeight(10.0f);
 		mouseControlPrecision = gestureGui->addSlider("Precision", 0.f, 100.f);
 		mouseControlPrecision->setStripeColor(ofColor::blue);
@@ -136,7 +142,9 @@ public:
 		learnMouseControlButton->onButtonEvent(owner, buttonListenerMethod);
 		learnMouseControlButton->setStripeColor(ofColor::blue);
 		gestureGui->addBreak()->setHeight(10.0f);
-		gestureGui->addLabel("Video Control")->setStripeVisible(false);
+		videoControlLabel = gestureGui->addLabel("Video Control");
+		videoControlLabel->setStripeVisible(false);
+		videoControlLabel->setBackgroundColor(ofColor(25.f, 1.f));
 		gestureGui->addBreak()->setHeight(10.0f);
 		videoControlPrecision = gestureGui->addSlider("Precision", 0.f, 100.f);
 		videoControlPrecision->setStripeColor(ofColor::blueSteel);

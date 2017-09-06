@@ -17,15 +17,15 @@ public:
 		return angle;
 	}
 
-	static void setFingerMap(map<std::string, ofVec2f>& fingerMap, vector<ofVec2f>& clusters) {
+	static void setFingerMap(map<std::string, ofVec3f>& fingerMap, vector<ofVec3f>& clusters) {
 		fingerMap.clear();
 		int thumbIndex = -1;
 		int clusterPos = 0;
 		float largestDistance = 0;
-		for (ofVec2f& pos : clusters) {
+		for (ofVec3f& pos : clusters) {
 			int otherClusterPos = 0;
 			float distance = numeric_limits<float>::max();
-			for (ofVec2f& otherPos : clusters) {
+			for (ofVec3f& otherPos : clusters) {
 				if (clusterPos == otherClusterPos)continue;
 				float currentDistance = abs(otherPos.x - pos.x) + abs(otherPos.y - pos.y);
 				if (currentDistance < distance) {
@@ -43,11 +43,11 @@ public:
 		int secondOuterFingerTempIndex = -1;
 		clusterPos = 0;
 		largestDistance = 0;
-		for (ofVec2f& pos : clusters) {
+		for (ofVec3f& pos : clusters) {
 			if (clusterPos == thumbIndex)continue;
 			int otherClusterPos = 0;
 			float distance = 0;
-			for (ofVec2f& otherPos : clusters) {
+			for (ofVec3f& otherPos : clusters) {
 				if (clusterPos == otherClusterPos || otherClusterPos == thumbIndex)continue;
 				float currentDistance = abs(otherPos.x - pos.x) + abs(otherPos.y - pos.y);
 				if (currentDistance > distance) {
@@ -72,6 +72,99 @@ public:
 				otherFingerIndex++;
 			}
 		}
+	}
+
+	static bool recursiveSetCluster(int clusterIndex, int frameCenterX, int frameCenterY, int radius, int x, int y, frame& depthFrame, frame& clusterFrame) {
+		int index = x + y * depthFrame.width;
+		int distance = depthFrame.pixels[index];
+		int distanceToCenter = abs(x - frameCenterX) + abs(y - frameCenterY);
+
+		if (clusterFrame.pixels[index] > 0)return false;
+		else if (distanceToCenter < radius) {
+			clusterFrame.pixels[index] = -1;
+			return false;
+		}
+		else if (distance > depthFrame.minZ + 30 || distance < depthFrame.minZ) {
+			clusterFrame.pixels[index] = -1;
+			return false;
+		}
+		else {
+			clusterFrame.pixels[index] = clusterIndex;
+			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x - 1, y, depthFrame, clusterFrame);
+			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x + 1, y, depthFrame, clusterFrame);
+			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x, y - 1, depthFrame, clusterFrame);
+			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x, y + 1, depthFrame, clusterFrame);
+			return true;
+		}
+	}
+
+	static void setPixelClusters(vector<ofVec3f>& coordinateClusers, frame& depthFrame) {
+		frame clusterFrame;
+		int length = depthFrame.width*depthFrame.height;
+		clusterFrame.pixels = new int[length];
+		int frameCenterX = depthFrame.minXImg + depthFrame.widthImg / 2;
+		int frameCenterY = depthFrame.minYImg + depthFrame.heightImg / 2;
+		int radiusX = depthFrame.widthImg / 2;
+		int radiusY = depthFrame.heightImg / 2;
+		int radius = (radiusX + radiusY) / 2;
+
+		ofstream myfile;
+		myfile.open("clusterFrame.txt");
+
+		int clusterIndex = 1;
+		for (int y = 1; y < depthFrame.height - 1; y++) {
+			for (int x = 1; x < depthFrame.width - 1; x++) {
+
+				int distanceToCenter = abs(x - frameCenterX) + abs(y - frameCenterY);
+
+				if (distanceToCenter < radius) {
+					myfile << "-1" << " ";
+					continue;
+				}
+
+				int index = x + y * depthFrame.width;
+				int distance = depthFrame.pixels[index];
+
+				if (distance < depthFrame.minZ + 30 && distance > depthFrame.minZ) {
+					int clusterTop = clusterFrame.pixels[index - depthFrame.width];
+					int clusterTopLeft = clusterFrame.pixels[index - depthFrame.width - 1];
+					int clusterTopRight = clusterFrame.pixels[index - depthFrame.width + 1];
+					int clusterLeft = clusterFrame.pixels[index - 1];
+					int newClusterIndex = -1;
+					if (clusterTop > 0) {
+						newClusterIndex = clusterTop;
+					}
+					else if (clusterTopLeft > 0) {
+						newClusterIndex = clusterTopLeft;
+					}
+					else if (clusterTopRight > 0) {
+						newClusterIndex = clusterTopRight;
+					}
+					else if (clusterLeft > 0) {
+						newClusterIndex = clusterLeft;
+					}
+					else {
+						newClusterIndex = clusterIndex++;
+					}
+					clusterFrame.pixels[index] = newClusterIndex;
+					myfile << newClusterIndex << " " ;
+					if (newClusterIndex > 0 && newClusterIndex < 6) {
+						if (coordinateClusers.size() < newClusterIndex) {
+							coordinateClusers.push_back(ofVec3f(x, y, distance));
+						}
+						else if (coordinateClusers[newClusterIndex - 1].z > distance) {
+							coordinateClusers[newClusterIndex - 1] = ofVec3f(x, y, distance);
+						}
+					}
+				}
+				else {
+					myfile << "-1" << " ";
+				}
+			}
+			myfile << endl;
+		}
+		myfile.close();
+		delete[] clusterFrame.pixels;
 	}
 
 	static void setClusters(vector<ofVec3f>& depthCoords, vector<ofVec2f>& coordinateClusers, frame& frame, int clusterCount) {
@@ -114,27 +207,6 @@ public:
 
 	static void setHandImage(ofImage& handImage, frame& frame) {
 
-		/*we need a frame that is equal in height and width
-		if (frame.widthImg > frame.heightImg) {
-			float difference = frame.widthImg - frame.heightImg;
-			frame.minYImg = frame.minYImg - difference / 2;
-			frame.maxYImg = frame.maxYImg + difference / 2;
-			frame.heightImg = frame.widthImg;
-			frame.minYImg = frame.minYImg <= frame.minY ? frame.minY : frame.minYImg;
-			frame.maxYImg = frame.maxYImg >= frame.maxY ? frame.maxY : frame.maxYImg;
-		}
-		else {
-			float difference = frame.heightImg - frame.widthImg;
-			frame.minXImg = frame.minXImg - difference / 2;
-			frame.maxXImg = frame.maxXImg + difference / 2;
-			frame.widthImg = frame.heightImg;
-			frame.minXImg = frame.minXImg <= frame.minX ? frame.minX : frame.minXImg;
-			frame.maxXImg = frame.maxXImg >= frame.maxX ? frame.maxX : frame.maxXImg;
-		}
-		*/
-		//cout << "minX: " << frame.minX << " maxX: " << frame.maxX << " minXImg: " << frame.minXImg << " maxXImg: " << frame.maxXImg << endl;
-		//cout << "minY: " << frame.minY << " maxY: " << frame.maxY << " minYImg: " << frame.minYImg << " maxYImg: " << frame.maxYImg << endl;
-
 		handImage.allocate(frame.widthImg, frame.heightImg, OF_IMAGE_GRAYSCALE);
 		ofPixels pix = ofPixels();
 
@@ -158,9 +230,7 @@ public:
 		handImage.resize(appUtils::HOG_SIZE, appUtils::HOG_SIZE);
 	}
 
-	static void setDepthCoordinates(vector<ofVec3f>& depthCoordinates, frame& frame) {
-		depthCoordinates.clear();
-
+	static void setDepthCoordinates(frame& depthFrame) {
 		float difference = 80;
 
 		int minX = numeric_limits<int>::max();
@@ -169,28 +239,28 @@ public:
 		int maxX = numeric_limits<int>::min();
 		int maxY = numeric_limits<int>::min();
 
-		for (int y = 0; y < frame.height; y++) {
-			for (int x = 0; x < frame.width; x++) {
-				int index = x + y*frame.width;
-				int distance = frame.pixels[index];
+		for (int y = 0; y < depthFrame.height; y++) {
+			for (int x = 0; x < depthFrame.width; x++) {
+				int index = x + y*depthFrame.width;
+				int distance = depthFrame.pixels[index];
 
-				if (distance > frame.maxZ || distance < frame.minZ)continue;
+				if (distance > depthFrame.maxZ || distance < depthFrame.minZ) {
+					continue;
+				}
 
 				minX = x < minX ? x : minX;
 				maxX = x > maxX ? x : maxX;
 				minY = y < minY ? y : minY;
 				maxY = y > maxY ? y : maxY;
-
-				depthCoordinates.push_back(ofVec3f(x, y, distance));
 			}
 		}
 
-		frame.minXImg = minX;
-		frame.maxXImg = maxX;
-		frame.minYImg = minY;
-		frame.maxYImg = maxY;
-		frame.widthImg = maxX - minX;
-		frame.heightImg = maxY - minY;
+		depthFrame.minXImg = minX;
+		depthFrame.maxXImg = maxX;
+		depthFrame.minYImg = minY;
+		depthFrame.maxYImg = maxY;
+		depthFrame.widthImg = maxX - minX;
+		depthFrame.heightImg = maxY - minY;
 	}
 
 	static void setFrame(frame& frameObj, const ofShortPixels& pixels) {
@@ -203,7 +273,7 @@ public:
 				int index = x + y*pixels.getWidth();
 				int indexFrame = (x - frameObj.minX) + (y - frameObj.minY)*frameObj.width;
 				int distance = pixels[index];
-				if (distance < 400 || distance > 700) continue;
+				if (distance < 500 || distance > 800) continue;
 
 				// Outlier Removal
 

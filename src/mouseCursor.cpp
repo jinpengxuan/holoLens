@@ -1,6 +1,6 @@
 #include "mouseCursor.h"
 
-void mouseCursor::setup(vector<ofVec2f>& initCursorPos, appUtils::CursorMode cursorMode) {
+void mouseCursor::setup(vector<ofVec3f>& initCursorPos, appUtils::CursorMode cursorMode) {
 	initialized = false;
 
 	startPos = initCursorPos;
@@ -19,7 +19,7 @@ void mouseCursor::setup(vector<ofVec2f>& initCursorPos, appUtils::CursorMode cur
 	initialized = true;
 }
 
-void mouseCursor::update(vector<ofVec2f>& actualCursorPos) {
+void mouseCursor::update(vector<ofVec3f>& actualCursorPos) {
 	actualPos = actualCursorPos;
 	if (currentCursorMode == appUtils::CursorMode::Grab) {
 		imageUtils::setFingerMap(fingerMap, actualCursorPos);
@@ -31,8 +31,8 @@ void mouseCursor::draw() {
 	if (actualPos.size() == 0)return;
 	ofEnableAlphaBlending();
 	if (currentCursorMode == appUtils::CursorMode::Pointer) {
-		float actualX = actualPos.front().x - 100.f;
-		float actualY = -actualPos.front().y + 250.f;
+		float actualX = actualPos.front().x * 2 - 100.f;
+		float actualY = -actualPos.front().y * 2 + 250.f;
 		//SetCursorPos(actualX, actualY);
 		normalFingerImage.draw(actualX, actualY);
 	}
