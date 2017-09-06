@@ -75,11 +75,14 @@ public:
 	}
 
 	static bool recursiveSetCluster(int clusterIndex, int frameCenterX, int frameCenterY, int radius, int x, int y, frame& depthFrame, frame& clusterFrame) {
+		if (x < 1 || x >= depthFrame.width - 1 || y < 1 || y >= depthFrame.height - 1)return false;
 		int index = x + y * depthFrame.width;
 		int distance = depthFrame.pixels[index];
 		int distanceToCenter = abs(x - frameCenterX) + abs(y - frameCenterY);
 
-		if (clusterFrame.pixels[index] > 0)return false;
+		if (clusterFrame.pixels[index] > 0) {
+			return false;
+		}
 		else if (distanceToCenter < radius) {
 			clusterFrame.pixels[index] = -1;
 			return false;
@@ -90,10 +93,22 @@ public:
 		}
 		else {
 			clusterFrame.pixels[index] = clusterIndex;
+			//left pixel
 			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x - 1, y, depthFrame, clusterFrame);
+			//right pixel
 			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x + 1, y, depthFrame, clusterFrame);
+			//bottom pixel
 			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x, y - 1, depthFrame, clusterFrame);
+			//top pixel
 			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x, y + 1, depthFrame, clusterFrame);
+			//bottom left pixel
+			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x - 1, y - 1, depthFrame, clusterFrame);
+			//bottom right pixel
+			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x + 1, y - 1, depthFrame, clusterFrame);
+			//top left pixel
+			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x - 1, y + 1, depthFrame, clusterFrame);
+			//top right pixel
+			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x + 1, y + 1, depthFrame, clusterFrame);
 			return true;
 		}
 	}
@@ -108,62 +123,41 @@ public:
 		int radiusY = depthFrame.heightImg / 2;
 		int radius = (radiusX + radiusY) / 2;
 
-		ofstream myfile;
-		myfile.open("clusterFrame.txt");
-
 		int clusterIndex = 1;
 		for (int y = 1; y < depthFrame.height - 1; y++) {
 			for (int x = 1; x < depthFrame.width - 1; x++) {
-
-				int distanceToCenter = abs(x - frameCenterX) + abs(y - frameCenterY);
-
-				if (distanceToCenter < radius) {
-					myfile << "-1" << " ";
-					continue;
+				bool clusterFound = recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x, y, depthFrame, clusterFrame);
+				if (clusterFound) {
+					clusterIndex++;
 				}
+			}
+		}
 
+		//ofstream myfile;
+		//myfile.open("clusterFrame.txt");
+
+		for (int y = 1; y < depthFrame.height - 1; y++) {
+			for (int x = 1; x < depthFrame.width - 1; x++) {
 				int index = x + y * depthFrame.width;
+				int clusterIndex = clusterFrame.pixels[index];
 				int distance = depthFrame.pixels[index];
-
-				if (distance < depthFrame.minZ + 30 && distance > depthFrame.minZ) {
-					int clusterTop = clusterFrame.pixels[index - depthFrame.width];
-					int clusterTopLeft = clusterFrame.pixels[index - depthFrame.width - 1];
-					int clusterTopRight = clusterFrame.pixels[index - depthFrame.width + 1];
-					int clusterLeft = clusterFrame.pixels[index - 1];
-					int newClusterIndex = -1;
-					if (clusterTop > 0) {
-						newClusterIndex = clusterTop;
+				if (clusterIndex > 0 && clusterIndex < 6) {
+					//myfile << "+" << clusterIndex << " ";
+					if (coordinateClusers.size() < clusterIndex) {
+						coordinateClusers.push_back(ofVec3f(x, y, distance));
 					}
-					else if (clusterTopLeft > 0) {
-						newClusterIndex = clusterTopLeft;
-					}
-					else if (clusterTopRight > 0) {
-						newClusterIndex = clusterTopRight;
-					}
-					else if (clusterLeft > 0) {
-						newClusterIndex = clusterLeft;
-					}
-					else {
-						newClusterIndex = clusterIndex++;
-					}
-					clusterFrame.pixels[index] = newClusterIndex;
-					myfile << newClusterIndex << " " ;
-					if (newClusterIndex > 0 && newClusterIndex < 6) {
-						if (coordinateClusers.size() < newClusterIndex) {
-							coordinateClusers.push_back(ofVec3f(x, y, distance));
-						}
-						else if (coordinateClusers[newClusterIndex - 1].z > distance) {
-							coordinateClusers[newClusterIndex - 1] = ofVec3f(x, y, distance);
-						}
+					else if (coordinateClusers[clusterIndex - 1].z > distance) {
+						coordinateClusers[clusterIndex - 1] = ofVec3f(x, y, distance);
 					}
 				}
 				else {
-					myfile << "-1" << " ";
+					//myfile << "-1" << " ";
 				}
 			}
-			myfile << endl;
+			//myfile << endl;
 		}
-		myfile.close();
+		//myfile.close();
+
 		delete[] clusterFrame.pixels;
 	}
 
