@@ -18,147 +18,128 @@ public:
 	}
 
 	static void setFingerMap(map<std::string, ofVec3f>& fingerMap, vector<ofVec3f>& clusters) {
+		if (clusters.size() < 5)return;
 		fingerMap.clear();
 		int thumbIndex = -1;
 		int clusterPos = 0;
 		float largestDistance = 0;
 		for (ofVec3f& pos : clusters) {
 			int otherClusterPos = 0;
-			float distance = numeric_limits<float>::max();
-			for (ofVec3f& otherPos : clusters) {
-				if (clusterPos == otherClusterPos)continue;
-				float currentDistance = abs(otherPos.x - pos.x) + abs(otherPos.y - pos.y);
-				if (currentDistance < distance) {
-					distance = currentDistance;
-				}
-				otherClusterPos++;
-			}
-			if (distance > largestDistance) thumbIndex = clusterPos;
-			clusterPos++;
-		}
-		if (thumbIndex >= 0)fingerMap["thumb"] = clusters.at(thumbIndex);
-
-		int firstOuterFingerIndex = -1;
-		int secondOuterFingerIndex = -1;
-		int secondOuterFingerTempIndex = -1;
-		clusterPos = 0;
-		largestDistance = 0;
-		for (ofVec3f& pos : clusters) {
-			if (clusterPos == thumbIndex)continue;
-			int otherClusterPos = 0;
 			float distance = 0;
 			for (ofVec3f& otherPos : clusters) {
-				if (clusterPos == otherClusterPos || otherClusterPos == thumbIndex)continue;
-				float currentDistance = abs(otherPos.x - pos.x) + abs(otherPos.y - pos.y);
-				if (currentDistance > distance) {
-					distance = currentDistance;
-					secondOuterFingerTempIndex = otherClusterPos;
-				}
+				if (clusterPos == otherClusterPos)continue;
+				float currentDistance = sqrt(pow((otherPos.x - pos.x), 2) + pow((otherPos.y - pos.y), 2));
+				distance += currentDistance;
 				otherClusterPos++;
 			}
 			if (distance > largestDistance) {
-				firstOuterFingerIndex = clusterPos;
-				secondOuterFingerIndex = secondOuterFingerTempIndex;
+				thumbIndex = clusterPos;
+				largestDistance = distance;
 			}
 			clusterPos++;
 		}
-		if (firstOuterFingerIndex >= 0)fingerMap["firstOuterFinger"] = clusters.at(firstOuterFingerIndex);
-		if (secondOuterFingerIndex >= 0)fingerMap["secondOuterFinger"] = clusters.at(secondOuterFingerIndex);
-		int otherFingerIndex = 1;
-		for (int i = 0; i < clusters.size(); i++) {
-			if (i != thumbIndex && i != firstOuterFingerIndex && i != secondOuterFingerIndex) {
-				string key = "otherFinger" + to_string(otherFingerIndex);
-				fingerMap[key] = clusters.at(otherFingerIndex);
-				otherFingerIndex++;
+		if (thumbIndex >= 0)fingerMap["thumb"] = clusters.at(thumbIndex);
+		
+		clusterPos = 0;
+		int outerFingerIndex = 1;
+		for (ofVec3f& pos : clusters) {
+			if (thumbIndex != clusterPos) {
+				fingerMap["otherFinger" + to_string(outerFingerIndex++)] = clusters.at(clusterPos);
 			}
+			clusterPos++;
 		}
 	}
 
-	static bool recursiveSetCluster(int clusterIndex, int frameCenterX, int frameCenterY, int radius, int x, int y, frame& depthFrame, frame& clusterFrame) {
-		if (x < 1 || x >= depthFrame.width - 1 || y < 1 || y >= depthFrame.height - 1)return false;
-		int index = x + y * depthFrame.width;
-		int distance = depthFrame.pixels[index];
-		int distanceToCenter = abs(x - frameCenterX) + abs(y - frameCenterY);
+	static bool recursiveSetClusterIndex(int& clusterIndex, int x, int y, int width, int height, frame& clusterFrame, frame& clusterFrameIndex) {
+		if (x < 1 || x >= width - 1 || y < 1 || y >= height - 1)return false;
+		int index = x + y * width;
 
-		if (clusterFrame.pixels[index] > 0) {
-			return false;
-		}
-		else if (distanceToCenter < radius) {
-			clusterFrame.pixels[index] = -1;
-			return false;
-		}
-		else if (distance > depthFrame.nearPoint.z + 30 || distance < depthFrame.nearPoint.z) {
-			clusterFrame.pixels[index] = -1;
-			return false;
-		}
-		else {
-			clusterFrame.pixels[index] = clusterIndex;
+		if (clusterFrameIndex.pixels[index] > 0) return false;
+
+		if (clusterFrame.pixels[index] == 1) {
+			clusterFrameIndex.pixels[index] = clusterIndex;
 			//left pixel
-			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x - 1, y, depthFrame, clusterFrame);
+			recursiveSetClusterIndex(clusterIndex, x - 1, y, width, height, clusterFrame, clusterFrameIndex);
 			//right pixel
-			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x + 1, y, depthFrame, clusterFrame);
-			//bottom pixel
-			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x, y - 1, depthFrame, clusterFrame);
-			//top pixel
-			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x, y + 1, depthFrame, clusterFrame);
+			recursiveSetClusterIndex(clusterIndex, x + 1, y, width, height, clusterFrame, clusterFrameIndex);
+			//bottom pixel									 
+			recursiveSetClusterIndex(clusterIndex, x, y - 1, width, height, clusterFrame, clusterFrameIndex);
+			//top pixel										 
+			recursiveSetClusterIndex(clusterIndex, x, y + 1, width, height, clusterFrame, clusterFrameIndex);
 			//bottom left pixel
-			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x - 1, y - 1, depthFrame, clusterFrame);
+			recursiveSetClusterIndex(clusterIndex, x - 1, y - 1, width, height, clusterFrame, clusterFrameIndex);
 			//bottom right pixel
-			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x + 1, y - 1, depthFrame, clusterFrame);
+			recursiveSetClusterIndex(clusterIndex, x + 1, y - 1, width, height, clusterFrame, clusterFrameIndex);
 			//top left pixel
-			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x - 1, y + 1, depthFrame, clusterFrame);
+			recursiveSetClusterIndex(clusterIndex, x - 1, y + 1, width, height, clusterFrame, clusterFrameIndex);
 			//top right pixel
-			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x + 1, y + 1, depthFrame, clusterFrame);
-			//left pixel
-			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x - 2, y, depthFrame, clusterFrame);
-			//right pixel
-			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x + 2, y, depthFrame, clusterFrame);
-			//bottom pixel
-			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x, y - 2, depthFrame, clusterFrame);
-			//top pixel
-			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x, y + 2, depthFrame, clusterFrame);
-			//bottom left pixel
-			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x - 2, y - 2, depthFrame, clusterFrame);
-			//bottom right pixel
-			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x + 2, y - 2, depthFrame, clusterFrame);
-			//top left pixel
-			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x - 2, y + 2, depthFrame, clusterFrame);
-			//top right pixel
-			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x + 2, y + 2, depthFrame, clusterFrame);
+			recursiveSetClusterIndex(clusterIndex, x + 1, y + 1, width, height, clusterFrame, clusterFrameIndex);
 			return true;
 		}
+		return false;
 	}
 
 	static void setPixelClusters(vector<ofVec3f>& coordinateClusers, frame& depthFrame) {
-		frame clusterFrame;
 		int length = depthFrame.width*depthFrame.height;
+		frame clusterFrame;
+		frame clusterFrameIndex;
 		clusterFrame.pixels = new int[length];
+		clusterFrameIndex.pixels = new int[length];
 		int frameCenterX = depthFrame.minXImg + depthFrame.widthImg / 2;
 		int frameCenterY = depthFrame.minYImg + depthFrame.heightImg / 2;
 		int radiusX = depthFrame.widthImg / 2;
 		int radiusY = depthFrame.heightImg / 2;
 		int radius = (radiusX + radiusY) / 2;
 
+		for (int y = 0; y < depthFrame.height; y++) {
+			for (int x = 0; x < depthFrame.width; x++) {
+				int index = x + y * depthFrame.width;
+				int distance = depthFrame.pixels[index];
+				int distanceToCenter = abs(x - frameCenterX) + abs(y - frameCenterY);
+
+				if (distance > depthFrame.nearPoint.z + 40 || distance < depthFrame.nearPoint.z || distanceToCenter < radius) {
+					clusterFrame.pixels[index] = 0;
+				}
+				else {
+					clusterFrame.pixels[index] = 1;
+				}
+			}
+		}
+
 		int clusterIndex = 1;
 		for (int y = 1; y < depthFrame.height - 1; y++) {
 			for (int x = 1; x < depthFrame.width - 1; x++) {
-				bool clusterFound = recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x, y, depthFrame, clusterFrame);
-				if (clusterFound) {
-					clusterIndex++;
+				int index = x + y * depthFrame.width;
+				int markingTop = clusterFrame.pixels[index - depthFrame.width];
+				int markingTopLeft = clusterFrame.pixels[index - depthFrame.width - 1];
+				int markingTopRight = clusterFrame.pixels[index - depthFrame.width + 1];
+				int markingLeft = clusterFrame.pixels[index - 1];
+				int markingRight = clusterFrame.pixels[index + 1];
+				int markingBottom = clusterFrame.pixels[index + depthFrame.width];
+				int markingBottomLeft = clusterFrame.pixels[index + depthFrame.width - 1];
+				int markingBottomRight = clusterFrame.pixels[index + depthFrame.width + 1];
+				int sumMarking = markingTop + markingTopLeft + markingTopRight + markingLeft + markingRight + markingBottom + markingBottomLeft + markingBottomRight;
+
+				if (sumMarking > 5) {
+					bool newCluster = recursiveSetClusterIndex(clusterIndex, x, y, depthFrame.width, depthFrame.height, clusterFrame, clusterFrameIndex);
+					if (newCluster)clusterIndex++;
+				}
+				else {
+					clusterFrameIndex.pixels[index] = 0;
 				}
 			}
 		}
 
 		//ofstream myfile;
 		//myfile.open("clusterFrame.txt");
-
-		for (int y = 1; y < depthFrame.height - 1; y++) {
-			for (int x = 1; x < depthFrame.width - 1; x++) {
+		for (int y = 0; y < depthFrame.height; y++) {
+			for (int x = 0; x < depthFrame.width; x++) {
 				int index = x + y * depthFrame.width;
-				int clusterIndex = clusterFrame.pixels[index];
+				int clusterIndex = clusterFrameIndex.pixels[index];
 				int distance = depthFrame.pixels[index];
+
+				//myfile << clusterIndex << " ";
 				if (clusterIndex > 0 && clusterIndex < 6) {
-					//myfile << "+" << clusterIndex << " ";
 					if (coordinateClusers.size() < clusterIndex) {
 						coordinateClusers.push_back(ofVec3f(x, y, distance));
 					}
@@ -166,14 +147,12 @@ public:
 						coordinateClusers[clusterIndex - 1] = ofVec3f(x, y, distance);
 					}
 				}
-				else {
-					//myfile << "-1" << " ";
-				}
 			}
 			//myfile << endl;
 		}
 		//myfile.close();
 
+		delete[] clusterFrameIndex.pixels;
 		delete[] clusterFrame.pixels;
 	}
 
