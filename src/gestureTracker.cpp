@@ -69,7 +69,7 @@ void gestureTracker::update() {
 	coordinateClusers.clear();
 	if (cursorMode == appUtils::CursorMode::Pointer) {
 		//sort(depthCoords.begin(), depthCoords.end(), sortVecByDepth);
-		imageUtils::setPixelClusters(coordinateClusers, frame);
+		coordinateClusers.push_back(frame.nearPoint);
 	}
 	else if (cursorMode == appUtils::CursorMode::Grab) {
 		//sort(depthCoords.begin(), depthCoords.end(), sortVecByDepth);

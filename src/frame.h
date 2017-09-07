@@ -13,7 +13,7 @@ public:
 	int widthImg;
 	int heightImg;
 
-	int minZ = numeric_limits<int>::max();
+	ofVec3f nearPoint = ofVec3f(numeric_limits<int>::max(), numeric_limits<int>::max(), numeric_limits<int>::max());
 	int maxZ = numeric_limits<int>::min();
 
 	int minX = numeric_limits<int>::max();

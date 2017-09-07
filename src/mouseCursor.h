@@ -18,6 +18,7 @@ public:
 
 	ofImage normalFingerImage;
 	ofImage specialFingerImage;
+	ofImage thumbFingerImage;
 	vector<ofVec3f> startPos;
 	vector<ofVec3f> actualPos;
 	queue<ofVec3f> history;

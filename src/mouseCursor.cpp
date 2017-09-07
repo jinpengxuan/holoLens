@@ -13,6 +13,7 @@ void mouseCursor::setup(vector<ofVec3f>& initCursorPos, appUtils::CursorMode cur
 	else if (currentCursorMode == appUtils::CursorMode::Grab) {
 		normalFingerImage.load("cursor.png");
 		specialFingerImage.load("cursor_green.png");
+		thumbFingerImage.load("cursor_blue.png");
 		imageUtils::setFingerMap(fingerMap, initCursorPos);
 	}
 
@@ -40,7 +41,7 @@ void mouseCursor::draw() {
 		if (fingerMap.find("thumb") != fingerMap.end()) {
 			float actualX = fingerMap["thumb"].x - 100.f;
 			float actualY = -fingerMap["thumb"].y + 250.f;
-			specialFingerImage.draw(actualX, actualY);
+			thumbFingerImage.draw(actualX, actualY);
 		}
 		if (fingerMap.find("firstOuterFinger") != fingerMap.end()) {
 			float actualX = fingerMap["firstOuterFinger"].x - 100.f;

@@ -87,7 +87,7 @@ public:
 			clusterFrame.pixels[index] = -1;
 			return false;
 		}
-		else if (distance > depthFrame.minZ + 30 || distance < depthFrame.minZ) {
+		else if (distance > depthFrame.nearPoint.z + 30 || distance < depthFrame.nearPoint.z) {
 			clusterFrame.pixels[index] = -1;
 			return false;
 		}
@@ -109,6 +109,22 @@ public:
 			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x - 1, y + 1, depthFrame, clusterFrame);
 			//top right pixel
 			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x + 1, y + 1, depthFrame, clusterFrame);
+			//left pixel
+			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x - 2, y, depthFrame, clusterFrame);
+			//right pixel
+			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x + 2, y, depthFrame, clusterFrame);
+			//bottom pixel
+			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x, y - 2, depthFrame, clusterFrame);
+			//top pixel
+			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x, y + 2, depthFrame, clusterFrame);
+			//bottom left pixel
+			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x - 2, y - 2, depthFrame, clusterFrame);
+			//bottom right pixel
+			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x + 2, y - 2, depthFrame, clusterFrame);
+			//top left pixel
+			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x - 2, y + 2, depthFrame, clusterFrame);
+			//top right pixel
+			recursiveSetCluster(clusterIndex, frameCenterX, frameCenterY, radius, x + 2, y + 2, depthFrame, clusterFrame);
 			return true;
 		}
 	}
@@ -168,7 +184,7 @@ public:
 			float y = iteratorTemp.y;
 			float z = iteratorTemp.z;
 			if (coordinateClusers.size() == clusterCount)break;
-			if (z < (frame.minZ + 10)) {
+			if (z < (frame.nearPoint.z + 10)) {
 				bool found = false;
 				for (ofVec2f& iteratorCluster : coordinateClusers) {
 					if (x >(iteratorCluster.x - clusterRadius)
@@ -204,7 +220,7 @@ public:
 		handImage.allocate(frame.widthImg, frame.heightImg, OF_IMAGE_GRAYSCALE);
 		ofPixels pix = ofPixels();
 
-		float depthAmount = (frame.maxZ - frame.minZ);
+		float depthAmount = (frame.maxZ - frame.nearPoint.z);
 
 		pix.allocate(frame.widthImg, frame.heightImg, OF_IMAGE_GRAYSCALE);
 		pix.setColor(0);
@@ -238,7 +254,7 @@ public:
 				int index = x + y*depthFrame.width;
 				int distance = depthFrame.pixels[index];
 
-				if (distance > depthFrame.maxZ || distance < depthFrame.minZ) {
+				if (distance > depthFrame.maxZ || distance < depthFrame.nearPoint.z) {
 					continue;
 				}
 
@@ -258,7 +274,7 @@ public:
 	}
 
 	static void setFrame(frame& frameObj, const ofShortPixels& pixels) {
-		int minZ = numeric_limits<int>::max();
+		frameObj.nearPoint.z = numeric_limits<int>::max();
 		int length = frameObj.width*frameObj.height;
 		frameObj.pixels = new int[length];
 
@@ -285,12 +301,17 @@ public:
 				}
 				else {
 					frameObj.pixels[indexFrame] = distance;
-					minZ = distance < minZ ? distance : minZ;
+					if (distance < frameObj.nearPoint.z) {
+						frameObj.nearPoint.x = x;
+						frameObj.nearPoint.y = y;
+						frameObj.nearPoint.z = distance;
+
+					}
 				}
 			}
 		}
-		frameObj.minZ = minZ;
-		frameObj.maxZ = minZ + 100.f;
+
+		frameObj.maxZ = frameObj.nearPoint.z + 100.f;
 	}
 
 	static void setFeatureVector(const ofPixels &pixels, std::array<float, 11 * 11> &features) {
