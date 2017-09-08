@@ -12,7 +12,7 @@ void mouseCursor::setup(vector<ofVec3f>& initCursorPos, appUtils::CursorMode cur
 	} 
 	else if (currentCursorMode == appUtils::CursorMode::Grab) {
 		normalFingerImage.load("cursor.png");
-		specialFingerImage.load("cursor_green.png");
+		//specialFingerImage.load("cursor_green.png");
 		thumbFingerImage.load("cursor_blue.png");
 		imageUtils::setFingerMap(fingerMap, initCursorPos);
 	}
@@ -32,36 +32,26 @@ void mouseCursor::draw() {
 	if (actualPos.size() == 0)return;
 	ofEnableAlphaBlending();
 	if (currentCursorMode == appUtils::CursorMode::Pointer) {
-		float actualX = actualPos.front().x * 2 - 100.f;
-		float actualY = -actualPos.front().y * 2 + 250.f;
-		//SetCursorPos(actualX, actualY);
-		normalFingerImage.draw(actualX, actualY);
+		float actualX = actualPos.front().x * 6 - 100.f;
+		float actualY = actualPos.front().y * 6;
+		SetCursorPos(-ofGetWidth() * .2f + actualX,-ofGetHeight() * .5f + actualY);
+		//normalFingerImage.draw(actualX, actualY);
 	}
 	else if (currentCursorMode == appUtils::CursorMode::Grab) {
 		if (fingerMap.find("thumb") != fingerMap.end()) {
-			float actualX = fingerMap["thumb"].x - 100.f;
-			float actualY = -fingerMap["thumb"].y + 250.f;
-			thumbFingerImage.draw(actualX, actualY);
+			drawMarker(thumbFingerImage, fingerMap["thumb"]);
 		}
 		if (fingerMap.find("otherFinger1") != fingerMap.end()) {
-			float actualX = fingerMap["otherFinger1"].x - 100.f;
-			float actualY = -fingerMap["otherFinger1"].y + 250.f;
-			normalFingerImage.draw(actualX, actualY);
+			drawMarker(normalFingerImage, fingerMap["otherFinger1"]);
 		}
 		if (fingerMap.find("otherFinger2") != fingerMap.end()) {
-			float actualX = fingerMap["otherFinger2"].x - 100.f;
-			float actualY = -fingerMap["otherFinger2"].y + 250.f;
-			normalFingerImage.draw(actualX, actualY);
+			drawMarker(normalFingerImage, fingerMap["otherFinger2"]);
 		}
 		if (fingerMap.find("otherFinger3") != fingerMap.end()) {
-			float actualX = fingerMap["otherFinger3"].x - 100.f;
-			float actualY = -fingerMap["otherFinger3"].y + 250.f;
-			normalFingerImage.draw(actualX, actualY);
+			drawMarker(normalFingerImage, fingerMap["otherFinger3"]);
 		}
 		if (fingerMap.find("otherFinger4") != fingerMap.end()) {
-			float actualX = fingerMap["otherFinger4"].x - 100.f;
-			float actualY = -fingerMap["otherFinger4"].y + 250.f;
-			normalFingerImage.draw(actualX, actualY);
+			drawMarker(normalFingerImage, fingerMap["otherFinger4"]);
 		}
 		//for(ofVec3f& point : actualPos){
 		//	float actualX = point.x - 100.f;
@@ -77,4 +67,10 @@ void mouseCursor::tearDown() {
 	specialFingerImage.clear();
 	normalFingerImage.clear();
 	initialized = false;
+}
+
+void mouseCursor::drawMarker(ofImage& image, ofVec3f& position) {
+	float actualX = position.x - 100.f;
+	float actualY = -position.y + 250.f;
+	image.draw(actualX, actualY);
 }

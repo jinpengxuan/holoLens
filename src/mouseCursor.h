@@ -26,4 +26,6 @@ public:
 
 private:
 
+	void drawMarker(ofImage& image, ofVec3f& position);
+
 };

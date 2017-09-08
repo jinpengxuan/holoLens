@@ -27,7 +27,10 @@ public:
 			int otherClusterPos = 0;
 			float distance = 0;
 			for (ofVec3f& otherPos : clusters) {
-				if (clusterPos == otherClusterPos)continue;
+				if (clusterPos == otherClusterPos) {
+					otherClusterPos++;
+					continue;
+				}
 				float currentDistance = sqrt(pow((otherPos.x - pos.x), 2) + pow((otherPos.y - pos.y), 2));
 				distance += currentDistance;
 				otherClusterPos++;
