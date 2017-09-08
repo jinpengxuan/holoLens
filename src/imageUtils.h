@@ -11,13 +11,13 @@ class imageUtils {
 
 public:
 
-	static float getAngleBetweenVectors(ofVec2f v1, ofVec2f v2) {
+	static float getAngleBetweenVectors(ofVec2f& v1, ofVec2f& v2) {
 		float angle = atan2(v2.y, v2.x) - atan2(v1.y, v1.x);
 
 		return angle;
 	}
 
-	static void setFingerMap(map<std::string, ofVec3f>& fingerMap, vector<ofVec3f>& clusters) {
+	static void setFingerMap(map<string, ofVec3f>& fingerMap, vector<ofVec3f>& clusters) {
 		if (clusters.size() < 5)return;
 		fingerMap.clear();
 		int thumbIndex = -1;
@@ -31,7 +31,7 @@ public:
 					otherClusterPos++;
 					continue;
 				}
-				float currentDistance = sqrt(pow((otherPos.x - pos.x), 2) + pow((otherPos.y - pos.y), 2));
+				float currentDistance = abs(otherPos.x - pos.x) + abs(otherPos.y - pos.y);
 				distance += currentDistance;
 				otherClusterPos++;
 			}
@@ -43,13 +43,45 @@ public:
 		}
 		if (thumbIndex >= 0)fingerMap["thumb"] = clusters.at(thumbIndex);
 		
+		int firstOuterFingerIndex = -1;
+		int secondOuterFingerIndex = -1;
+		int secondOuterFingerTempIndex = -1;
 		clusterPos = 0;
-		int outerFingerIndex = 1;
+		largestDistance = 0;
 		for (ofVec3f& pos : clusters) {
-			if (thumbIndex != clusterPos) {
-				fingerMap["otherFinger" + to_string(outerFingerIndex++)] = clusters.at(clusterPos);
+			if (clusterPos == thumbIndex) {
+				clusterPos++;
+				continue;
+			}
+			int otherClusterPos = 0;
+			float distance = 0;
+			for (ofVec3f& otherPos : clusters) {
+				if (otherClusterPos == clusterPos || otherClusterPos == thumbIndex) {
+					otherClusterPos++;
+					continue;
+				}
+				float currentDistance = abs(otherPos.x - pos.x) + abs(otherPos.y - pos.y);
+				if (currentDistance > distance) {
+					distance = currentDistance;
+					secondOuterFingerTempIndex = otherClusterPos;
+				}
+				otherClusterPos++;
+			}
+			if (distance > largestDistance) {
+				firstOuterFingerIndex = clusterPos;
+				secondOuterFingerIndex = secondOuterFingerTempIndex;
 			}
 			clusterPos++;
+		}
+		if (firstOuterFingerIndex >= 0)fingerMap["firstOuterFinger"] = clusters.at(firstOuterFingerIndex);
+		if (secondOuterFingerIndex >= 0)fingerMap["secondOuterFinger"] = clusters.at(secondOuterFingerIndex);
+		int otherFingerIndex = 1;
+		for (int i = 0; i < clusters.size(); i++) {
+			if (i != thumbIndex && i != firstOuterFingerIndex && i != secondOuterFingerIndex) {
+				string key = "otherFinger" + to_string(otherFingerIndex);
+				fingerMap[key] = clusters.at(i);
+				otherFingerIndex++;
+			}
 		}
 	}
 

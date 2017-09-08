@@ -9,7 +9,7 @@ class videoContainer {
 public:
 
 	void pause(bool paused);
-	void playByTime(int time);
+	void setSpeed(float speed);
 	void init(ofVec2f center, vector<string> elements);
 	void update();
 	void draw();

@@ -62,8 +62,8 @@ void videoContainer::pause(bool paused) {
 	actualVideo.setPaused(paused);
 }
 
-void videoContainer::playByTime(int time) {
-
+void videoContainer::setSpeed(float speed) {
+	actualVideo.setSpeed(speed);
 }
 
 void videoContainer::setVideoProperties(string path) {
@@ -112,7 +112,8 @@ void videoContainer::startAnimation() {
 	float pct = 0.01f;
 	actualVideo.setPosition(pct);
 	actualVideo.update();
-	actualVideo.setPaused(true);
+	actualVideo.setPaused(false);
+	actualVideo.setSpeed(44.f);
 	videoName = sampleFrames.front().name;
 
 	readyState = true;
