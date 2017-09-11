@@ -11,6 +11,19 @@ class imageUtils {
 
 public:
 
+	static void setCentroid(vector<ofVec3f>& positions, ofVec3f& centroid) {
+		float positionSum = positions.size();
+		
+		for (ofVec3f& point : positions) {
+			centroid.x += point.x;
+			centroid.y += point.y;
+			centroid.z += point.z;
+		}
+		centroid.x /= positionSum;
+		centroid.y /= positionSum;
+		centroid.z /= positionSum;
+	}
+
 	static float getAngleBetweenVectors(ofVec2f& v1, ofVec2f& v2) {
 		float angle = atan2(v2.y, v2.x) - atan2(v1.y, v1.x);
 

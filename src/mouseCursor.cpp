@@ -31,7 +31,22 @@ void mouseCursor::setup(vector<ofVec3f>& initCursorPos, appUtils::CursorMode cur
 }
 
 void mouseCursor::update(vector<ofVec3f>& actualCursorPos) {
+	if (currentCursorMode == appUtils::CursorMode::None) return;
 	actualPos = actualCursorPos;
+
+	if (ofGetElapsedTimeMillis() - positionTrackingTime >= 100) {
+		positionTrackingTime = ofGetElapsedTimeMillis();
+
+		ofVec3f centroid;
+		imageUtils::setCentroid(actualPos, centroid);
+
+		if (history.size() == 20) {
+			evaluateHistory();
+			history.pop_back();
+		}
+		history.push_front(centroid);
+	}
+
 	if (currentCursorMode == appUtils::CursorMode::Grab) {
 		imageUtils::setFingerMap(fingerMap, actualCursorPos);
 		if (initGrabHandNormal[0].x == -1) {
@@ -118,6 +133,13 @@ void mouseCursor::drawLine(array<ofVec2f, 2>& normal) {
 void mouseCursor::tearDown() {
 	specialFingerImage.clear();
 	normalFingerImage.clear();
+	thumbFingerImage.clear();
+	pauseImage.clear();
+	playImage.clear();
+	doublePlayImage.clear();
+	rewindImage.clear();
+	doubleRewindImage.clear();
+	history.clear();
 	initialized = false;
 }
 
@@ -125,4 +147,36 @@ void mouseCursor::drawMarker(ofImage& image, ofVec3f& position) {
 	float actualX = position.x - 100.f;
 	float actualY = -position.y + 250.f;
 	image.draw(actualX, actualY);
+}
+
+void mouseCursor::evaluateHistory() {
+	if (currentCursorMode == appUtils::CursorMode::Pointer) {
+		deque <ofVec3f> ::iterator it;
+		float x_move = history.begin()->x;
+		float y_move = history.begin()->y;
+		for (it = history.begin()+1; it != history.end(); ++it) {
+			x_move += it->x;
+			y_move += it->y;
+		}
+		x_move /= 20.f;
+		y_move /= 20.f;
+		if ((x_move + y_move) < 20) {
+			simulateLeftMouseClick();
+			history.clear();
+		}
+	}
+	else if (currentCursorMode == appUtils::CursorMode::Grab) {
+	
+	}
+}
+
+void mouseCursor::simulateLeftMouseClick() {
+	INPUT    Input = { 0 };
+	// left MB down 
+	Input.type = INPUT_MOUSE;
+	Input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+	SendInput(1, &Input, sizeof(Input));
+	Input.type = INPUT_MOUSE;
+	Input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
+	SendInput(1, &Input, sizeof(Input));
 }
