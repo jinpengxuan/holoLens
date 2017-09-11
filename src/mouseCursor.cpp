@@ -39,22 +39,27 @@ void mouseCursor::update(vector<ofVec3f>& actualCursorPos) {
 
 		ofVec3f centroid;
 		imageUtils::setCentroid(actualPos, centroid);
-
-		if (history.size() == 20) {
-			evaluateHistory();
-			history.pop_back();
-		}
 		history.push_front(centroid);
 	}
 
-	if (currentCursorMode == appUtils::CursorMode::Grab) {
+	if (currentCursorMode == appUtils::CursorMode::Pointer) {
+		if (history.size() == 20) {
+			history.pop_back();
+			evaluateHistory();
+		}
+	}
+	else if (currentCursorMode == appUtils::CursorMode::Grab) {
+		if (history.size() == 10) {
+			history.pop_back();
+			evaluateHistory();
+		}
 		imageUtils::setFingerMap(fingerMap, actualCursorPos);
 		if (initGrabHandNormal[0].x == -1) {
 			setNormalLine(initGrabHandNormal, fingerMap);
 		}
 		setNormalLine(grabHandNormal, fingerMap);
 		rotationDegree = imageUtils::getAngleBetweenVectors(initGrabHandNormal[1], grabHandNormal[1]);
-		rotationDegree = rotationDegree*10.f / 2.f;
+		rotationDegree = rotationDegree*10.f / 4.f;
 		//cout << rotationDegree << endl;
 	}
 }
@@ -64,9 +69,9 @@ void mouseCursor::draw() {
 	if (actualPos.size() == 0)return;
 	ofEnableAlphaBlending();
 	if (currentCursorMode == appUtils::CursorMode::Pointer) {
-		float actualX = actualPos.front().x * 6 - 100.f;
-		float actualY = actualPos.front().y * 6;
-		SetCursorPos(-ofGetWidth() * .2f + actualX,-ofGetHeight() * .5f + actualY);
+		float actualX = -ofGetWidth() * .2f + actualPos.front().x * 6 - 100.f;
+		float actualY = -ofGetHeight() * .5f + actualPos.front().y * 6;
+		SetCursorPos(actualX, actualY);
 		//normalFingerImage.draw(actualX, actualY);
 	}
 	else if (currentCursorMode == appUtils::CursorMode::Grab) {
@@ -152,31 +157,48 @@ void mouseCursor::drawMarker(ofImage& image, ofVec3f& position) {
 void mouseCursor::evaluateHistory() {
 	if (currentCursorMode == appUtils::CursorMode::Pointer) {
 		deque <ofVec3f> ::iterator it;
-		float x_move = history.begin()->x;
-		float y_move = history.begin()->y;
+		float x_move_start = history.begin()->x;
+		float y_move_start = history.begin()->y;
+		float x_move = 0;
+		float y_move = 0;
 		for (it = history.begin()+1; it != history.end(); ++it) {
-			x_move += it->x;
-			y_move += it->y;
+			x_move += abs(it->x - x_move_start);
+			y_move += abs(it->y - y_move_start);
 		}
 		x_move /= 20.f;
 		y_move /= 20.f;
-		if ((x_move + y_move) < 20) {
+		float sumMove = x_move + y_move;
+		//cout << sumMove << endl;
+		if (sumMove < 20) {
 			simulateLeftMouseClick();
 			history.clear();
 		}
 	}
 	else if (currentCursorMode == appUtils::CursorMode::Grab) {
-	
+		deque <ofVec3f> ::iterator it;
+		float x_move_start = history.begin()->x;
+		float x_move_end = (history.end()-1)->x;
+
+		float x_move = x_move_end - x_move_start;
+		if (x_move >= 50) {
+			dismissVideo = true;
+			cout << "dismiss" << endl;
+			history.clear();
+		}
 	}
 }
 
 void mouseCursor::simulateLeftMouseClick() {
-	INPUT    Input = { 0 };
-	// left MB down 
-	Input.type = INPUT_MOUSE;
-	Input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
-	SendInput(1, &Input, sizeof(Input));
-	Input.type = INPUT_MOUSE;
-	Input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
-	SendInput(1, &Input, sizeof(Input));
+
+	simulateMouseClick = true;
+
+	//POINT mouse;
+	//GetCursorPos(&mouse);
+	//HWND window = GetActiveWindow();
+
+	//SendMessage(window, WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM(mouse.x, mouse.y));
+	//ofMouseEventArgs event = ofMouseEventArgs(ofMouseEventArgs::Type::Pressed, mouse.x, mouse.y, 0);
+	//ofNotifyEvent(ofEvent<ofMouseEventArgs>(), event);
+	//this_thread::sleep_for(std::chrono::milliseconds(500));
+	//SendMessage(window, WM_LBUTTONUP, MK_LBUTTON, MAKELPARAM(mouse.x, mouse.y));
 }

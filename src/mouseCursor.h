@@ -17,10 +17,26 @@ public:
 	bool initialized = false;
 	float rotationDegree = 0.f;
 	float positionTrackingTime = 0.f;
+	bool simulateMouseClick = false;
+	bool dismissVideo = false;
 	appUtils::CursorMode currentCursorMode = appUtils::CursorMode::None;
 
-	array<ofVec2f, 2> initGrabHandNormal{ { ofVec2f (-1,-1), ofVec2f(-1,-1) } };
+
+private:
+
+	void drawMarker(ofImage& image, ofVec3f& position);
+	void setNormalLine(array<ofVec2f, 2>& normal, map<string, ofVec3f>& fingerMap);
+	void drawLine(array<ofVec2f, 2>& normal);
+	void evaluateHistory();
+	void simulateLeftMouseClick();
+
+	array<ofVec2f, 2> initGrabHandNormal{ { ofVec2f(-1,-1), ofVec2f(-1,-1) } };
 	array<ofVec2f, 2> grabHandNormal{ { ofVec2f(-1,-1), ofVec2f(-1,-1) } };
+
+	vector<ofVec3f> startPos;
+	vector<ofVec3f> actualPos;
+	deque <ofVec3f> history;
+	map<string, ofVec3f> fingerMap;
 
 	ofImage pauseImage;
 	ofImage playImage;
@@ -31,17 +47,4 @@ public:
 	ofImage normalFingerImage;
 	ofImage specialFingerImage;
 	ofImage thumbFingerImage;
-	vector<ofVec3f> startPos;
-	vector<ofVec3f> actualPos;
-	deque <ofVec3f> history;
-	map<string, ofVec3f> fingerMap;
-
-private:
-
-	void drawMarker(ofImage& image, ofVec3f& position);
-	void setNormalLine(array<ofVec2f, 2>& normal, map<string, ofVec3f>& fingerMap);
-	void drawLine(array<ofVec2f, 2>& normal);
-	void evaluateHistory();
-	void simulateLeftMouseClick();
-
 };

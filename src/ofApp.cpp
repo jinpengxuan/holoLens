@@ -55,6 +55,11 @@ void ofApp::update() {
 		else {
 			mouseCursor.update(gestureTracker.coordinateClusers);
 		}
+		if (mouseCursor.simulateMouseClick) {
+			ofApp::mousePressed(ofGetMouseX(), ofGetMouseY(), 0);
+			mouseCursor.simulateMouseClick = false;
+			//ofApp::mouseReleased(ofGetMouseX(), ofGetMouseY(), 0);
+		}
 	}
 	else if (gestureTracker.cursorMode == appUtils::CursorMode::Grab) {
 		if (!mouseCursor.initialized || mouseCursor.currentCursorMode == appUtils::CursorMode::Pointer) {
@@ -64,6 +69,16 @@ void ofApp::update() {
 		}
 		else {
 			mouseCursor.update(gestureTracker.coordinateClusers);
+		}
+		if (mouseCursor.rotationDegree >= 1) {
+			videoContainer.pause(false);
+		}
+		else if (mouseCursor.rotationDegree < 1) {
+			videoContainer.pause(true);
+		}
+		if (mouseCursor.dismissVideo) {
+			videoContainer.dismissVideo();
+			mouseCursor.dismissVideo=false;
 		}
 	}
 	
@@ -83,6 +98,11 @@ void ofApp::draw() {
 	if (mouseCursor.initialized) {
 		mouseCursor.draw();
 	}
+
+	menu.fileSystemGui->update();
+	menu.gestureGui->update();
+	menu.framerateGui->update();
+	menu.sortingGui->update();
 
 	cam.end();
 }
@@ -163,7 +183,6 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 
 void ofApp::onDropdownEvent(ofxDatGuiDropdownEvent e)
 {
-	if (!videoContainer.readyState)return;
 	if (e.target->getLabel() == "Length Ascending") {
 		videoContainer.reorderVideos(appUtils::VideoOrder::LengthAsc);
 	} else if (e.target->getLabel() == "Size Ascending") {
@@ -200,12 +219,12 @@ void ofApp::mouseDragged(int x, int y, int button) {
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button) {
-
+	cout << "mouse pressed x: " << x << " y:" << y << " button:" << button <<  endl;
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button) {
-
+	cout << "mouse released" << endl;
 }
 
 //--------------------------------------------------------------

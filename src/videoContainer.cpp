@@ -8,7 +8,6 @@ bool sortVecBySizeDesc(videoProperties i, videoProperties j) { return ((i.dimens
 
 void videoContainer::init(ofVec2f center, vector<string> elements) {
 	// loop through directory and create video visual
-	readyState = false;
 	sampleFrames.clear();
 
 	vector<string>::iterator iteratorTemp;
@@ -25,35 +24,46 @@ void videoContainer::init(ofVec2f center, vector<string> elements) {
 }
 
 void videoContainer::update() {
-	if (!readyState)return;
 	if (!actualVideo.isPaused()) actualVideo.update();
 
-	alphaValue = 255;
+	initAlphaValue = 255;
 	zAnimation = 0;
-	if ((ofGetElapsedTimef() - animationStart) <= animationTime) {
-		float timeParameter = (ofGetElapsedTimef() - animationStart) / animationTime;
-		alphaValue = timeParameter * 255;
-		zAnimation = (1 - timeParameter) * 50;
+	if ((ofGetElapsedTimef() - initAnimationStart) <= initAnimationTime) {
+		float timeParameter = (ofGetElapsedTimef() - initAnimationStart) / initAnimationTime;
+		initAlphaValue = timeParameter * 255;
+		zAnimation = (1 - timeParameter) * 100;
+	} 
+	else if ((ofGetElapsedTimef() - dismissAnimationStart) <= dismissAnimationTime) {
+		float timeParameter = (ofGetElapsedTimef() - dismissAnimationStart) / dismissAnimationTime;
+		dismissAlphaValue = (1 - timeParameter) * 255;
+		xAnimation = timeParameter * 300;
+	}
+	else if (dismissing) {
+		dismissAlphaValue = 255;
+		xAnimation = 0;
+		dismissing = false;
+		sampleFrames.erase(sampleFrames.end()-1);
+		setVisualProperties();
 	}
 }
 
 void videoContainer::draw() {
-	if (!readyState)return;
 
 	ofEnableAlphaBlending();
-	ofSetColor(255, 255, 255, alphaValue);
-	int count = sampleFrames.size()-1;
+	ofSetColor(255, 255, 255, initAlphaValue);
+	int count = 0;
 	for (videoProperties& iteratorTemp : sampleFrames) {
 
-		if (count > 0) {
+		if (count < sampleFrames.size() - 1) {
 			ofImage actualFrame = iteratorTemp.sampleFrame;
 			actualFrame.allocate(iteratorTemp.dimension.x, iteratorTemp.dimension.y, OF_IMAGE_COLOR);
 			actualFrame.draw(iteratorTemp.position.x, iteratorTemp.position.y, iteratorTemp.position.z - zAnimation, iteratorTemp.dimension.x, iteratorTemp.dimension.y);
 		}
 		else {
-			actualVideo.draw(ofPoint(iteratorTemp.position.x, iteratorTemp.position.y, iteratorTemp.position.z - zAnimation), iteratorTemp.dimension.x, iteratorTemp.dimension.y);
+			if(dismissAlphaValue<255)ofSetColor(255, 255, 255, dismissAlphaValue);
+			actualVideo.draw(ofPoint(iteratorTemp.position.x + xAnimation, iteratorTemp.position.y, iteratorTemp.position.z - zAnimation), iteratorTemp.dimension.x, iteratorTemp.dimension.y);
 		}
-		count--;
+		count++;
 	}
 	ofDisableAlphaBlending();
 }
@@ -85,10 +95,13 @@ void videoContainer::setVideoProperties(string path) {
 }
 
 void videoContainer::startAnimation() {
-	int count = sampleFrames.size()-1;
-	animationStart = ofGetElapsedTimef();
-	//int initialZValue = -100;
-	//if(sampleFrames.size()>0)initialZValue = ((videoProperties&) sampleFrames.begin()).dimension.x;
+	initAnimationStart = ofGetElapsedTimef();
+	setVisualProperties();
+
+}
+
+void videoContainer::setVisualProperties() {
+	int count = sampleFrames.size() - 1;
 	for (videoProperties& iteratorTemp : sampleFrames) {
 
 		ofImage actualFrame = iteratorTemp.sampleFrame;
@@ -112,17 +125,17 @@ void videoContainer::startAnimation() {
 	float pct = 0.01f;
 	actualVideo.setPosition(pct);
 	actualVideo.update();
-	actualVideo.setPaused(false);
-	actualVideo.setSpeed(44.f);
-	videoName = sampleFrames.front().name;
+	actualVideo.setPaused(true);
+	videoName = sampleFrames.back().name;
+}
 
-	readyState = true;
-
+void videoContainer::dismissVideo() {
+	dismissAnimationStart = ofGetElapsedTimef();
+	dismissing = true;
 }
 
 void videoContainer::reorderVideos(appUtils::VideoOrder videoOrder) {
 	currentSorting = videoOrder;
-	readyState = false;
 	if (videoOrder == appUtils::VideoOrder::LengthAsc) {
 		sort(sampleFrames.begin(), sampleFrames.end(), sortVecByLengthAsc);
 	}

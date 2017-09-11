@@ -14,10 +14,11 @@ public:
 	void update();
 	void draw();
 	void startAnimation();
+	void dismissVideo();
 	void reorderVideos(appUtils::VideoOrder videoOrder);
 
-	bool readyState = false;
 	bool playing = false;
+	bool dismissing = false;
 
 	string videoName;
 
@@ -27,22 +28,27 @@ public:
 	//frames
 	vector <videoProperties> sampleFrames;
 
+	appUtils::VideoOrder currentSorting;
+
+private:
+
 	ofVec2f displayCenter;
 	int videoPosition = 0;
 	int maxHeight = 300;
 	int maxWidth = 0;
 
-	float animationStart = 0.f;
-	float animationTime = 2.f; // seconds
+	float initAnimationStart = 0.f;
+	float dismissAnimationStart = 0.f;
+	float initAnimationTime = 2.f; // seconds
+	float dismissAnimationTime = 1.f; // seconds
 
-	float alphaValue = 255;
+	float initAlphaValue = 255;
+	float dismissAlphaValue = 255;
 	float zAnimation = 0;
-
-	appUtils::VideoOrder currentSorting;
-
-private:
+	float xAnimation = 0;
 
 	void setVideoProperties(string path);
+	void setVisualProperties();
 
 };
 
