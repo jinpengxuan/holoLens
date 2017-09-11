@@ -107,11 +107,11 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 	} 
 	else if(e.target == menu.playButton) {
 		if (menu.playButton->getLabel() == "Play") {
-			videoContainer.setSpeed(1.f);
+			videoContainer.pause(false);
 			menu.playButton->setLabel("Pause");
 		}
 		else {
-			videoContainer.setSpeed(0.f);
+			videoContainer.pause(true);
 			menu.playButton->setLabel("Play");
 		}
 	}

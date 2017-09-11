@@ -65,6 +65,7 @@ public:
 
 private:
 
+	void addFeature(vector<std::array<float, 11 * 11>>& featuresReference, string item);
 	//void initFingerCursor();
 	//void updateFingerCursor();
 

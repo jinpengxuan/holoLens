@@ -70,7 +70,7 @@ void mouseCursor::draw() {
 		if (fingerMap.find("otherFinger2") != fingerMap.end()) {
 			drawMarker(normalFingerImage, fingerMap["otherFinger2"]);
 		}
-		//drawLine(grabHandNormal);
+		drawLine(grabHandNormal);
 		//for(ofVec3f& point : actualPos){
 		//	float actualX = point.x - 100.f;
 		//	float actualY = -point.y + 250.f;

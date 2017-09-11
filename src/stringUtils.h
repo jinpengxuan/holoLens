@@ -10,6 +10,11 @@ class stringUtils {
 
 public:
 
+	static bool contains(string item, string term) {
+
+		return item.find(term) != std::string::npos;
+	}
+
 	static void removeSubstrs(string& inputString, string& pattern) {
 		string::size_type n = pattern.length();
 		for (string::size_type i = inputString.find(pattern);

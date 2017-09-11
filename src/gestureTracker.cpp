@@ -100,41 +100,49 @@ void gestureTracker::capture(string gestureType) {
 	}
 }
 
-void gestureTracker::initFeatures(vector<string> featureElements) {
+void gestureTracker::initFeatures(vector<string> features) {
 	featuresLoaded = false;
 	mouseAccuracy = 0;
 	videoAccuracy = 0;
-	// loop through elements and create features
 	mouseFeaturesReference.clear();
 	videoFeaturesReference.clear();
 	abortFeaturesReference.clear();
 
-	vector<string>::iterator iteratorTemp;
-	for (iteratorTemp = featureElements.begin(); iteratorTemp < featureElements.end(); iteratorTemp++) {
-		string item = (string)*iteratorTemp;
-		if (item.find("mouse") != std::string::npos && stringUtils::hasEnding(item, (string)"png")) {
-			ofImage testImage;
-			testImage.load(item);
-			std::array<float, 11 * 11> features{};
-			imageUtils::setFeatureVector(testImage.getPixels(), features);
-			mouseFeaturesReference.push_back(features);
+	// loop through elements and create features
+	for (vector<string>::iterator i = features.begin(); i < features.end(); i++) {
+
+		string item = (string)*i;
+
+		if (!stringUtils::hasEnding(item, (string)"png"))
+		{
+			continue;
 		}
-		else if (item.find("video") != std::string::npos && stringUtils::hasEnding(item, (string)"png")) {
-			ofImage testImage;
-			testImage.load(item);
-			std::array<float, 11 * 11> features{};
-			imageUtils::setFeatureVector(testImage.getPixels(), features);
-			videoFeaturesReference.push_back(features);
+
+		if (stringUtils::contains(item, "mouse")) {
+			addFeature(mouseFeaturesReference, item);
+			continue;
 		}
-		else if (item.find("abort") != std::string::npos && stringUtils::hasEnding(item, (string)"png")) {
-			ofImage testImage;
-			testImage.load(item);
-			std::array<float, 11 * 11> features{};
-			imageUtils::setFeatureVector(testImage.getPixels(), features);
-			abortFeaturesReference.push_back(features);
+
+		if (stringUtils::contains(item, "video")) {
+			addFeature(videoFeaturesReference, item);
+			continue;
+		}
+
+		if (stringUtils::contains(item, "abort")) {
+			addFeature(abortFeaturesReference, item);
 		}
 	}
-	if(!mouseFeaturesReference.size()==0 || !videoFeaturesReference.size() == 0)featuresLoaded = true;
+
+	featuresLoaded = mouseFeaturesReference.size() != 0 || videoFeaturesReference.size() != 0;
+
+}
+
+void gestureTracker::addFeature(vector<std::array<float, 11 * 11>>& featuresReference, string item) {
+	ofImage testImage;
+	testImage.load(item);
+	std::array<float, 11 * 11> features{};
+	imageUtils::setFeatureVector(testImage.getPixels(), features);
+	featuresReference.push_back(features);
 }
 
 void gestureTracker::startDrag() {
