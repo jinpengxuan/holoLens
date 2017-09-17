@@ -1,10 +1,11 @@
-﻿#include "ofApp.h"
+﻿#include "controller.h"
 
 //--------------------------------------------------------------
-void ofApp::setup() {
+void controller::setup() {
 
 	//ofSetWindowShape(previewWidth * 2, previewHeight * 2);
-	ofSetWindowShape(appUtils::WINDOW_WIDTH, appUtils::WINDOW_HEIGHT);
+	ofSetFrameRate(30);
+	ofSetWindowShape(applicationProperties::WINDOW_WIDTH, applicationProperties::WINDOW_HEIGHT);
 
 	cam = ofEasyCam();
 	cam.setPosition(ofVec3f(0, 0, 500));
@@ -22,15 +23,15 @@ void ofApp::setup() {
 
 	//Gesture Init
 	vector<string> featureElements;
-	pathUtils::setPathElements(featureElements, capturePath, appUtils::MediaType::Feature);
+	pathUtils::setPathElements(featureElements, capturePath, applicationProperties::MediaType::Feature);
 	gestureTracker.init(featureElements);
 
 	//Menu Init
-	menu.init(this, &ofApp::onButtonEvent, &ofApp::onDropdownEvent);
+	menu.init(this, &controller::onButtonEvent, &controller::onDropdownEvent);
 }
 
 //--------------------------------------------------------------
-void ofApp::update() {
+void controller::update() {
 	gestureTracker.update();
 	videoContainer.update();
 
@@ -38,7 +39,7 @@ void ofApp::update() {
 	menu.videoControlPrecision->setValue(gestureTracker.videoAccuracy);
 	menu.abortControlPrecision->setValue(gestureTracker.abortAccuracy);
 
-	if (gestureTracker.cursorMode == appUtils::CursorMode::None) {
+	if (gestureTracker.cursorMode == applicationProperties::CursorMode::None) {
 		if (mouseCursor.initialized) {
 			menu.videoControlLabel->setBackgroundColor(ofColor(25.f, 1.f));
 			menu.mouseControlLabel->setBackgroundColor(ofColor(25.f, 1.f));
@@ -46,8 +47,8 @@ void ofApp::update() {
 		}
 		return;
 	}
-	else if (gestureTracker.cursorMode == appUtils::CursorMode::Pointer) {
-		if (!mouseCursor.initialized || mouseCursor.currentCursorMode == appUtils::CursorMode::Grab) {
+	else if (gestureTracker.cursorMode == applicationProperties::CursorMode::Pointer) {
+		if (!mouseCursor.initialized || mouseCursor.currentCursorMode == applicationProperties::CursorMode::Grab) {
 			menu.videoControlLabel->setBackgroundColor(ofColor(25.f, 1.f));
 			menu.mouseControlLabel->setBackgroundColor(ofColor::forestGreen);
 			mouseCursor.setup(gestureTracker.coordinateClusers, gestureTracker.cursorMode);
@@ -56,13 +57,13 @@ void ofApp::update() {
 			mouseCursor.update(gestureTracker.coordinateClusers);
 		}
 		if (mouseCursor.simulateMouseClick) {
-			ofApp::mousePressed(ofGetMouseX(), ofGetMouseY(), 0);
+			controller::mousePressed(ofGetMouseX(), ofGetMouseY(), 0);
 			mouseCursor.simulateMouseClick = false;
 			//ofApp::mouseReleased(ofGetMouseX(), ofGetMouseY(), 0);
 		}
 	}
-	else if (gestureTracker.cursorMode == appUtils::CursorMode::Grab) {
-		if (!mouseCursor.initialized || mouseCursor.currentCursorMode == appUtils::CursorMode::Pointer) {
+	else if (gestureTracker.cursorMode == applicationProperties::CursorMode::Grab) {
+		if (!mouseCursor.initialized || mouseCursor.currentCursorMode == applicationProperties::CursorMode::Pointer) {
 			menu.videoControlLabel->setBackgroundColor(ofColor::forestGreen);
 			menu.mouseControlLabel->setBackgroundColor(ofColor(25.f, 1.f));
 			mouseCursor.setup(gestureTracker.coordinateClusers, gestureTracker.cursorMode);
@@ -87,7 +88,7 @@ void ofApp::update() {
 }
 
 //--------------------------------------------------------------
-void ofApp::draw() {
+void controller::draw() {
 
 	cam.begin();
 
@@ -99,15 +100,10 @@ void ofApp::draw() {
 		mouseCursor.draw();
 	}
 
-	menu.fileSystemGui->update();
-	menu.gestureGui->update();
-	menu.framerateGui->update();
-	menu.sortingGui->update();
-
 	cam.end();
 }
 
-void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
+void controller::onButtonEvent(ofxDatGuiButtonEvent e)
 {
 	if (e.target == menu.collapseButton) {
 		if (menu.collapsed) {
@@ -137,7 +133,7 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 	}
 	else if (e.target == menu.evaluateButton) {
 		vector<string> featureElements;
-		pathUtils::setPathElements(featureElements, capturePath, appUtils::MediaType::Feature);
+		pathUtils::setPathElements(featureElements, capturePath, applicationProperties::MediaType::Feature);
 		gestureTracker.initFeatures(featureElements);
 	}
 	else if (e.target == menu.learnMouseControlButton) {
@@ -150,7 +146,7 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 		gestureTracker.capture("abort");
 	}
 	else if (e.target == menu.openButton) {
-		pathUtils::setPathElements(videoElements, menu.pathLabel->getLabel(), appUtils::MediaType::Video);
+		pathUtils::setPathElements(videoElements, menu.pathLabel->getLabel(), applicationProperties::MediaType::Video);
 		cout << "init videos" << endl;
 		videoContainer.init(ofVec2f(0, 0), videoElements);
 		menu.videoNameLabel->setLabel(videoContainer.videoName);
@@ -160,14 +156,14 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 		if (parentLabel.length() == 0)return;
 		if (stringUtils::hasEnding(parentLabel, (string)":\\")) {
 			parentLabel = "";
-			menu.loadSubOptions(this, &ofApp::onButtonEvent,parentLabel);
+			menu.loadSubOptions(this, &controller::onButtonEvent,parentLabel);
 			menu.pathLabel->setLabel(parentLabel);
 		}
 		else {
 			size_t found = parentLabel.find_last_of("/\\");
 			stringUtils::removeSubstrs(parentLabel, parentLabel.substr(found));
 			if (stringUtils::hasEnding(parentLabel, (string)":"))parentLabel += "\\";
-			menu.loadSubOptions(this, &ofApp::onButtonEvent, parentLabel);
+			menu.loadSubOptions(this, &controller::onButtonEvent, parentLabel);
 			menu.pathLabel->setLabel(parentLabel);
 		}
 	}
@@ -175,69 +171,69 @@ void ofApp::onButtonEvent(ofxDatGuiButtonEvent e)
 		string buttonLabel = e.target->getLabel();
 		string path1 = (stringUtils::hasEnding(menu.pathLabel->getLabel(), (string)"\\") 
 			|| (menu.pathLabel->getLabel()).length() == 0) ? menu.pathLabel->getLabel() : (menu.pathLabel->getLabel() + "\\");
-		menu.loadSubOptions(this, &ofApp::onButtonEvent, path1 + buttonLabel);
+		menu.loadSubOptions(this, &controller::onButtonEvent, path1 + buttonLabel);
 		menu.pathLabel->setLabel(path1 + buttonLabel);
 		menu.fileSystemGui->layoutGui(); // musste schnittstelle erweitern, da refresh methode nicht public war
 	}
 }
 
-void ofApp::onDropdownEvent(ofxDatGuiDropdownEvent e)
+void controller::onDropdownEvent(ofxDatGuiDropdownEvent e)
 {
 	if (e.target->getLabel() == "Length Ascending") {
-		videoContainer.reorderVideos(appUtils::VideoOrder::LengthAsc);
+		videoContainer.reorderVideos(applicationProperties::VideoOrder::LengthAsc);
 	} else if (e.target->getLabel() == "Size Ascending") {
-		videoContainer.reorderVideos(appUtils::VideoOrder::SizeAsc);
+		videoContainer.reorderVideos(applicationProperties::VideoOrder::SizeAsc);
 	}
 	else if (e.target->getLabel() == "Length Descending") {
-		videoContainer.reorderVideos(appUtils::VideoOrder::LengthDesc);
+		videoContainer.reorderVideos(applicationProperties::VideoOrder::LengthDesc);
 	}
 	else if (e.target->getLabel() == "Size Descending") {
-		videoContainer.reorderVideos(appUtils::VideoOrder::SizeDesc);
+		videoContainer.reorderVideos(applicationProperties::VideoOrder::SizeDesc);
 	}
 	menu.videoNameLabel->setLabel(videoContainer.videoName);
 }
 
 //--------------------------------------------------------------
-void ofApp::keyPressed(int key) {
+void controller::keyPressed(int key) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::keyReleased(int key) {
+void controller::keyReleased(int key) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y) {
+void controller::mouseMoved(int x, int y) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button) {
+void controller::mouseDragged(int x, int y, int button) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button) {
+void controller::mousePressed(int x, int y, int button) {
 	cout << "mouse pressed x: " << x << " y:" << y << " button:" << button <<  endl;
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button) {
+void controller::mouseReleased(int x, int y, int button) {
 	cout << "mouse released" << endl;
 }
 
 //--------------------------------------------------------------
-void ofApp::windowResized(int w, int h) {
+void controller::windowResized(int w, int h) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::gotMessage(ofMessage msg) {
+void controller::gotMessage(ofMessage msg) {
 
 }
 
 //--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo) {
+void controller::dragEvent(ofDragInfo dragInfo) {
 
 }

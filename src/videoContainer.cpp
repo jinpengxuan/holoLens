@@ -42,7 +42,7 @@ void videoContainer::update() {
 		dismissAlphaValue = 255;
 		xAnimation = 0;
 		dismissing = false;
-		sampleFrames.erase(sampleFrames.end()-1);
+		if(sampleFrames.size()>0)sampleFrames.erase(sampleFrames.end()-1);
 		setVisualProperties();
 	}
 }
@@ -101,6 +101,7 @@ void videoContainer::startAnimation() {
 }
 
 void videoContainer::setVisualProperties() {
+	if (sampleFrames.size() == 0)return;
 	int count = sampleFrames.size() - 1;
 	for (videoProperties& iteratorTemp : sampleFrames) {
 
@@ -134,18 +135,18 @@ void videoContainer::dismissVideo() {
 	dismissing = true;
 }
 
-void videoContainer::reorderVideos(appUtils::VideoOrder videoOrder) {
+void videoContainer::reorderVideos(applicationProperties::VideoOrder videoOrder) {
 	currentSorting = videoOrder;
-	if (videoOrder == appUtils::VideoOrder::LengthAsc) {
+	if (videoOrder == applicationProperties::VideoOrder::LengthAsc) {
 		sort(sampleFrames.begin(), sampleFrames.end(), sortVecByLengthAsc);
 	}
-	else if (videoOrder == appUtils::VideoOrder::SizeAsc) {
+	else if (videoOrder == applicationProperties::VideoOrder::SizeAsc) {
 		sort(sampleFrames.begin(), sampleFrames.end(), sortVecBySizeAsc);
 	}
-	else if (videoOrder == appUtils::VideoOrder::LengthDesc) {
+	else if (videoOrder == applicationProperties::VideoOrder::LengthDesc) {
 		sort(sampleFrames.begin(), sampleFrames.end(), sortVecByLengthDesc);
 	}
-	else if (videoOrder == appUtils::VideoOrder::SizeDesc) {
+	else if (videoOrder == applicationProperties::VideoOrder::SizeDesc) {
 		sort(sampleFrames.begin(), sampleFrames.end(), sortVecBySizeDesc);
 	}
 	startAnimation();

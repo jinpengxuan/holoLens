@@ -12,6 +12,7 @@ void gestureTracker::init(vector<string> featureElements) {
 
 void gestureTracker::update() {
 	kinect.update();
+	if (!kinect.isFrameNew())return;
 
 	const auto & depthPix = kinect.getDepthSource()->getPixels();
 
@@ -55,28 +56,28 @@ void gestureTracker::update() {
 		abortAccuracy = imageUtils::getAccuracy(abortFeaturesReference, features);
 
 		if (mouseAccuracy > 60) {
-			cursorMode = appUtils::CursorMode::Pointer;
+			cursorMode = applicationProperties::CursorMode::Pointer;
 		}
 		else if (videoAccuracy > 60) {
-			cursorMode = appUtils::CursorMode::Grab;
+			cursorMode = applicationProperties::CursorMode::Grab;
 		}
 		else if (abortAccuracy > 60) {
-			cursorMode = appUtils::CursorMode::None;
+			cursorMode = applicationProperties::CursorMode::None;
 		}
 	}
 
 	// get clusters of finger tips
 	coordinateClusers.clear();
-	if (cursorMode == appUtils::CursorMode::Pointer) {
+	if (cursorMode == applicationProperties::CursorMode::Pointer) {
 		//sort(depthCoords.begin(), depthCoords.end(), sortVecByDepth);
 		coordinateClusers.push_back(frame.nearPoint);
 	}
-	else if (cursorMode == appUtils::CursorMode::Grab) {
+	else if (cursorMode == applicationProperties::CursorMode::Grab) {
 		//sort(depthCoords.begin(), depthCoords.end(), sortVecByDepth);
 		imageUtils::setPixelClusters(coordinateClusers, frame);
 	}
 	else {
-		cursorMode = appUtils::CursorMode::None;
+		cursorMode = applicationProperties::CursorMode::None;
 	}
 	delete[] frame.pixels;
 }
@@ -94,7 +95,7 @@ void gestureTracker::capture(string gestureType) {
 	if (handImage.isAllocated()) {
 		if (handImage.isAllocated()) {
 			std::array<float, 11 * 11> features;
-			handImage.resize(appUtils::HOG_SIZE, appUtils::HOG_SIZE);
+			handImage.resize(applicationProperties::HOG_SIZE, applicationProperties::HOG_SIZE);
 			handImage.save("captures\\" + gestureType + to_string(rand() % 1000000) + ".png", ofImageQualityType::OF_IMAGE_QUALITY_HIGH);
 		}
 	}

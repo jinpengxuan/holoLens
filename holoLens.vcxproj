@@ -93,6 +93,8 @@
     <OutDir>bin\</OutDir>
     <IntDir>obj\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);c:\Program Files\PCL 1.8.0\include\pcl-1.8;c:\Program Files\PCL 1.8.0\3rdParty\Boost\include\boost-1_61;c:\Program Files\PCL 1.8.0\3rdParty\Eigen\eigen3;c:\Program Files\PCL 1.8.0\3rdParty\FLANN\include;c:\Program Files\PCL 1.8.0\3rdParty\Qhull\include;c:\Program Files\PCL 1.8.0\3rdParty\VTK\include\vtk-7.0</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64;c:\Program Files\PCL 1.8.0\lib;c:\Program Files\PCL 1.8.0\3rdParty\Boost\lib;c:\Program Files\PCL 1.8.0\3rdParty\FLANN\lib;c:\Program Files\PCL 1.8.0\3rdParty\Qhull\lib;c:\Program Files\PCL 1.8.0\3rdParty\VTK\lib</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -183,8 +185,8 @@
     <ClCompile Include="src\gestureTracker.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mouseCursor.cpp" />
-    <ClCompile Include="src\ofApp.cpp" />
-    <ClCompile Include="src\appUtils.h" />
+    <ClCompile Include="src\controller.cpp" />
+    <ClCompile Include="src\applicationProperties.h" />
     <ClCompile Include="src\videoContainer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -214,7 +216,7 @@
     <ClInclude Include="src\imageUtils.h" />
     <ClInclude Include="src\menuWrapper.h" />
     <ClInclude Include="src\mouseCursor.h" />
-    <ClInclude Include="src\ofApp.h" />
+    <ClInclude Include="src\controller.h" />
     <ClInclude Include="src\pathUtils.h" />
     <ClInclude Include="src\stringUtils.h" />
     <ClInclude Include="src\videoContainer.h" />

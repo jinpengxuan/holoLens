@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofxKinectForWindows2.h"
-#include "appUtils.h"
+#include "applicationProperties.h"
 #include "frame.h"
 #include "imageUtils.h"
 #include "stringUtils.h"
@@ -24,7 +24,7 @@ public:
 	bool dragged = false;
 	bool featuresLoaded = false;
 
-	appUtils::CursorMode cursorMode = appUtils::CursorMode::None;
+	applicationProperties::CursorMode cursorMode = applicationProperties::CursorMode::None;
 	vector<ofVec2f> cursorPositions;
 
 	int trackingTime = 0;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-#include "appUtils.h"
+#include "applicationProperties.h"
 #include "videoProperties.h"
 
 class videoContainer {
@@ -15,7 +15,7 @@ public:
 	void draw();
 	void startAnimation();
 	void dismissVideo();
-	void reorderVideos(appUtils::VideoOrder videoOrder);
+	void reorderVideos(applicationProperties::VideoOrder videoOrder);
 
 	bool playing = false;
 	bool dismissing = false;
@@ -28,7 +28,7 @@ public:
 	//frames
 	vector <videoProperties> sampleFrames;
 
-	appUtils::VideoOrder currentSorting;
+	applicationProperties::VideoOrder currentSorting;
 
 private:
 

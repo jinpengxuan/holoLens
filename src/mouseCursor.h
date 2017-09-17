@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-#include "appUtils.h"
+#include "applicationProperties.h"
 #include "imageUtils.h"
 #include <deque>
 
@@ -9,7 +9,7 @@ class mouseCursor {
 
 public:
 
-	void setup(vector<ofVec3f>& initCursorPos, appUtils::CursorMode cursorMode);
+	void setup(vector<ofVec3f>& initCursorPos, applicationProperties::CursorMode cursorMode);
 	void update(vector<ofVec3f>& actualCursorPos);
 	void draw();
 	void tearDown();
@@ -19,7 +19,7 @@ public:
 	float positionTrackingTime = 0.f;
 	bool simulateMouseClick = false;
 	bool dismissVideo = false;
-	appUtils::CursorMode currentCursorMode = appUtils::CursorMode::None;
+	applicationProperties::CursorMode currentCursorMode = applicationProperties::CursorMode::None;
 
 
 private:

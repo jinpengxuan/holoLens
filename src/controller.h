@@ -5,7 +5,7 @@
 #include "ofxDatGui.h"
 #include "videoContainer.h"
 #include "gestureTracker.h"
-#include "appUtils.h"
+#include "applicationProperties.h"
 #include "pathUtils.h"
 #include "stringUtils.h"
 #include "mouseCursor.h"
@@ -14,7 +14,7 @@
 //#include <pcl/io/pcd_io.h>
 //#include <pcl/point_types.h>
 
-class ofApp : public ofBaseApp {
+class controller : public ofBaseApp {
 
 public:
 	void setup();

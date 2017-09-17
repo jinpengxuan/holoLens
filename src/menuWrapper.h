@@ -2,7 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxDatGui.h"
-#include "appUtils.h"
+#include "applicationProperties.h"
 
 class menuWrapper {
 

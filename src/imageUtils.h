@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "frame.h"
+#include "applicationProperties.h"
 #include <string>
 #include <iostream>
 #include <filesystem>
@@ -32,6 +33,28 @@ public:
 
 	static void setFingerMap(map<string, ofVec3f>& fingerMap, vector<ofVec3f>& clusters) {
 		if (clusters.size() < 5)return;
+
+		/*if (fingerMap.size() == 5) {
+			for (auto const &finger : fingerMap) {
+				auto const &name = finger.first;
+				ofVec3f &fingerPosition = (ofVec3f)finger.second;
+				int clusterIndex = 0;
+				int minDistanceIndex = 0;
+				float minDistance = numeric_limits<float>::max();
+				for (ofVec3f& position : clusters) { 
+					float distance = abs(position.x - fingerPosition.x) + abs(position.y - fingerPosition.y);
+					if (distance < minDistance) {
+						minDistanceIndex = clusterIndex;
+						minDistance = distance;
+					}
+					clusterIndex++;
+				}
+				fingerMap[name] = clusters.at(minDistanceIndex);
+				clusters.erase(clusters.begin() + minDistanceIndex);
+			}
+			return;
+		}*/
+
 		fingerMap.clear();
 		int thumbIndex = -1;
 		int clusterPos = 0;
@@ -264,7 +287,7 @@ public:
 		}
 
 		handImage.setFromPixels(pix);
-		handImage.resize(appUtils::HOG_SIZE, appUtils::HOG_SIZE);
+		handImage.resize(applicationProperties::HOG_SIZE, applicationProperties::HOG_SIZE);
 	}
 
 	static void setDepthCoordinates(frame& depthFrame) {
@@ -343,9 +366,9 @@ public:
 
 	static void setFeatureVector(const ofPixels &pixels, std::array<float, 11 * 11> &features) {
 
-		const int width = appUtils::HOG_SIZE;
-		const int height = appUtils::HOG_SIZE;
-		const int size = appUtils::HOG_SIZE * appUtils::HOG_SIZE;
+		const int width = applicationProperties::HOG_SIZE;
+		const int height = applicationProperties::HOG_SIZE;
+		const int size = applicationProperties::HOG_SIZE * applicationProperties::HOG_SIZE;
 		if(pixels.size() != size) return;
 
 		int Ix[size];
@@ -399,9 +422,9 @@ public:
 		float magnitudes[11 * 11];
 
 		int featurePos = 0;
-		for (int y = 0; y < appUtils::HOG_SIZE - 15; y += 8)
+		for (int y = 0; y < applicationProperties::HOG_SIZE - 15; y += 8)
 		{
-			for (int x = 0; x<appUtils::HOG_SIZE - 15; x += 8)
+			for (int x = 0; x<applicationProperties::HOG_SIZE - 15; x += 8)
 			{
 				float magnitudeSum = 0;
 				float orientationSum = 0;
@@ -412,7 +435,7 @@ public:
 				{
 					for (int k = x; k<x + 16; k++)
 					{
-						int pos = j*appUtils::HOG_SIZE + k;
+						int pos = j*applicationProperties::HOG_SIZE + k;
 
 						if (featureVector[pos].y >= 0 && featureVector[pos].y <= 40) {
 							hist[0] += featureVector[pos].x;

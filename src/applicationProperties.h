@@ -6,7 +6,7 @@
 #include <filesystem>
 namespace fs = filesystem;
 
-class appUtils {
+class applicationProperties {
 
 public:
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
-#include "appUtils.h"
+#include "applicationProperties.h"
 #include "stringUtils.h"
 #include <string>
 #include <iostream>
@@ -12,7 +12,7 @@ class pathUtils {
 
 public:
 
-	static void setPathElements(vector<string>& elements, string path, appUtils::MediaType type) {
+	static void setPathElements(vector<string>& elements, string path, applicationProperties::MediaType type) {
 		elements.clear();
 		try {
 			for (auto & entry1 : fs::directory_iterator(path)) {
@@ -28,10 +28,11 @@ public:
 						}
 						else if (s.st_mode & S_IFREG)
 						{
-							if (type == appUtils::MediaType::Video && (stringUtils::hasEnding(file, (string)".mkv") || stringUtils::hasEnding(file, (string)".avi"))) {
+							if (type == applicationProperties::MediaType::Video 
+								&& (stringUtils::hasEnding(file, (string)".mkv") || stringUtils::hasEnding(file, (string)".avi") || stringUtils::hasEnding(file, (string)".mp4"))) {
 								elements.push_back(file);
 							}
-							else if (type == appUtils::MediaType::Feature && (stringUtils::hasEnding(file, (string)".png"))) {
+							else if (type == applicationProperties::MediaType::Feature && (stringUtils::hasEnding(file, (string)".png"))) {
 								elements.push_back(file);
 							}
 						}

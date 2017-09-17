@@ -1,16 +1,16 @@
 #include "mouseCursor.h"
 
-void mouseCursor::setup(vector<ofVec3f>& initCursorPos, appUtils::CursorMode cursorMode) {
+void mouseCursor::setup(vector<ofVec3f>& initCursorPos, applicationProperties::CursorMode cursorMode) {
 	initialized = false;
 
 	startPos = initCursorPos;
 	actualPos = initCursorPos;
 	currentCursorMode = cursorMode;
 
-	if (currentCursorMode == appUtils::CursorMode::Pointer) {
+	if (currentCursorMode == applicationProperties::CursorMode::Pointer) {
 		normalFingerImage.load("cursor.png");
 	} 
-	else if (currentCursorMode == appUtils::CursorMode::Grab) {
+	else if (currentCursorMode == applicationProperties::CursorMode::Grab) {
 		normalFingerImage.load("cursor.png");
 		specialFingerImage.load("cursor_green.png");
 		thumbFingerImage.load("cursor_blue.png");
@@ -31,7 +31,7 @@ void mouseCursor::setup(vector<ofVec3f>& initCursorPos, appUtils::CursorMode cur
 }
 
 void mouseCursor::update(vector<ofVec3f>& actualCursorPos) {
-	if (currentCursorMode == appUtils::CursorMode::None) return;
+	if (currentCursorMode == applicationProperties::CursorMode::None) return;
 	actualPos = actualCursorPos;
 
 	if (ofGetElapsedTimeMillis() - positionTrackingTime >= 100) {
@@ -42,13 +42,13 @@ void mouseCursor::update(vector<ofVec3f>& actualCursorPos) {
 		history.push_front(centroid);
 	}
 
-	if (currentCursorMode == appUtils::CursorMode::Pointer) {
+	if (currentCursorMode == applicationProperties::CursorMode::Pointer) {
 		if (history.size() == 20) {
 			history.pop_back();
 			evaluateHistory();
 		}
 	}
-	else if (currentCursorMode == appUtils::CursorMode::Grab) {
+	else if (currentCursorMode == applicationProperties::CursorMode::Grab) {
 		if (history.size() == 10) {
 			history.pop_back();
 			evaluateHistory();
@@ -68,13 +68,13 @@ void mouseCursor::draw() {
 	//if (startPos.size() != actualPos.size())return;
 	if (actualPos.size() == 0)return;
 	ofEnableAlphaBlending();
-	if (currentCursorMode == appUtils::CursorMode::Pointer) {
+	if (currentCursorMode == applicationProperties::CursorMode::Pointer) {
 		float actualX = -ofGetWidth() * .2f + actualPos.front().x * 6 - 100.f;
 		float actualY = -ofGetHeight() * .5f + actualPos.front().y * 6;
 		SetCursorPos(actualX, actualY);
 		//normalFingerImage.draw(actualX, actualY);
 	}
-	else if (currentCursorMode == appUtils::CursorMode::Grab) {
+	else if (currentCursorMode == applicationProperties::CursorMode::Grab) {
 		if (fingerMap.find("thumb") != fingerMap.end()) {
 			drawMarker(thumbFingerImage, fingerMap["thumb"]);
 		}
@@ -155,7 +155,7 @@ void mouseCursor::drawMarker(ofImage& image, ofVec3f& position) {
 }
 
 void mouseCursor::evaluateHistory() {
-	if (currentCursorMode == appUtils::CursorMode::Pointer) {
+	if (currentCursorMode == applicationProperties::CursorMode::Pointer) {
 		deque <ofVec3f> ::iterator it;
 		float x_move_start = history.begin()->x;
 		float y_move_start = history.begin()->y;
@@ -174,7 +174,7 @@ void mouseCursor::evaluateHistory() {
 			history.clear();
 		}
 	}
-	else if (currentCursorMode == appUtils::CursorMode::Grab) {
+	else if (currentCursorMode == applicationProperties::CursorMode::Grab) {
 		deque <ofVec3f> ::iterator it;
 		float x_move_start = history.begin()->x;
 		float x_move_end = (history.end()-1)->x;
