@@ -9,6 +9,8 @@ void mouseCursor::setup(vector<ofVec3f>& initCursorPos, applicationProperties::C
 
 	if (currentCursorMode == applicationProperties::CursorMode::Pointer) {
 		normalFingerImage.load("cursor.png");
+		actualMousePosition.x = -ofGetWidth() * .2f + actualPos.front().x - 100.f;
+		actualMousePosition.y = -ofGetHeight() * .5f + actualPos.front().y;
 	} 
 	else if (currentCursorMode == applicationProperties::CursorMode::Grab) {
 		normalFingerImage.load("cursor.png");
@@ -69,9 +71,19 @@ void mouseCursor::draw() {
 	if (actualPos.size() == 0)return;
 	ofEnableAlphaBlending();
 	if (currentCursorMode == applicationProperties::CursorMode::Pointer) {
-		float actualX = -ofGetWidth() * .2f + actualPos.front().x * 6 - 100.f;
-		float actualY = -ofGetHeight() * .5f + actualPos.front().y * 6;
-		SetCursorPos(actualX, actualY);
+		float factorX = 1;
+		float factorY = 1;
+		if (history.size() >= 2) {
+			factorX = abs(history.at(0).x - history.at(1).x);
+			factorY = abs(history.at(0).y - history.at(1).y);
+		}
+		float factor = (factorX + factorY) / 40.f;
+		float diffX = actualPos.front().x - startPos.front().x;
+		float diffY = actualPos.front().y - startPos.front().y;
+
+		actualMousePosition.x = actualMousePosition.x + diffX / 1.5 ;
+		actualMousePosition.y = actualMousePosition.y + diffY / 1.5 ;
+		SetCursorPos(actualMousePosition.x, actualMousePosition.y);
 		//normalFingerImage.draw(actualX, actualY);
 	}
 	else if (currentCursorMode == applicationProperties::CursorMode::Grab) {
@@ -91,12 +103,7 @@ void mouseCursor::draw() {
 			drawMarker(normalFingerImage, fingerMap["otherFinger2"]);
 		}
 		drawLine(grabHandNormal);
-		//for(ofVec3f& point : actualPos){
-		//	float actualX = point.x - 100.f;
-		//	float actualY = -point.y + 250.f;
-		//	normalFingerImage.draw(actualX, actualY);
-		//}
-		//}
+
 		ofVec2f imagePos = ofVec2f(-32,-ofGetHeight()/4);
 		if (((int)rotationDegree) <= -2) {
 			doubleRewindImage.draw(imagePos);

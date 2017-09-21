@@ -34,27 +34,12 @@ public:
 	static void setFingerMap(map<string, ofVec3f>& fingerMap, vector<ofVec3f>& clusters) {
 		if (clusters.size() < 5)return;
 
-		/*if (fingerMap.size() == 5) {
-			for (auto const &finger : fingerMap) {
-				auto const &name = finger.first;
-				ofVec3f &fingerPosition = (ofVec3f)finger.second;
-				int clusterIndex = 0;
-				int minDistanceIndex = 0;
-				float minDistance = numeric_limits<float>::max();
-				for (ofVec3f& position : clusters) { 
-					float distance = abs(position.x - fingerPosition.x) + abs(position.y - fingerPosition.y);
-					if (distance < minDistance) {
-						minDistanceIndex = clusterIndex;
-						minDistance = distance;
-					}
-					clusterIndex++;
-				}
-				fingerMap[name] = clusters.at(minDistanceIndex);
-				clusters.erase(clusters.begin() + minDistanceIndex);
-			}
-			return;
-		}*/
+		ofVec3f lastTriggerFinger = ofVec3f(numeric_limits<float>::min(), numeric_limits<float>::min(), numeric_limits<float>::min());
+		if (fingerMap.size() == 5) {
+			lastTriggerFinger = fingerMap["firstOuterFinger"];
+		}
 
+		//find thumb
 		fingerMap.clear();
 		int thumbIndex = -1;
 		int clusterPos = 0;
@@ -79,6 +64,7 @@ public:
 		}
 		if (thumbIndex >= 0)fingerMap["thumb"] = clusters.at(thumbIndex);
 		
+		//find other fingers
 		int firstOuterFingerIndex = -1;
 		int secondOuterFingerIndex = -1;
 		int secondOuterFingerTempIndex = -1;
@@ -111,6 +97,18 @@ public:
 		}
 		if (firstOuterFingerIndex >= 0)fingerMap["firstOuterFinger"] = clusters.at(firstOuterFingerIndex);
 		if (secondOuterFingerIndex >= 0)fingerMap["secondOuterFinger"] = clusters.at(secondOuterFingerIndex);
+
+		//decide which one is trigger finger
+		if (lastTriggerFinger.x != numeric_limits<float>::min()) {
+			float firstFingerDistance = abs(fingerMap["firstOuterFinger"].x - lastTriggerFinger.x) + abs(fingerMap["firstOuterFinger"].y - lastTriggerFinger.y);
+			float seccondFingerDistance = abs(fingerMap["secondOuterFinger"].x - lastTriggerFinger.x) + abs(fingerMap["secondOuterFinger"].y - lastTriggerFinger.y);
+			if (seccondFingerDistance<firstFingerDistance) {
+				ofVec3f temp = fingerMap["secondOuterFinger"];
+				fingerMap["secondOuterFinger"] = fingerMap["firstOuterFinger"];
+				fingerMap["firstOuterFinger"] = temp;
+			}
+		}
+		
 		int otherFingerIndex = 1;
 		for (int i = 0; i < clusters.size(); i++) {
 			if (i != thumbIndex && i != firstOuterFingerIndex && i != secondOuterFingerIndex) {

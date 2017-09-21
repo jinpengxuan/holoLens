@@ -55,9 +55,10 @@ void videoContainer::draw() {
 	for (videoProperties& iteratorTemp : sampleFrames) {
 
 		if (count < sampleFrames.size() - 1) {
+			float xShiftSample = count % 2 == 0 ? -300 : 300;
 			ofImage actualFrame = iteratorTemp.sampleFrame;
 			actualFrame.allocate(iteratorTemp.dimension.x, iteratorTemp.dimension.y, OF_IMAGE_COLOR);
-			actualFrame.draw(iteratorTemp.position.x, iteratorTemp.position.y, iteratorTemp.position.z - zAnimation, iteratorTemp.dimension.x, iteratorTemp.dimension.y);
+			actualFrame.draw(iteratorTemp.position.x + xShiftSample, iteratorTemp.position.y, iteratorTemp.position.z - zAnimation, iteratorTemp.dimension.x, iteratorTemp.dimension.y);
 		}
 		else {
 			if(dismissAlphaValue<255)ofSetColor(255, 255, 255, dismissAlphaValue);

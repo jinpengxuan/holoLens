@@ -35,6 +35,7 @@ private:
 
 	vector<ofVec3f> startPos;
 	vector<ofVec3f> actualPos;
+	ofVec3f actualMousePosition;
 	deque <ofVec3f> history;
 	map<string, ofVec3f> fingerMap;
 
