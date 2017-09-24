@@ -19,6 +19,7 @@ public:
 	float positionTrackingTime = 0.f;
 	bool simulateMouseClick = false;
 	bool dismissVideo = false;
+	float scaling = 0; // only positive values
 	applicationProperties::CursorMode currentCursorMode = applicationProperties::CursorMode::None;
 
 
@@ -29,6 +30,7 @@ private:
 	void drawLine(array<ofVec2f, 2>& normal);
 	void evaluateHistory();
 	void simulateLeftMouseClick();
+	float getMeanDistance(ofVec3f& center, vector<ofVec3f>& cursorPosition);
 
 	array<ofVec2f, 2> initGrabHandNormal{ { ofVec2f(-1,-1), ofVec2f(-1,-1) } };
 	array<ofVec2f, 2> grabHandNormal{ { ofVec2f(-1,-1), ofVec2f(-1,-1) } };
@@ -37,7 +39,6 @@ private:
 	vector<ofVec3f> actualPos;
 	ofVec3f actualMousePosition;
 	float initialMeanDistanceToCenter;
-	int scaling = 0; // only positive values
 	deque <ofVec3f> history;
 	map<string, ofVec3f> fingerMap;
 

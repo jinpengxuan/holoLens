@@ -9,8 +9,6 @@ void mouseCursor::setup(vector<ofVec3f>& initCursorPos, applicationProperties::C
 
 	if (currentCursorMode == applicationProperties::CursorMode::Pointer) {
 		normalFingerImage.load("cursor.png");
-		actualMousePosition.x = -ofGetWidth() * .2f + actualPos.front().x - 100.f;
-		actualMousePosition.y = -ofGetHeight() * .5f + actualPos.front().y;
 	} 
 	else if (currentCursorMode == applicationProperties::CursorMode::Grab) {
 		normalFingerImage.load("cursor.png");
@@ -49,6 +47,10 @@ void mouseCursor::update(vector<ofVec3f>& actualCursorPos) {
 	}
 
 	if (currentCursorMode == applicationProperties::CursorMode::Grab) {
+		ofVec3f centroid;
+		imageUtils::setCentroid(startPos, centroid);
+		float meanDistanceToCenter = getMeanDistance(centroid, actualPos);
+		if (meanDistanceToCenter < 15.f)return;
 		imageUtils::setFingerMap(fingerMap, actualCursorPos);
 		if (initGrabHandNormal[0].x == -1) {
 			setNormalLine(initGrabHandNormal, fingerMap);
@@ -65,7 +67,7 @@ void mouseCursor::draw() {
 	if (actualPos.size() == 0)return;
 	ofEnableAlphaBlending();
 	if (currentCursorMode == applicationProperties::CursorMode::Pointer) {
-		float factorX = 1;
+		/*float factorX = 1;
 		float factorY = 1;
 		if (history.size() >= 2) {
 			factorX = abs(history.at(0).x - history.at(1).x);
@@ -73,10 +75,10 @@ void mouseCursor::draw() {
 		}
 		float factor = (factorX + factorY) / 40.f;
 		float diffX = actualPos.front().x - startPos.front().x;
-		float diffY = actualPos.front().y - startPos.front().y;
+		float diffY = actualPos.front().y - startPos.front().y;*/
 
-		actualMousePosition.x = actualMousePosition.x + diffX / 1.5 ;
-		actualMousePosition.y = actualMousePosition.y + diffY / 1.5 ;
+		actualMousePosition.x = -ofGetWidth() * .2f + actualPos.front().x * 5.f - 100.f;
+		actualMousePosition.y = -ofGetHeight() * .5f + actualPos.front().y * 5.f;
 		SetCursorPos(actualMousePosition.x, actualMousePosition.y);
 		//normalFingerImage.draw(actualX, actualY);
 	}
@@ -150,6 +152,7 @@ void mouseCursor::tearDown() {
 	actualPos.clear();
 	fingerMap.clear();
 	rotationDegree = 0;
+	scaling = 0;
 	initialized = false;
 }
 
@@ -190,7 +193,7 @@ void mouseCursor::evaluateHistory() {
 		imageUtils::setCentroid(actualPos, centroid);
 		float meanDistanceToCenter = getMeanDistance(centroid, actualPos);
 		if (initialMeanDistanceToCenter < meanDistanceToCenter) {
-			scaling = (meanDistanceToCenter - initialMeanDistanceToCenter);
+			scaling = 1.0 + (meanDistanceToCenter - initialMeanDistanceToCenter) / 10.f;
 		}
 
 		float x_move = x_move_end - x_move_start;
@@ -202,14 +205,14 @@ void mouseCursor::evaluateHistory() {
 	}
 }
 
-float getMeanDistance(ofVec3f& center, vector<ofVec3f>& cursorPosition) {
+float mouseCursor::getMeanDistance(ofVec3f& center, vector<ofVec3f>& cursorPosition) {
 	float xDistance = 0;
 	float yDistance = 0;
 	float meanDistance = 0;
 	for (ofVec3f& pos : cursorPosition) {
 		xDistance += abs(pos.x - center.x);
 		yDistance += abs(pos.y - center.y);
-		meanDistance = (xDistance + yDistance) / 2;
+		meanDistance = (xDistance + yDistance) / 2.f;
 	}
 	meanDistance /= 5.f;
 	return meanDistance;

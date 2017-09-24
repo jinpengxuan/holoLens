@@ -71,6 +71,9 @@ void controller::update() {
 		else {
 			mouseCursor.update(gestureTracker.coordinateClusers);
 		}
+
+		videoContainer.scaling = mouseCursor.scaling;
+
 		if ((int)mouseCursor.rotationDegree == 0) {
 			videoContainer.setSpeed(0);
 			videoContainer.pause(true);

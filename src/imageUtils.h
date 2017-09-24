@@ -99,7 +99,7 @@ public:
 		if (secondOuterFingerIndex >= 0)fingerMap["secondOuterFinger"] = clusters.at(secondOuterFingerIndex);
 
 		//decide which one is trigger finger
-		if (lastTriggerFinger.x != numeric_limits<float>::min()) {
+		/*if (lastTriggerFinger.x != numeric_limits<float>::min()) {
 			float firstFingerDistance = abs(fingerMap["firstOuterFinger"].x - lastTriggerFinger.x) + abs(fingerMap["firstOuterFinger"].y - lastTriggerFinger.y);
 			float seccondFingerDistance = abs(fingerMap["secondOuterFinger"].x - lastTriggerFinger.x) + abs(fingerMap["secondOuterFinger"].y - lastTriggerFinger.y);
 			if (seccondFingerDistance<firstFingerDistance) {
@@ -107,7 +107,7 @@ public:
 				fingerMap["secondOuterFinger"] = fingerMap["firstOuterFinger"];
 				fingerMap["firstOuterFinger"] = temp;
 			}
-		}
+		}*/
 		
 		int otherFingerIndex = 1;
 		for (int i = 0; i < clusters.size(); i++) {
@@ -154,6 +154,12 @@ public:
 		frame clusterFrameIndex;
 		clusterFrame.pixels = new int[length];
 		clusterFrameIndex.pixels = new int[length];
+
+		for (int i = 0; i < length; i++) {
+			clusterFrame.pixels[i] = 0;
+			clusterFrameIndex.pixels[i] = 0;
+		}
+
 		int frameCenterX = depthFrame.minXImg + depthFrame.widthImg / 2;
 		int frameCenterY = depthFrame.minYImg + depthFrame.heightImg / 2;
 		int radiusX = depthFrame.widthImg / 2;
@@ -324,13 +330,17 @@ public:
 		int length = frameObj.width*frameObj.height;
 		frameObj.pixels = new int[length];
 
+		for (int i = 0; i < length; i++) {
+			frameObj.pixels[i] = numeric_limits<int>::max();
+		}
+
 		for (int y = frameObj.minY; y < frameObj.maxY; y ++) {
 			for (int x = frameObj.minX; x < frameObj.maxX; x ++) {
 				int index = x + y*pixels.getWidth();
 				int indexFrame = (x - frameObj.minX) + (y - frameObj.minY)*frameObj.width;
 				int distance = pixels[index];
 				if (distance < 500) {
-					frameObj.pixels[indexFrame] = 500;
+					frameObj.pixels[indexFrame] = 800;
 					continue;
 				} 
 				else if (distance > 800) {
@@ -364,7 +374,7 @@ public:
 			}
 		}
 
-		frameObj.maxZ = frameObj.nearPoint.z + 100.f;
+		frameObj.maxZ = frameObj.nearPoint.z + 80.f;
 	}
 
 	static void setFeatureVector(const ofPixels &pixels, std::array<float, 11 * 11> &features) {

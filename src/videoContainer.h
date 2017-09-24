@@ -19,6 +19,8 @@ public:
 
 	bool isPaused = true;
 	bool dismissing = false;
+	float videoControlTime = 0;
+	float scaling = 1.0;
 
 	string videoName;
 

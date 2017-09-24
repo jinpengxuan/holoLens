@@ -27,22 +27,19 @@ void videoContainer::update() {
 	if (!actualVideo.isPaused() && actualVideo.getSpeed() == 1.f) {
 		actualVideo.update();
 	}
-	else if (!actualVideo.isPaused() && actualVideo.getSpeed() < 0) {
-		actualVideo.update();
-		if (actualVideo.isFrameNew()) {
-			for (int i = 0; i < abs(actualVideo.getSpeed()) + 2; i++) {
-				actualVideo.previousFrame();
-			}
+	else if (!actualVideo.isPaused() && actualVideo.getSpeed() < 0 && ofGetElapsedTimef() - videoControlTime >= 100.f) {
+		for (int i = 0; i < abs(actualVideo.getSpeed()) + 2; i++) {
+			actualVideo.previousFrame();
 		}
+		actualVideo.update();
+		videoControlTime = ofGetElapsedTimef();
 	}
-	else if (!actualVideo.isPaused()) {
+	else if (!actualVideo.isPaused() && ofGetElapsedTimef() - videoControlTime >= 100.f) {
+		int frameNumber = actualVideo.getCurrentFrame() + actualVideo.getSpeed();
+		frameNumber = frameNumber < actualVideo.getTotalNumFrames() ? frameNumber : actualVideo.getTotalNumFrames() - 1;
+		actualVideo.setFrame(frameNumber);
 		actualVideo.update();
-		if (actualVideo.isFrameNew()) {
-			int frameNumber = actualVideo.getCurrentFrame() + actualVideo.getSpeed();
-			frameNumber = frameNumber < actualVideo.getTotalNumFrames() ? frameNumber : actualVideo.getTotalNumFrames() - 1;
-			actualVideo.setFrame(frameNumber);
-			actualVideo.update();
-		}
+		videoControlTime = ofGetElapsedTimef();
 	}
 
 	initAlphaValue = 255;
@@ -81,7 +78,9 @@ void videoContainer::draw() {
 		}
 		else {
 			if(dismissAlphaValue<255)ofSetColor(255, 255, 255, dismissAlphaValue);
-			actualVideo.draw(ofPoint(iteratorTemp.position.x + xAnimation, iteratorTemp.position.y, iteratorTemp.position.z - zAnimation), iteratorTemp.dimension.x, iteratorTemp.dimension.y);
+			float scalingXShift = (scaling - 1.f) * iteratorTemp.dimension.x / 2.f;
+			float scalingYShift = (scaling - 1.f) * iteratorTemp.dimension.y / 2.f;
+			actualVideo.draw(ofPoint(iteratorTemp.position.x + xAnimation - scalingXShift, iteratorTemp.position.y - scalingYShift, iteratorTemp.position.z - zAnimation), iteratorTemp.dimension.x * scaling, iteratorTemp.dimension.y * scaling);
 		}
 		count++;
 	}
