@@ -289,8 +289,6 @@ public:
 	}
 
 	static void setDepthCoordinates(frame& depthFrame) {
-		float difference = 80;
-
 		int minX = numeric_limits<int>::max();
 		int minY = numeric_limits<int>::max();
 
@@ -331,7 +329,14 @@ public:
 				int index = x + y*pixels.getWidth();
 				int indexFrame = (x - frameObj.minX) + (y - frameObj.minY)*frameObj.width;
 				int distance = pixels[index];
-				if (distance < 500 || distance > 800) continue;
+				if (distance < 500) {
+					frameObj.pixels[indexFrame] = 500;
+					continue;
+				} 
+				else if (distance > 800) {
+					frameObj.pixels[indexFrame] = 800;
+					continue;
+				}
 
 				// Outlier Removal
 

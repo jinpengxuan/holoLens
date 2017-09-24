@@ -58,7 +58,7 @@ void gestureTracker::update() {
 		if (mouseAccuracy > 60) {
 			cursorMode = applicationProperties::CursorMode::Pointer;
 		}
-		else if (videoAccuracy > 60) {
+		else if (videoAccuracy > 50) {
 			cursorMode = applicationProperties::CursorMode::Grab;
 		}
 		else if (abortAccuracy > 60) {

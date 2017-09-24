@@ -61,7 +61,7 @@ void mouseCursor::update(vector<ofVec3f>& actualCursorPos) {
 		}
 		setNormalLine(grabHandNormal, fingerMap);
 		rotationDegree = imageUtils::getAngleBetweenVectors(initGrabHandNormal[1], grabHandNormal[1]);
-		rotationDegree = rotationDegree*10.f / 4.f;
+		rotationDegree = rotationDegree*10.f / 2.f;
 		//cout << rotationDegree << endl;
 	}
 }
@@ -152,6 +152,10 @@ void mouseCursor::tearDown() {
 	rewindImage.clear();
 	doubleRewindImage.clear();
 	history.clear();
+	startPos.clear();
+	actualPos.clear();
+	fingerMap.clear();
+	rotationDegree = 0;
 	initialized = false;
 }
 

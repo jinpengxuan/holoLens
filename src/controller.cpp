@@ -4,7 +4,7 @@
 void controller::setup() {
 
 	//ofSetWindowShape(previewWidth * 2, previewHeight * 2);
-	ofSetFrameRate(30);
+	//ofSetFrameRate(30);
 	ofSetWindowShape(applicationProperties::WINDOW_WIDTH, applicationProperties::WINDOW_HEIGHT);
 
 	cam = ofEasyCam();
@@ -71,11 +71,14 @@ void controller::update() {
 		else {
 			mouseCursor.update(gestureTracker.coordinateClusers);
 		}
-		if (mouseCursor.rotationDegree >= 1) {
-			videoContainer.pause(false);
-		}
-		else if (mouseCursor.rotationDegree < 1) {
+		if ((int)mouseCursor.rotationDegree == 0) {
+			videoContainer.setSpeed(0);
 			videoContainer.pause(true);
+
+		}
+		else {
+			videoContainer.setSpeed((int)mouseCursor.rotationDegree);
+			videoContainer.pause(false);
 		}
 		if (mouseCursor.dismissVideo) {
 			videoContainer.dismissVideo();

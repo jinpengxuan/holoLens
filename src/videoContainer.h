@@ -17,7 +17,7 @@ public:
 	void dismissVideo();
 	void reorderVideos(applicationProperties::VideoOrder videoOrder);
 
-	bool playing = false;
+	bool isPaused = true;
 	bool dismissing = false;
 
 	string videoName;

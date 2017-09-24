@@ -24,7 +24,26 @@ void videoContainer::init(ofVec2f center, vector<string> elements) {
 }
 
 void videoContainer::update() {
-	if (!actualVideo.isPaused()) actualVideo.update();
+	if (!actualVideo.isPaused() && actualVideo.getSpeed() == 1.f) {
+		actualVideo.update();
+	}
+	else if (!actualVideo.isPaused() && actualVideo.getSpeed() < 0) {
+		actualVideo.update();
+		if (actualVideo.isFrameNew()) {
+			for (int i = 0; i < abs(actualVideo.getSpeed()) + 2; i++) {
+				actualVideo.previousFrame();
+			}
+		}
+	}
+	else if (!actualVideo.isPaused()) {
+		actualVideo.update();
+		if (actualVideo.isFrameNew()) {
+			int frameNumber = actualVideo.getCurrentFrame() + actualVideo.getSpeed();
+			frameNumber = frameNumber < actualVideo.getTotalNumFrames() ? frameNumber : actualVideo.getTotalNumFrames() - 1;
+			actualVideo.setFrame(frameNumber);
+			actualVideo.update();
+		}
+	}
 
 	initAlphaValue = 255;
 	zAnimation = 0;
@@ -70,6 +89,7 @@ void videoContainer::draw() {
 }
 
 void videoContainer::pause(bool paused) {
+	isPaused = paused;
 	actualVideo.setPaused(paused);
 }
 
@@ -127,7 +147,7 @@ void videoContainer::setVisualProperties() {
 	float pct = 0.01f;
 	actualVideo.setPosition(pct);
 	actualVideo.update();
-	actualVideo.setPaused(true);
+	actualVideo.setPaused(isPaused);
 	videoName = sampleFrames.back().name;
 }
 
