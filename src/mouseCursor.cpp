@@ -22,10 +22,13 @@ void mouseCursor::setup(vector<ofVec3f>& initCursorPos, applicationProperties::C
 		doublePlayImage.load("x2.png");
 		rewindImage.load("-x1.png");
 		doubleRewindImage.load("-x2.png");
+
 		imageUtils::setFingerMap(fingerMap, initCursorPos);
-		if (initGrabHandNormal[0].x == -1) {
-			setNormalLine(initGrabHandNormal, fingerMap);
-		}
+		ofVec3f centroid;
+		imageUtils::setCentroid(startPos, centroid);
+		initialMeanDistanceToCenter = getMeanDistance(centroid, startPos);
+
+		setNormalLine(initGrabHandNormal, fingerMap);
 		setNormalLine(grabHandNormal, fingerMap);
 	}
 
@@ -42,19 +45,10 @@ void mouseCursor::update(vector<ofVec3f>& actualCursorPos) {
 		ofVec3f centroid;
 		imageUtils::setCentroid(actualPos, centroid);
 		history.push_front(centroid);
+		evaluateHistory();
 	}
 
-	if (currentCursorMode == applicationProperties::CursorMode::Pointer) {
-		if (history.size() == 20) {
-			history.pop_back();
-			evaluateHistory();
-		}
-	}
-	else if (currentCursorMode == applicationProperties::CursorMode::Grab) {
-		if (history.size() == 10) {
-			history.pop_back();
-			evaluateHistory();
-		}
+	if (currentCursorMode == applicationProperties::CursorMode::Grab) {
 		imageUtils::setFingerMap(fingerMap, actualCursorPos);
 		if (initGrabHandNormal[0].x == -1) {
 			setNormalLine(initGrabHandNormal, fingerMap);
@@ -166,7 +160,8 @@ void mouseCursor::drawMarker(ofImage& image, ofVec3f& position) {
 }
 
 void mouseCursor::evaluateHistory() {
-	if (currentCursorMode == applicationProperties::CursorMode::Pointer) {
+	if (currentCursorMode == applicationProperties::CursorMode::Pointer && history.size() == 20) {
+		history.pop_back();
 		deque <ofVec3f> ::iterator it;
 		float x_move_start = history.begin()->x;
 		float y_move_start = history.begin()->y;
@@ -185,10 +180,18 @@ void mouseCursor::evaluateHistory() {
 			history.clear();
 		}
 	}
-	else if (currentCursorMode == applicationProperties::CursorMode::Grab) {
+	else if (currentCursorMode == applicationProperties::CursorMode::Grab && history.size() == 10) {
+		history.pop_back();
 		deque <ofVec3f> ::iterator it;
 		float x_move_start = history.begin()->x;
 		float x_move_end = (history.end()-1)->x;
+
+		ofVec3f centroid;
+		imageUtils::setCentroid(actualPos, centroid);
+		float meanDistanceToCenter = getMeanDistance(centroid, actualPos);
+		if (initialMeanDistanceToCenter < meanDistanceToCenter) {
+			scaling = (meanDistanceToCenter - initialMeanDistanceToCenter);
+		}
 
 		float x_move = x_move_end - x_move_start;
 		if (x_move >= 50) {
@@ -197,6 +200,19 @@ void mouseCursor::evaluateHistory() {
 			history.clear();
 		}
 	}
+}
+
+float getMeanDistance(ofVec3f& center, vector<ofVec3f>& cursorPosition) {
+	float xDistance = 0;
+	float yDistance = 0;
+	float meanDistance = 0;
+	for (ofVec3f& pos : cursorPosition) {
+		xDistance += abs(pos.x - center.x);
+		yDistance += abs(pos.y - center.y);
+		meanDistance = (xDistance + yDistance) / 2;
+	}
+	meanDistance /= 5.f;
+	return meanDistance;
 }
 
 void mouseCursor::simulateLeftMouseClick() {

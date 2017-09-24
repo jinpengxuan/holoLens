@@ -36,6 +36,8 @@ private:
 	vector<ofVec3f> startPos;
 	vector<ofVec3f> actualPos;
 	ofVec3f actualMousePosition;
+	float initialMeanDistanceToCenter;
+	int scaling = 0; // only positive values
 	deque <ofVec3f> history;
 	map<string, ofVec3f> fingerMap;
 
