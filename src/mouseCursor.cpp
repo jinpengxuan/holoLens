@@ -101,20 +101,20 @@ void mouseCursor::draw() {
 		drawLine(grabHandNormal);
 
 		ofVec2f imagePos = ofVec2f(-32,-ofGetHeight()/4);
-		if (((int)rotationDegree) <= -2) {
+		if ((rotationDegree) <= -4) {
 			doubleRewindImage.draw(imagePos);
 		}
-		else if (((int)rotationDegree) == -1) {
+		else if ((rotationDegree) <= -2) {
 			rewindImage.draw(imagePos);
 		}
-		else if (((int)rotationDegree) == 0) {
-			pauseImage.draw(imagePos);
-		}
-		else if (((int)rotationDegree) == 1) {
+		else if ((rotationDegree) >= 2) {
 			playImage.draw(imagePos);
 		}
-		else if (((int)rotationDegree) >= 2) {
+		else if ((rotationDegree) >= 4) {
 			doublePlayImage.draw(imagePos);
+		}
+		else{
+			pauseImage.draw(imagePos);
 		}
 	}
 	ofDisableAlphaBlending();

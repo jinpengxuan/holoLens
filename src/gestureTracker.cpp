@@ -69,11 +69,9 @@ void gestureTracker::update() {
 	// get clusters of finger tips
 	coordinateClusers.clear();
 	if (cursorMode == applicationProperties::CursorMode::Pointer) {
-		//sort(depthCoords.begin(), depthCoords.end(), sortVecByDepth);
 		coordinateClusers.push_back(frame.nearPoint);
 	}
 	else if (cursorMode == applicationProperties::CursorMode::Grab) {
-		//sort(depthCoords.begin(), depthCoords.end(), sortVecByDepth);
 		imageUtils::setPixelClusters(coordinateClusers, frame);
 	}
 	else {
