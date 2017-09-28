@@ -49,6 +49,7 @@ void controller::update() {
 	}
 	else if (gestureTracker.cursorMode == applicationProperties::CursorMode::Pointer) {
 		if (!mouseCursor.initialized || mouseCursor.currentCursorMode == applicationProperties::CursorMode::Grab) {
+			mouseCursor.tearDown();
 			menu.videoControlLabel->setBackgroundColor(ofColor(25.f, 1.f));
 			menu.mouseControlLabel->setBackgroundColor(ofColor::forestGreen);
 			mouseCursor.setup(gestureTracker.coordinateClusers, gestureTracker.cursorMode);
@@ -64,6 +65,7 @@ void controller::update() {
 	}
 	else if (gestureTracker.cursorMode == applicationProperties::CursorMode::Grab) {
 		if (!mouseCursor.initialized || mouseCursor.currentCursorMode == applicationProperties::CursorMode::Pointer) {
+			mouseCursor.tearDown();
 			menu.videoControlLabel->setBackgroundColor(ofColor::forestGreen);
 			menu.mouseControlLabel->setBackgroundColor(ofColor(25.f, 1.f));
 			mouseCursor.setup(gestureTracker.coordinateClusers, gestureTracker.cursorMode);
