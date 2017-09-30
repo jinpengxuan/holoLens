@@ -147,7 +147,7 @@ void gestureTracker::draw() {
 
 	//kinect.getColorSource()->draw(0, 0 + colorTop, staticMembers.previewWidth, colorHeight);
 
-	//kinect.getColorSource()->draw(previewWidth, 0 + colorTop, previewWidth, colorHeight);
+	kinect.getColorSource()->draw(staticMembers.previewWidth, 0 + colorTop, staticMembers.previewWidth, colorHeight);
 	//kinect.getBodySource()->drawProjected(previewWidth, 0 + colorTop, previewWidth, colorHeight);
 
 	ofSetColor(ofColor(255, 14, 120));
