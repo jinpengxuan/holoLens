@@ -16,6 +16,8 @@ public:
 	const static int DEPTH_HEIGHT = 424;
 	const static int WINDOW_WIDTH = 1600;
 	const static int WINDOW_HEIGHT = 900;
+	const static int COLOR_WIDTH = 1920;
+	const static int COLOR_HEIGHT = 1080;
 	const static int HOG_SIZE = 96;
 	const static int DEPTH_SIZE = DEPTH_WIDTH * DEPTH_HEIGHT;
 

@@ -101,16 +101,16 @@ void mouseCursor::draw() {
 		drawLine(grabHandNormal);
 
 		ofVec2f imagePos = ofVec2f(-32,-ofGetHeight()/4);
-		if ((rotationDegree) <= -4) {
+		if ((rotationDegree) <= -2) {
 			doubleRewindImage.draw(imagePos);
 		}
-		else if ((rotationDegree) <= -2) {
+		else if ((rotationDegree) <= -1) {
 			rewindImage.draw(imagePos);
 		}
-		else if ((rotationDegree) >= 2) {
+		else if ((rotationDegree) >= 1) {
 			playImage.draw(imagePos);
 		}
-		else if ((rotationDegree) >= 4) {
+		else if ((rotationDegree) >= 2) {
 			doublePlayImage.draw(imagePos);
 		}
 		else{

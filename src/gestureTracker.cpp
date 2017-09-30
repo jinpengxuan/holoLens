@@ -6,6 +6,7 @@ void gestureTracker::init(vector<string> featureElements) {
 	kinect.open();
 	kinect.initDepthSource();
 	kinect.initInfraredSource();
+	kinect.initColorSource();
 	//depthCoords.resize(appUtils::DEPTH_SIZE);
 	initFeatures(featureElements);
 }
@@ -15,10 +16,11 @@ void gestureTracker::update() {
 	if (!kinect.isFrameNew())return;
 
 	const auto & depthPix = kinect.getDepthSource()->getPixels();
+	auto & colorPix = kinect.getColorSource()->getPixels();
 
 	int skip = 1;
 
-	if (depthPix.size() == 0)return;
+	if (depthPix.size() == 0 || colorPix.size() == 0)return;
 
 	// set frame positions for evaluation
 	frame frame; 
@@ -40,15 +42,17 @@ void gestureTracker::update() {
 	if (ofGetElapsedTimeMillis() - checkGestureTime >= 500 && (frame.widthImg > 20 && frame.heightImg > 20)) {
 		checkGestureTime = ofGetElapsedTimeMillis();
 		// set the image of the depth coordinates from the nearest object
-		handImage = ofImage();
-		imageUtils::setHandImage(handImage, frame);
+		handDepthImage = ofImage();
+		handColorImage = ofImage();
+		imageUtils::setHandDepthImage(handDepthImage, frame);
+		imageUtils::setHandColorImage(kinect, handColorImage, frame, depthPix, colorPix);
 
 		// calculate matching
 		if (!featuresLoaded)return;
 
 		// get features of current frame
 		std::array<float, 11 * 11> features{};
-		imageUtils::setFeatureVector(handImage.getPixels(), features);
+		imageUtils::setFeatureVector(handDepthImage.getPixels(), features);
 
 		// get accuracies
 		mouseAccuracy = imageUtils::getAccuracy(mouseFeaturesReference, features);
@@ -82,19 +86,22 @@ void gestureTracker::update() {
 
 void gestureTracker::draw() {
 	
-	if (handImage.isAllocated()) {
+	if (handDepthImage.isAllocated()) {
 		int height = ofGetHeight();
 		int width = ofGetWidth();
-		handImage.draw(0 - (width/3.5), 0 - (height/3.5));
+		handDepthImage.draw(0 - (width/3.5), 0 - (height/3.5));
 	}
 }
 
 void gestureTracker::capture(string gestureType) {
-	if (handImage.isAllocated()) {
-		if (handImage.isAllocated()) {
-			std::array<float, 11 * 11> features;
-			handImage.resize(applicationProperties::HOG_SIZE, applicationProperties::HOG_SIZE);
-			handImage.save("captures\\" + gestureType + to_string(rand() % 1000000) + ".png", ofImageQualityType::OF_IMAGE_QUALITY_HIGH);
+	if (handDepthImage.isAllocated()) {
+		if (handDepthImage.isAllocated()) {
+			handDepthImage.resize(applicationProperties::HOG_SIZE, applicationProperties::HOG_SIZE);
+			handDepthImage.save("captures\\" + gestureType + to_string(rand() % 1000000) + ".png", ofImageQualityType::OF_IMAGE_QUALITY_HIGH);
+		}
+		if (handColorImage.isAllocated()) {
+			handColorImage.resize(applicationProperties::HOG_SIZE, applicationProperties::HOG_SIZE);
+			handColorImage.save("captures\\" + gestureType + to_string(rand() % 1000000) + "-color.png", ofImageQualityType::OF_IMAGE_QUALITY_HIGH);
 		}
 	}
 }

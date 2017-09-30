@@ -45,16 +45,13 @@ public:
 	//central position
 	ofVec3f center;
 
-	//mapping coordinates from depth to color image and vice versa
-	ICoordinateMapper * coordinateMapper;
-
 	//time measurement
 	float time;
 	float checkGestureTime = 0.f;
 
 	// visualizing the hand on the mapped image frame
-	ofImage handImage;
-	ofImage featureImage;
+	ofImage handDepthImage;
+	ofImage handColorImage;
 
 	vector<std::array<float, 11 * 11>> mouseFeaturesReference;
 	vector<std::array<float, 11 * 11>> videoFeaturesReference;
