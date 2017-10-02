@@ -295,52 +295,22 @@ public:
 		handImage.resize(applicationProperties::HOG_SIZE, applicationProperties::HOG_SIZE);
 	}
 
-	static void setHandColorImage(ofxKFW2::Device& kinect, ofImage& handImage, frame& frame, const ofShortPixels& depthPixels, ofPixels& colorPixels) {
+	static void setHandColorImage(ofImage& handImage, frame& frame, const ofShortPixels& depthPixels, ofPixels& colorPixels) {
 
-		//mapping coordinates from depth to color image and vice versa
-		ICoordinateMapper * coordinateMapper;
-
-		vector<ofVec2f> colorCoords;
-		colorCoords.resize(applicationProperties::DEPTH_SIZE);
-
-		HRESULT hresult = kinect.getSensor()->get_CoordinateMapper(&coordinateMapper);
-
-		if (FAILED(hresult)) {
-			ofLog() << "CoordinateMapper Not Found";
-		}
-
-		coordinateMapper->MapDepthFrameToColorSpace(applicationProperties::DEPTH_SIZE, (UINT16 *)depthPixels.getPixels(), applicationProperties::DEPTH_SIZE,(ColorSpacePoint *)colorCoords.data());
+		int pixelsLength = colorPixels.getWidth() * colorPixels.getHeight();
 
 		int minX = frame.minX + frame.minXImg;
 		int minY = frame.minY + frame.minYImg;
 
-		int maxX = frame.minX + frame.maxXImg;
-		int maxY = frame.minY + frame.maxYImg;
+		int xColor = (minX + frame.widthImg / 3.f) / (float)depthPixels.getWidth() * colorPixels.getWidth();
+		int yColor = minY / (float)depthPixels.getHeight() * colorPixels.getHeight();
+		int width = frame.widthImg * (colorPixels.getWidth() / (float)depthPixels.getWidth());
+		int height = frame.heightImg * (colorPixels.getHeight() / (float)depthPixels.getHeight());
 
-		handImage.allocate(frame.widthImg, frame.heightImg, OF_IMAGE_COLOR);
-		ofPixels pix = ofPixels();
-
-		pix.allocate(frame.widthImg, frame.heightImg, OF_IMAGE_COLOR);
-		pix.setColor(0);
-
-		for (int y = minY; y < maxY; y++) {
-			for (int x = minX; x < maxX; x++) {
-				int index = x + y*depthPixels.getWidth();
-				ofVec2f colorPosition = colorCoords[index];
-				int colorIndex = colorPosition.x + colorPosition.y*colorPixels.getWidth();
-
-				int val = colorPixels.getBitsPerChannel();
-				char c = colorPixels[colorIndex];
-
-				ofColor colorPix = colorPixels.getColor(colorIndex);
-
-				int thumbIndex = (x - minX) + (y - minY) * frame.widthImg;
-				pix.setColor(thumbIndex, colorPix);
-			}
-		}
-
-		handImage.setFromPixels(pix);
-		handImage.resize(applicationProperties::HOG_SIZE, applicationProperties::HOG_SIZE);
+		handImage.allocate(colorPixels.getWidth(), colorPixels.getHeight(), OF_IMAGE_COLOR);
+		handImage.setFromPixels(colorPixels);
+		handImage.crop(xColor, yColor, width, height);
+		
 	}
 
 	static void setDepthCoordinates(frame& depthFrame) {

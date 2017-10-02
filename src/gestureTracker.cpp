@@ -16,7 +16,9 @@ void gestureTracker::update() {
 	if (!kinect.isFrameNew())return;
 
 	const auto & depthPix = kinect.getDepthSource()->getPixels();
-	auto & colorPix = kinect.getColorSource()->getPixels();
+
+	kinect.getColorSource()->setRgbaPixelsEnabled(true);
+	ofPixels & colorPix = kinect.getColorSource()->getPixels();
 
 	int skip = 1;
 
@@ -45,7 +47,7 @@ void gestureTracker::update() {
 		handDepthImage = ofImage();
 		handColorImage = ofImage();
 		imageUtils::setHandDepthImage(handDepthImage, frame);
-		imageUtils::setHandColorImage(kinect, handColorImage, frame, depthPix, colorPix);
+		imageUtils::setHandColorImage(handColorImage, frame, depthPix, colorPix);
 
 		// calculate matching
 		if (!featuresLoaded)return;
@@ -100,7 +102,6 @@ void gestureTracker::capture(string gestureType) {
 			handDepthImage.save("captures\\" + gestureType + to_string(rand() % 1000000) + ".png", ofImageQualityType::OF_IMAGE_QUALITY_HIGH);
 		}
 		if (handColorImage.isAllocated()) {
-			handColorImage.resize(applicationProperties::HOG_SIZE, applicationProperties::HOG_SIZE);
 			handColorImage.save("captures\\" + gestureType + to_string(rand() % 1000000) + "-color.png", ofImageQualityType::OF_IMAGE_QUALITY_HIGH);
 		}
 	}

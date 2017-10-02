@@ -39,6 +39,7 @@ private:
 	vector<ofVec3f> actualPos;
 	ofVec3f actualMousePosition;
 	float initialMeanDistanceToCenter;
+	float mouseClickTime;
 	deque <ofVec3f> history;
 	map<string, ofVec3f> fingerMap;
 
