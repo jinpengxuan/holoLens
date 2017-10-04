@@ -19,7 +19,7 @@ public:
 	float positionTrackingTime = 0.f;
 	bool simulateMouseClick = false;
 	bool dismissVideo = false;
-	float scaling = 0; // only positive values
+	float scaling = 1.f; // only positive values
 	applicationProperties::CursorMode currentCursorMode = applicationProperties::CursorMode::None;
 
 

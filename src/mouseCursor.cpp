@@ -101,16 +101,16 @@ void mouseCursor::draw() {
 		drawLine(grabHandNormal);
 
 		ofVec2f imagePos = ofVec2f(-32,-ofGetHeight()/4);
-		if ((rotationDegree) <= -4) {
+		if ((rotationDegree) <= -2) {
 			doubleRewindImage.draw(imagePos);
 		}
-		else if ((rotationDegree) <= -2) {
+		else if ((rotationDegree) <= -1) {
 			rewindImage.draw(imagePos);
 		}
-		else if ((rotationDegree) >= 2) {
+		else if ((rotationDegree) >= 1 && (rotationDegree) < 2) {
 			playImage.draw(imagePos);
 		}
-		else if ((rotationDegree) >= 4) {
+		else if ((rotationDegree) >= 2) {
 			doublePlayImage.draw(imagePos);
 		}
 		else{
@@ -152,7 +152,7 @@ void mouseCursor::tearDown() {
 	actualPos.clear();
 	fingerMap.clear();
 	rotationDegree = 0;
-	scaling = 0;
+	scaling = 1.f;
 	initialized = false;
 }
 
@@ -193,7 +193,7 @@ void mouseCursor::evaluateHistory() {
 		imageUtils::setCentroid(actualPos, centroid);
 		float meanDistanceToCenter = getMeanDistance(centroid, actualPos);
 		if (initialMeanDistanceToCenter < meanDistanceToCenter) {
-			scaling = 1.0 + (meanDistanceToCenter - initialMeanDistanceToCenter) / 10.f;
+			scaling = 1.0 + (int)((meanDistanceToCenter - initialMeanDistanceToCenter) / 2.f);
 		}
 
 		float x_move = x_move_end - x_move_start;
@@ -212,9 +212,8 @@ float mouseCursor::getMeanDistance(ofVec3f& center, vector<ofVec3f>& cursorPosit
 	for (ofVec3f& pos : cursorPosition) {
 		xDistance += abs(pos.x - center.x);
 		yDistance += abs(pos.y - center.y);
-		meanDistance = (xDistance + yDistance) / 2.f;
 	}
-	meanDistance /= 5.f;
+	meanDistance = (xDistance + yDistance) / (cursorPosition.size() * 2.f);
 	return meanDistance;
 }
 
