@@ -37,7 +37,7 @@ void gestureTracker::update() {
 	// set depth coordinates and frame to evaluate
 	imageUtils::setDepthCoordinates(frame);
 
-	if (ofGetElapsedTimeMillis() - checkGestureTime >= 500 && (frame.widthImg > 20 && frame.heightImg > 20)) {
+	if (ofGetElapsedTimeMillis() - checkGestureTime >= 2000 && (frame.widthImg > 20 && frame.heightImg > 20)) {
 		checkGestureTime = ofGetElapsedTimeMillis();
 		// set the image of the depth coordinates from the nearest object
 		handImage = ofImage();
@@ -64,6 +64,9 @@ void gestureTracker::update() {
 		else if (abortAccuracy > 60) {
 			cursorMode = applicationProperties::CursorMode::None;
 		}
+
+		float time = ofGetElapsedTimeMillis() - checkGestureTime;
+		cout << time << endl;
 	}
 
 	// get clusters of finger tips
@@ -100,13 +103,14 @@ void gestureTracker::capture(string gestureType) {
 }
 
 void gestureTracker::initFeatures(vector<string> features) {
+	float loadStart = ofGetElapsedTimef();
 	featuresLoaded = false;
 	mouseAccuracy = 0;
 	videoAccuracy = 0;
 	mouseFeaturesReference.clear();
 	videoFeaturesReference.clear();
 	abortFeaturesReference.clear();
-
+	int featureCount = 0;
 	// loop through elements and create features
 	for (vector<string>::iterator i = features.begin(); i < features.end(); i++) {
 
@@ -119,21 +123,25 @@ void gestureTracker::initFeatures(vector<string> features) {
 
 		if (stringUtils::contains(item, "mouse")) {
 			addFeature(mouseFeaturesReference, item);
+			featureCount++;
 			continue;
 		}
 
 		if (stringUtils::contains(item, "video")) {
 			addFeature(videoFeaturesReference, item);
+			featureCount++;
 			continue;
 		}
 
 		if (stringUtils::contains(item, "abort")) {
 			addFeature(abortFeaturesReference, item);
+			featureCount++;
 		}
 	}
-
+	cout << "Features: " << featureCount << endl;
 	featuresLoaded = mouseFeaturesReference.size() != 0 || videoFeaturesReference.size() != 0;
-
+	float time = ofGetElapsedTimeMillis() - loadStart;
+	cout << "Load Time: " << time << endl;
 }
 
 void gestureTracker::addFeature(vector<std::array<float, 11 * 11>>& featuresReference, string item) {
