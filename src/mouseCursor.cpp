@@ -98,7 +98,7 @@ void mouseCursor::draw() {
 		if (fingerMap.find("otherFinger2") != fingerMap.end()) {
 			drawMarker(normalFingerImage, fingerMap["otherFinger2"]);
 		}
-		drawLine(grabHandNormal);
+		//drawLine(grabHandNormal);
 
 		ofVec2f imagePos = ofVec2f(-32,-ofGetHeight()/4);
 		if ((rotationDegree) <= -2) {

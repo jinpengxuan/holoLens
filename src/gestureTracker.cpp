@@ -37,7 +37,10 @@ void gestureTracker::update() {
 	// set depth coordinates and frame to evaluate
 	imageUtils::setDepthCoordinates(frame);
 
-	if (ofGetElapsedTimeMillis() - checkGestureTime >= 500 && (frame.widthImg > 20 && frame.heightImg > 20)) {
+	if (frame.widthImg < 20 || frame.heightImg < 20) {
+		cursorMode = applicationProperties::CursorMode::None;
+	}
+	else if (ofGetElapsedTimeMillis() - checkGestureTime >= 500) {
 		checkGestureTime = ofGetElapsedTimeMillis();
 		// set the image of the depth coordinates from the nearest object
 		handImage = ofImage();

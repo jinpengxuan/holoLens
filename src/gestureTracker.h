@@ -32,14 +32,6 @@ public:
 	float rotationDegree = 0.f;
 	int translation = 0;
 
-	int xShift = -200;
-	int yShift = -400;
-	int zShift = -300;
-
-	//vector<ofVec2f> colorCoords;
-	//vector<ofVec3f> depthCoords;
-	//vector<ofVec3f> drawingCoords;
-
 	vector<ofVec3f> coordinateClusers;
 
 	//central position
@@ -66,7 +58,5 @@ public:
 private:
 
 	void addFeature(vector<std::array<float, 11 * 11>>& featuresReference, string item);
-	//void initFingerCursor();
-	//void updateFingerCursor();
 
 };
