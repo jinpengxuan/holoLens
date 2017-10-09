@@ -27,7 +27,7 @@ void videoContainer::update() {
 	if (!actualVideo.isPaused() && actualVideo.getSpeed() == 1.f) {
 		actualVideo.update();
 	}
-	/*else if (!actualVideo.isPaused() && actualVideo.getSpeed() < 0 && ofGetElapsedTimef() - videoControlTime >= 100.f) {
+	else if (!actualVideo.isPaused() && actualVideo.getSpeed() < 0 && ofGetElapsedTimef() - videoControlTime >= 100.f) {
 		for (int i = 0; i < abs(actualVideo.getSpeed()) + 2; i++) {
 			actualVideo.previousFrame();
 		}
@@ -40,7 +40,7 @@ void videoContainer::update() {
 		actualVideo.setFrame(frameNumber);
 		actualVideo.update();
 		videoControlTime = ofGetElapsedTimef();
-	}*/
+	}
 
 	initAlphaValue = 255;
 	zAnimation = 0;

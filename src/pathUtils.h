@@ -12,6 +12,7 @@ class pathUtils {
 
 public:
 
+	//read the elements of the path passed and find all movie media types possible
 	static void setPathElements(vector<string>& elements, string path, applicationProperties::MediaType type) {
 		elements.clear();
 		try {

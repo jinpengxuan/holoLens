@@ -181,7 +181,7 @@ void controller::onButtonEvent(ofxDatGuiButtonEvent e)
 			|| (menu.pathLabel->getLabel()).length() == 0) ? menu.pathLabel->getLabel() : (menu.pathLabel->getLabel() + "\\");
 		menu.loadSubOptions(this, &controller::onButtonEvent, path1 + buttonLabel);
 		menu.pathLabel->setLabel(path1 + buttonLabel);
-		menu.fileSystemGui->layoutGui(); // musste schnittstelle erweitern, da refresh methode nicht public war
+		menu.fileSystemGui->layoutGui(); // upgraded gui to get a refresh functionality after deletion
 	}
 }
 

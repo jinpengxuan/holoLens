@@ -17,14 +17,19 @@
 class controller : public ofBaseApp {
 
 public:
+
+	//lifecycle functions
 	void setup();
 	void update();
 	void draw();
 
+	//button events
 	void onButtonEvent(ofxDatGuiButtonEvent e);
 	void onDropdownEvent(ofxDatGuiDropdownEvent e);
 	void keyPressed(int key);
 	void keyReleased(int key);
+	
+	//mouse events
 	void mouseMoved(int x, int y);
 	void mouseDragged(int x, int y, int button);
 	void mousePressed(int x, int y, int button);
@@ -33,6 +38,7 @@ public:
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
 
+	//camera object for the scene
 	ofCamera cam;
 
 	//time measurement
@@ -47,16 +53,19 @@ public:
 	//light
 	ofLight light;
 
+	//pathes of video elements currently loaded
 	vector<string> videoElements;
 
 	//handCursor
 	mouseCursor mouseCursor;
 
-	const string capturePath = "c:\\of_v0.9.8_vs_release\\apps\\myApps\\holoLens\\bin\\data\\captures\\";
+	//capture path
+	const string capturePath = "data\\captures\\";
 
 	//current parent folder
 	string currentParent;
 
+	//menu wrapper object
 	menuWrapper menu;
 
 private:

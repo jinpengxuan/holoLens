@@ -12,6 +12,7 @@ class imageUtils {
 
 public:
 
+	//set centroid of the given coordinates
 	static void setCentroid(vector<ofVec3f>& positions, ofVec3f& centroid) {
 		float positionSum = positions.size();
 		
@@ -25,12 +26,14 @@ public:
 		centroid.z /= positionSum;
 	}
 
+	//calculate angle between vectors
 	static float getAngleBetweenVectors(ofVec2f& v1, ofVec2f& v2) {
 		float angle = atan2(v2.y, v2.x) - atan2(v1.y, v1.x);
 
 		return angle;
 	}
 
+	//set a hashmap of fingers from the given coordinates
 	static void setFingerMap(map<string, ofVec3f>& fingerMap, vector<ofVec3f>& clusters) {
 		if (clusters.size() < 5)return;
 
@@ -119,6 +122,7 @@ public:
 		}
 	}
 
+	//set the cluser index passed recursively until there is no neighboured pixel that meets the requirements
 	static bool recursiveSetClusterIndex(int& clusterIndex, int x, int y, int width, int height, frame& clusterFrame, frame& clusterFrameIndex) {
 		if (x < 1 || x >= width - 1 || y < 1 || y >= height - 1)return false;
 		int index = x + y * width;
@@ -148,6 +152,7 @@ public:
 		return false;
 	}
 
+	//set the pixel clusters from the passed frame
 	static void setPixelClusters(vector<ofVec3f>& coordinateClusers, frame& depthFrame) {
 		int length = depthFrame.width*depthFrame.height;
 		frame clusterFrame;
@@ -231,6 +236,7 @@ public:
 		delete[] clusterFrame.pixels;
 	}
 
+	//set clusters by radius (deprecated)
 	static void setClusters(vector<ofVec3f>& depthCoords, vector<ofVec2f>& coordinateClusers, frame& frame, int clusterCount) {
 		int clusterRadius = 20;
 		for (ofVec3f& iteratorTemp : depthCoords) {
@@ -254,6 +260,7 @@ public:
 		}
 	}
 
+	//get feature accuracy by using the euclidean distance of the vectors and mapping them from 0-2000 to 100-0
 	static int getAccuracy(vector<std::array<float, 11 * 11>>& featuresReference, std::array<float, 11 * 11>& features) {
 		int accuracy = numeric_limits<int>::max();
 		for (std::array<float, 11 * 11> featuresRef : featuresReference) {
@@ -269,6 +276,7 @@ public:
 		return accuracy;
 	}
 
+	//set the hand image of the object given by the frame coordinates
 	static void setHandImage(ofImage& handImage, frame& frame) {
 
 		handImage.allocate(frame.widthImg, frame.heightImg, OF_IMAGE_GRAYSCALE);
@@ -294,6 +302,7 @@ public:
 		handImage.resize(applicationProperties::HOG_SIZE, applicationProperties::HOG_SIZE);
 	}
 
+	//set the border coordinates of the nearest object in front of the camera
 	static void setDepthCoordinates(frame& depthFrame) {
 		int minX = numeric_limits<int>::max();
 		int minY = numeric_limits<int>::max();
@@ -325,6 +334,8 @@ public:
 		depthFrame.heightImg = maxY - minY;
 	}
 
+	//set the initial frame object and find the nearest point in this frame
+	//this nearpoint is used to create the bounding box of the hand
 	static void setFrame(frame& frameObj, const ofShortPixels& pixels) {
 		frameObj.nearPoint.z = numeric_limits<int>::max();
 		int length = frameObj.width*frameObj.height;
@@ -377,6 +388,7 @@ public:
 		frameObj.maxZ = frameObj.nearPoint.z + 80.f;
 	}
 
+	//set the feature vector for the given pixels by applying the HOG approach
 	static void setFeatureVector(const ofPixels &pixels, std::array<float, 11 * 11> &features) {
 
 		const int width = applicationProperties::HOG_SIZE;
@@ -509,6 +521,7 @@ public:
 		//cout << "Features processed" << endl;
 	}
 
+	//get horizontal gradient
 	static int getGradientX(int a, int c) {
 		int grad = 0;
 
@@ -517,6 +530,7 @@ public:
 		return grad;
 	}
 
+	//get vertical gradient
 	static int getGradientY(int a, int c) {
 		int grad = 0;
 
@@ -525,6 +539,7 @@ public:
 		return grad;
 	}
 
+	//get the euclidean distance between two feature vectors
 	static float getEuclideanDist(std::array<float, 11 * 11> val1, std::array<float, 11 * 11> val2) {
 		float dist = 0;
 		for (int i = 0; i < (11 * 11); i++) {
@@ -534,6 +549,7 @@ public:
 		return dist;
 	}
 
+	//testing feature image
 	static void setFeatureImage(ofImage& image, std::array<float, 11 * 11> features) {
 
 		const int w = 11;

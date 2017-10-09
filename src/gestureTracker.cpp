@@ -146,11 +146,3 @@ void gestureTracker::addFeature(vector<std::array<float, 11 * 11>>& featuresRefe
 	imageUtils::setFeatureVector(testImage.getPixels(), features);
 	featuresReference.push_back(features);
 }
-
-void gestureTracker::startDrag() {
-
-}
-
-void gestureTracker::stopDrag() {
-
-}
